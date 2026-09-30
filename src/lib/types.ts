@@ -18,7 +18,8 @@ export type Place = {
   depth: 1 | 2 | 3;
   tags: string[];
   moods: string[];
-  location: { address: string; lat: number; lng: number };
+  // pin: where the coordinates were confirmed (absent = as given, e.g. by Gemini)
+  location: { address: string; lat: number; lng: number; pin?: "osm" | "wikipedia" };
   price: { perPerson: number; label: string; note?: string };
   bestTime: BestTime;
   durationMin: number;

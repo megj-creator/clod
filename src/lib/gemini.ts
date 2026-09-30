@@ -1,3 +1,5 @@
+import { unstable_cache } from "next/cache";
+
 // Server-only helper for calling Gemini. Retries when Google is busy and
 // falls back to a lighter model, so a demand spike doesn't break the app.
 
@@ -122,14 +124,11 @@ export function rateLimited(req: Request, max = 12, windowMs = 60_000, bucket = 
   return recent.length > max;
 }
 
-// Best-effort memory cache (lives as long as the server instance stays warm), so the
-// second person to search "Lisbon" gets it instantly and doesn't spend quota.
-const cache = new Map<string, { at: number; value: unknown }>();
+// Shared, durable cache (Next.js Data Cache: on Vercel it's shared by every server instance and
+// survives restarts), so the second person to search "Lisbon" gets it instantly and spends no quota.
+// Errors aren't cached: a failed lookup is retried next time.
+// Bump CACHE_VERSION whenever the shape or quality of cached cities/places changes.
+const CACHE_VERSION = "uncover-v2";
 export async function cached<T>(key: string, ttlMs: number, make: () => Promise<T>): Promise<T> {
-  const hit = cache.get(key);
-  if (hit && Date.now() - hit.at < ttlMs) return hit.value as T;
-  const value = await make();
-  cache.set(key, { at: Date.now(), value });
-  if (cache.size > 300) cache.delete(cache.keys().next().value!);
-  return value;
+  return unstable_cache(make, [CACHE_VERSION, key], { revalidate: Math.round(ttlMs / 1000) })();
 }

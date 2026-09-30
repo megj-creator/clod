@@ -69,7 +69,7 @@ export async function roadMinutes(from: { lat: number; lng: number }[], to: { la
   const sources = from.map((_, i) => i).join(";");
   const destinations = to.map((_, i) => i + from.length).join(";");
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 8000);
+  const timer = setTimeout(() => ctrl.abort(), 6000);
   try {
     const res = await fetch(
       `https://router.project-osrm.org/table/v1/driving/${coords}?sources=${sources}&destinations=${destinations}&annotations=duration`,
@@ -86,6 +86,182 @@ export async function roadMinutes(from: { lat: number; lng: number }[], to: { la
 }
 
 const STOP = new Set(["the", "and", "of", "restaurant", "bar", "grill", "cafe", "park", "house", "co", "company", "shop"]);
+// Wikimedia asks for a User-Agent that says how to reach the app, and throttles anonymous-looking ones hard
+const UA = { "User-Agent": "Uncover/0.5 (https://clod-orpin.vercel.app; travel planner prototype)" };
+
+// Significant, accent-free words of a name: "Basilica of Saint Lawrence" → basilica, saint, lawrence
+const nameWords = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/\bst\b\.?/g, "saint")
+    .split(/[^a-z0-9]+/)
+    .filter((w) => w.length > 1 && !["the", "and", "of", "at", "de", "la", "le", "el"].includes(w));
+
+// Share of the place's words that appear in the other name ("Western N.C. Nature Center" ≈ 0.6)
+function nameMatch(place: string, other: string): number {
+  const a = nameWords(place);
+  const b = new Set(nameWords(other));
+  if (!a.length) return 0;
+  return a.filter((w) => b.has(w)).length / a.length;
+}
+
+async function getJson(url: string, ms = 5000): Promise<any> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  try {
+    const res = await fetch(url, { headers: UA, signal: ctrl.signal });
+    return res.ok ? await res.json() : null;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// Runs fn over items, at most `limit` at a time (polite to the free map and photo services)
+async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>) {
+  let i = 0;
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (i < items.length) await fn(items[i++]);
+  }));
+}
+
+type LatLng = { lat: number; lng: number };
+
+// Checks Gemini's pin against OpenStreetMap (Photon search): the same-named place near the destination wins.
+async function osmPin(name: string, city: string, near: LatLng, center: LatLng, radius: number): Promise<LatLng | null> {
+  const q = encodeURIComponent(`${name} ${city.split(",")[0]}`);
+  const data = await getJson(`https://photon.komoot.io/api/?q=${q}&lat=${near.lat}&lon=${near.lng}&limit=4&lang=en`);
+  for (const f of data?.features ?? []) {
+    const [lng, lat] = f.geometry?.coordinates ?? [];
+    const p = f.properties ?? {};
+    if (!Number.isFinite(lat) || !Number.isFinite(lng) || ["place", "boundary", "highway"].includes(p.osm_key)) continue;
+    if (nameMatch(name, String(p.name ?? "")) >= 0.5 && milesApart(center, { lat, lng }) < radius) return { lat, lng };
+  }
+  return null;
+}
+
+type CommonsInfo = {
+  thumburl?: string;
+  url: string;
+  width: number;
+  height: number;
+  mime: string;
+  descriptionurl: string;
+  extmetadata?: Record<string, { value: string }>;
+};
+
+function toPhoto(info: CommonsInfo): Photo {
+  const artist = (info.extmetadata?.Artist?.value ?? "Unknown")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .trim()
+    .slice(0, 60);
+  return {
+    src: info.thumburl || info.url,
+    credit: artist,
+    license: info.extmetadata?.LicenseShortName?.value ?? "See source",
+    source: info.descriptionurl,
+  };
+}
+
+type WikiPage = { title: string; pageimage?: string; coordinates?: { lat: number; lon: number }[] };
+
+// Lead photos of the places' own Wikipedia articles, in two requests for the whole batch: look up
+// each name (and "Name (City)", "Name, City") as an exact article title, then fetch the photos'
+// license info from Commons. An article only counts when its coordinates put it within a mile of
+// the place, so "Tupelo Honey" the song never stands in for Tupelo Honey the restaurant.
+// (Up to 50 titles per request: ~16 places, more than one category ever has.)
+async function wikipediaPhotos(places: Place[], city: string): Promise<Map<Place, Photo>> {
+  const found = new Map<Place, Photo>();
+  const town = city.split(",")[0].trim();
+  const variants = (p: Place) => {
+    const base = p.name.replace(/\s*\(.*?\)/g, "").trim(); // "Museum of Science (AMOS)" → "Museum of Science"
+    return [base, `${base} (${town})`, `${base}, ${town}`];
+  };
+  const titles = [...new Set(places.flatMap(variants))].slice(0, 50);
+  const data = await getJson(
+    `https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&titles=${encodeURIComponent(titles.join("|"))}` +
+      `&prop=pageimages|coordinates&piprop=name&pilicense=free&colimit=max`,
+    6000,
+  );
+  if (!data?.query) return found;
+  // Follow normalizations and redirects back to the title we asked for
+  const resolve = new Map<string, string>();
+  for (const r of [...(data.query.normalized ?? []), ...(data.query.redirects ?? [])]) resolve.set(r.from, r.to);
+  const final = (t: string) => {
+    for (let i = 0; i < 3 && resolve.has(t); i++) t = resolve.get(t)!;
+    return t;
+  };
+  const byTitle = new Map<string, WikiPage>((Object.values(data.query.pages ?? {}) as WikiPage[]).map((pg) => [pg.title, pg]));
+
+  const picks = new Map<Place, string>();
+  for (const p of places) {
+    for (const t of variants(p)) {
+      const pg = byTitle.get(final(t));
+      const c = pg?.coordinates?.[0];
+      // 1.5 miles: big estates and parks are pinned at different spots by OSM and Wikipedia
+      if (pg?.pageimage && c && milesApart(p.location, { lat: c.lat, lng: c.lon }) < 1.5) {
+        picks.set(p, pg.pageimage);
+        break;
+      }
+    }
+  }
+  if (!picks.size) return found;
+
+  const files = [...new Set(picks.values())];
+  const img = await getJson(
+    `https://commons.wikimedia.org/w/api.php?action=query&format=json&titles=${encodeURIComponent(files.map((f) => `File:${f}`).join("|"))}` +
+      `&prop=imageinfo&iiprop=url|extmetadata|size|mime&iiurlwidth=1280`,
+    6000,
+  );
+  const infoByFile = new Map<string, CommonsInfo>();
+  const norm = (f: string) => f.replace(/^File:/, "").replace(/_/g, " ");
+  for (const pg of Object.values(img?.query?.pages ?? {}) as { title: string; imageinfo?: CommonsInfo[] }[]) {
+    const info = pg.imageinfo?.[0];
+    if (info && ["image/jpeg", "image/png"].includes(info.mime) && info.width >= 640) infoByFile.set(norm(pg.title), info);
+  }
+  for (const [p, file] of picks) {
+    const info = infoByFile.get(norm(file));
+    if (info) found.set(p, toPhoto(info));
+  }
+  return found;
+}
+
+// Makes each place trustworthy before it's shown: pin checked against OpenStreetMap,
+// then the best licensed photo we can verify (its Wikipedia article's, else a matching Commons file).
+async function verifyPlaces(places: Place[], city: string, center: LatLng, radius: number) {
+  await pool(places, 4, async (p) => {
+    const osm = await osmPin(p.name, city, p.location, center, radius);
+    if (osm) p.location = { ...p.location, ...osm, pin: "osm" };
+  });
+  const wiki = await wikipediaPhotos(places, city);
+  for (const [p, photo] of wiki) p.photos = [photo];
+  // Commons search is one request per place, so go gently
+  await pool(places.filter((p) => !p.photos.length), 2, async (p) => {
+    const photo = await commonsPhoto(p.name, city);
+    if (photo) p.photos = [photo];
+  });
+}
+
+// Words that describe a photo of a place rather than some other subject
+const PHOTO_WORDS = new Set(
+  ("file jpg jpeg png view views from at in of on the and with to exterior interior inside outside entrance front facade facades " +
+    "building buildings panorama panoramic night day evening morning sunset aerial main side street seen photo image old new " +
+    "north south east west detail general").split(" "),
+);
+
+// Rejects files that mention the place but are about something else there:
+// "Robert's geranium red leaf, Jardim Botânico" or "Regata sul Canal Grande – Guardi – Gulbenkian Museum".
+function aboutThePlace(fileTitle: string, name: string, city: string): boolean {
+  const known = new Set([...nameWords(name), ...nameWords(city)]);
+  const extra = nameWords(fileTitle).filter((w) => !known.has(w) && !PHOTO_WORDS.has(w) && !/\d/.test(w));
+  return extra.length <= 3;
+}
 
 // A freely licensed photo from Wikimedia Commons whose file name actually mentions the place.
 export async function commonsPhoto(name: string, city: string): Promise<Photo | null> {
@@ -101,7 +277,7 @@ export async function commonsPhoto(name: string, city: string): Promise<Photo | 
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 5000);
   try {
-    const res = await fetch(url, { headers: { "User-Agent": "Uncover/0.4 (travel app prototype)" }, signal: ctrl.signal });
+    const res = await fetch(url, { headers: UA, signal: ctrl.signal });
     if (!res.ok) return null;
     const data = await res.json();
     const pages = Object.values(data.query?.pages ?? {}) as {
@@ -115,23 +291,17 @@ export async function commonsPhoto(name: string, city: string): Promise<Photo | 
         const info = pg.imageinfo?.[0];
         const title = pg.title.toLowerCase();
         // The file name must mention the place, so we don't show a random building. Landscape only.
-        return info && ["image/jpeg", "image/png"].includes(info.mime) && info.width >= 900 && info.width >= info.height && must.every((w) => title.includes(w));
+        return (
+          info &&
+          ["image/jpeg", "image/png"].includes(info.mime) &&
+          info.width >= 900 &&
+          info.width >= info.height &&
+          must.every((w) => title.includes(w)) &&
+          aboutThePlace(pg.title, name, city)
+        );
       });
     const info = match?.imageinfo?.[0];
-    if (!info) return null;
-    const artist = (info.extmetadata?.Artist?.value ?? "Unknown")
-      .replace(/<[^>]+>/g, "")
-      .replace(/&amp;/g, "&")
-      .replace(/&quot;/g, '"')
-      .replace(/&#39;/g, "'")
-      .trim()
-      .slice(0, 60);
-    return {
-      src: info.thumburl || info.url,
-      credit: artist,
-      license: info.extmetadata?.LicenseShortName?.value ?? "See source",
-      source: info.descriptionurl,
-    };
+    return info ? toPhoto(info) : null;
   } catch {
     return null;
   } finally {
@@ -177,11 +347,12 @@ Find ${o.ask}
 Return a JSON array of objects with exactly these keys:
 ${FIELDS}.`;
 
-  // Leave time for photos and road times inside the host's 60-second limit
-  const deadline = Date.now() + 48_000;
+  // Leave time for pins, photos, and road times (≤10s + ≤6s) inside the host's 60-second limit
+  const deadline = Date.now() + 40_000;
   const models = o.origin === "city" ? FAST_MODELS : undefined;
   let mode: "search" | "knowledge" = "search";
   let out;
+  let raw: Found[] | null = null;
   try {
     if (Date.now() < searchOffUntil) throw new Error("search-off 429");
     out = await callGemini({ system: `${system} Use Google Search.`, prompt, search: true, temperature: 0.5, timeoutMs: 30_000, models, deadline });
@@ -191,24 +362,30 @@ ${FIELDS}.`;
     if (/no-key/.test(String(e))) throw e;
     if (/429|403|400/.test(String(e)) && !String(e).includes("search-off")) searchOffUntil = Date.now() + 3600_000;
     mode = "knowledge";
-    out = await callGemini({
-      system: `${system} You cannot browse right now: only include places you are highly confident exist and were operating recently.`,
-      prompt,
-      // Plain JSON, not a response schema: with a schema the lite model takes ~3x longer on a list this size
-      json: true,
-      temperature: 0.4,
-      timeoutMs: 45_000,
-      models,
-      deadline,
-    });
   }
-
-  let raw: Found[];
-  try {
-    raw = parseJsonLoose<Found[]>(out.text);
-  } catch (e) {
-    console.error("Gemini returned unreadable JSON:", out.text.slice(0, 200));
-    throw e;
+  // Knowledge mode: the lite model occasionally writes broken JSON, so ask again once while there's time
+  for (let attempt = 0; ; attempt++) {
+    if (!out) {
+      out = await callGemini({
+        system: `${system} You cannot browse right now: only include places you are highly confident exist and were operating recently.`,
+        prompt,
+        // Plain JSON, not a response schema: with a schema the lite model takes ~3x longer on a list this size
+        json: true,
+        temperature: attempt ? 0.2 : 0.4,
+        timeoutMs: 45_000,
+        models,
+        deadline,
+      });
+    }
+    try {
+      raw = parseJsonLoose<Found[]>(out.text);
+      break;
+    } catch (e) {
+      console.error("Gemini returned unreadable JSON:", out.text.slice(0, 200));
+      if (attempt >= 1 || deadline - Date.now() < 15_000) throw e;
+      mode = "knowledge";
+      out = undefined;
+    }
   }
   // Fuzzy de-dupe: "Waterfront Park" matches "Waterfront Park & Pineapple Fountain"
   const norm = (s: string) => s.toLowerCase().replace(/^the\s+/, "").replace(/[^a-z0-9]+/g, " ").trim();
@@ -270,6 +447,9 @@ ${FIELDS}.`;
       } satisfies Place;
     });
 
+  // Nothing usable: fail (so an empty answer isn't cached for a day) and let the app retry
+  if (o.origin === "city" && !places.length) throw new Error("no-places");
+
   // Families: drop anything the AI itself rated "skip with kids"
   if (o.kids) places = places.filter((p) => p.kidFit.score >= 2);
   places = places.slice(0, o.count);
@@ -283,16 +463,10 @@ ${FIELDS}.`;
     }
   }
 
-  // Licensed photos (in parallel, best effort) and real road times from every stay (one routing call)
-  const [, times] = await Promise.all([
-    Promise.all(
-      places.map(async (p) => {
-        const photo = await commonsPhoto(p.name, o.city);
-        if (photo) p.photos = [photo];
-      }),
-    ),
-    roadMinutes(o.stays, places.map((p) => p.location)),
-  ]);
+  // Checked pins and licensed photos first, then real road times from every stay (one routing call)
+  // (capped at 10s: anything not checked by then keeps Gemini's pin and the painted placeholder)
+  await Promise.race([verifyPlaces(places, o.city, o.center, radius), new Promise((r) => setTimeout(r, 10_000))]);
+  const times = await roadMinutes(o.stays, places.map((p) => p.location));
   places.forEach((p, i) => {
     const from: Record<string, number> = {};
     o.stays.forEach((s, si) => {
