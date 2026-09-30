@@ -1,0 +1,69 @@
+id: husk
+name: Husk
+category: eat
+tagline: Southern ingredients, taken very seriously, in a Victorian mansion.
+neighborhood: French Quarter
+depth: 1
+tags: [fancy, southern, date-night, special]
+moods: [special, romantic]
+
+location:
+  address: 76 Queen St, Charleston, SC 29401
+  lat: 32.77809
+  lng: -79.93215
+
+price:
+  perPerson: 70
+  label: "$$$"
+  note: Dinner around $60–90 a person
+
+bestTime: dinner
+durationMin: 120
+indoor: true
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Outside_Husk_%2815815313758%29.jpg/1280px-Outside_Husk_%2815815313758%29.jpg
+    credit: "City Foodsters"
+    license: "CC BY 2.0"
+    source: https://commons.wikimedia.org/wiki/File:Outside_Husk_(15815313758).jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e3/Inside_Husk_%2815816701649%29.jpg/1280px-Inside_Husk_%2815816701649%29.jpg
+    credit: "City Foodsters"
+    license: "CC BY 2.0"
+    source: https://commons.wikimedia.org/wiki/File:Inside_Husk_(15816701649).jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Inside_Husk_%2816002015672%29.jpg/1280px-Inside_Husk_%2816002015672%29.jpg
+    credit: "City Foodsters"
+    license: "CC BY 2.0"
+    source: https://commons.wikimedia.org/wiki/File:Inside_Husk_(16002015672).jpg
+
+whyFound: >-
+  If you want one special-occasion Southern dinner, this is the famous one, and it's still very good. The bar next door is a lower-key way in.
+insiderTip: >-
+  Can't get a table? The Bar at Husk serves the famous cheeseburger without a reservation.
+
+localsSay:
+  text: >-
+    Locals call it a great special-night pick. Many suggest the bar for the burger instead.
+  sourced: false
+
+realityCheck:
+  hours: Typically dinner nightly, brunch on weekends
+  warnings: []
+  officialUrl: https://huskrestaurant.com
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: Book on their website several weeks ahead.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: "Famous for a reason. Save it for a grown-ups' night."
+
+kidFit:
+  score: 1
+  stroller: false
+  notes: Better as a date night with a sitter.

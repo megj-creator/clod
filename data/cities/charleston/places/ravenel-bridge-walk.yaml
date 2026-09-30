@@ -1,0 +1,57 @@
+id: ravenel-bridge-walk
+name: Ravenel Bridge Walk
+category: explore
+tagline: Walk the giant cable bridge for the best skyline view.
+neighborhood: Mount Pleasant
+depth: 1
+tags: [walk, view, free, sunset, exercise]
+moods: [outdoors, romantic]
+
+location:
+  address: 99 Harry M Hallman Jr Blvd, Mount Pleasant, SC 29464
+  lat: 32.80188
+  lng: -79.90224
+
+price:
+  perPerson: 0
+  label: "Free"
+
+bestTime: sunset
+durationMin: 75
+indoor: false
+
+photos: []
+
+whyFound: >-
+  A separated walking lane climbs the bridge for sweeping views of the harbor and downtown. Locals do it for fun and fitness.
+insiderTip: >-
+  Start from Memorial Waterfront Park and go to the first tower and back.
+
+localsSay:
+  text: >-
+    A favorite local workout with a view.
+  sourced: false
+
+realityCheck:
+  hours: Open daily
+  warnings: []
+  officialUrl: ""
+  lastChecked: null
+
+rainPlan:
+  text: Very exposed. Skip it in rain or storms.
+  backupId: patriots-point
+
+booking:
+  best: Free.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: The view is worth the climb.
+
+kidFit:
+  score: 2
+  stroller: true
+  notes: "Strollers are fine. It's a steady incline."

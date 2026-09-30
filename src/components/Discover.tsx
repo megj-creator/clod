@@ -220,7 +220,7 @@ function Deck(props: Props & { intent: Intent }) {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           city: `${city.name}, ${city.state}`,
-          stay: { name: setup.hotelName || stay.name, lat: stay.lat, lng: stay.lng },
+          stay: { id: stay.id, name: setup.hotelName || stay.name, lat: stay.lat, lng: stay.lng },
           request: intent.heard[0] === "everything" ? "the best things most visitors miss" : `${intent.label} (${intent.heard.join(", ")})`,
           crew: [`${setup.adults} adults`, setup.toddler && "a toddler", setup.baby && "a baby"].filter(Boolean).join(", "),
           maxDrive: setup.maxDrive,

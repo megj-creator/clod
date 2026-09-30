@@ -1,0 +1,69 @@
+{
+ "aiken-rhett-house": {
+  "checked": "2026-09-30",
+  "url": "https://www.historiccharleston.org/",
+  "status": "ok",
+  "found": true,
+  "hours": "Monday 1–4 pm, Tuesday–Sunday 10 am — 4 pm",
+  "seasonal": "",
+  "closures": [
+   "Thanksgiving Day",
+   "Christmas Eve",
+   "Christmas Day"
+  ],
+  "adultPrice": 16,
+  "priceNote": "Adults $16.00, Children 6-16 $7.00, Children Under 6 Free. Combo ticket available for $24.00.",
+  "booking": "Tickets are available for purchase upon arrival or online in advance.",
+  "evidence": "Monday: 1–4 pm Tuesday–Sunday: 10 am — 4 pm",
+  "confidence": "high"
+ },
+ "angel-oak": {
+  "checked": "2026-09-30",
+  "url": "https://www.charleston-sc.gov/",
+  "status": "no-hours",
+  "found": false,
+  "hours": "",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "",
+  "evidence": "",
+  "confidence": "high"
+ },
+ "babas-on-cannon": {
+  "checked": "2026-09-30",
+  "url": "https://babascharleston.com/",
+  "status": "ok",
+  "found": true,
+  "hours": "Tue–Thu 7 AM–8 PM, Fri–Sat 7 AM–10 PM, Sun 7 AM–6 PM, closed Mon",
+  "seasonal": "",
+  "closures": [
+   "Mondays"
+  ],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "",
+  "evidence": "cannon st & wentworth st are open from: 7a-8p tues-thurs, 7a-10p fri-sat, 7a-6p sun (closed mon)",
+  "confidence": "high"
+ },
+ "bowens-island": {
+  "checked": "2026-09-30",
+  "url": "https://bowensislandrestaurant.com/",
+  "status": "no-text"
+ },
+ "callies-biscuits": {
+  "checked": "2026-09-30",
+  "url": "https://calliesbiscuits.com/",
+  "status": "ok",
+  "found": true,
+  "hours": "Daily, 8:00am - 4:00pm",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "",
+  "evidence": "Callie's Hot Little Biscuit - City Market \n 188 Market St Charleston, SC 29401 \n Hours: \n Daily, 8:00am - 4:00pm",
+  "confidence": "high"
+ }
+}

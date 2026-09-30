@@ -1,0 +1,57 @@
+id: fig
+name: FIG
+category: eat
+tagline: "The chefs' favorite: seasonal, precise, and quietly excellent."
+neighborhood: Downtown
+depth: 1
+tags: [fancy, seasonal, date-night, special]
+moods: [special, romantic]
+
+location:
+  address: 232 Meeting St, Charleston, SC 29401
+  lat: 32.78235
+  lng: -79.93155
+
+price:
+  perPerson: 75
+  label: "$$$"
+  note: Dinner around $65–100 a person
+
+bestTime: dinner
+durationMin: 120
+indoor: true
+
+photos: []
+
+whyFound: >-
+  The restaurant other chefs in town talk about. It's a real 'we're celebrating' dinner that's never stuffy.
+insiderTip: >-
+  Bar seats are first come, first served, and are the easiest way in on short notice.
+
+localsSay:
+  text: >-
+    Frequently named by locals as the best meal in the city.
+  sourced: false
+
+realityCheck:
+  hours: Typically dinner, closed Sundays
+  warnings: []
+  officialUrl: https://eatatfig.com
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: Book well ahead on their website.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 5
+  text: Lives up to it.
+
+kidFit:
+  score: 1
+  stroller: false
+  notes: "A grown-ups' night."

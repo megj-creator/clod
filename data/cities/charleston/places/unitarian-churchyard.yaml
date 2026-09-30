@@ -1,0 +1,69 @@
+id: unitarian-churchyard
+name: Unitarian Churchyard
+category: history
+tagline: A graveyard left to grow wild, like a secret garden.
+neighborhood: Upper King
+depth: 3
+tags: [quiet, garden, free, eerie, photogenic]
+moods: [unusual, romantic]
+
+location:
+  address: 4 Archdale St, Charleston, SC 29401
+  lat: 32.77857
+  lng: -79.93436
+
+price:
+  perPerson: 0
+  label: "Free"
+
+bestTime: morning
+durationMin: 20
+indoor: false
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Unitarian_Church_churchyard_07%2C_Charleston.jpg/1280px-Unitarian_Church_churchyard_07%2C_Charleston.jpg
+    credit: "Michael Rivera"
+    license: "CC BY-SA 4.0"
+    source: https://commons.wikimedia.org/wiki/File:Unitarian_Church_churchyard_07,_Charleston.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/Unitarian_Church_churchyard_10%2C_Charleston.jpg/1280px-Unitarian_Church_churchyard_10%2C_Charleston.jpg
+    credit: "Michael Rivera"
+    license: "CC BY-SA 4.0"
+    source: https://commons.wikimedia.org/wiki/File:Unitarian_Church_churchyard_10,_Charleston.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/Unitarian_Church_churchyard_01%2C_Charleston.jpg/1280px-Unitarian_Church_churchyard_01%2C_Charleston.jpg
+    credit: "Michael Rivera"
+    license: "CC BY-SA 4.0"
+    source: https://commons.wikimedia.org/wiki/File:Unitarian_Church_churchyard_01,_Charleston.jpg
+
+whyFound: >-
+  Steps off busy King Street, there's an overgrown churchyard of old headstones, roses, and palmettos. Most visitors walk right past it.
+insiderTip: >-
+  Please be respectful, since it's an active church. Go in the morning light.
+
+localsSay:
+  text: >-
+    Locals share it as a favorite quiet spot downtown.
+  sourced: false
+
+realityCheck:
+  hours: Typically daytime when the gate is open
+  warnings: []
+  officialUrl: ""
+  lastChecked: null
+
+rainPlan:
+  text: No cover. Duck into the Gibbes Museum nearby.
+  backupId: charleston-museum
+
+booking:
+  best: Free.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 5
+  text: A real secret.
+
+kidFit:
+  score: 2
+  stroller: false
+  notes: Narrow paths. Quiet voices.

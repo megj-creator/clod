@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { tripDates } from "@/lib/dates";
-import { estimateDriveMinutes } from "@/lib/geo";
+import { driveFromStay } from "@/lib/geo";
 import { chipIntent, type Intent } from "@/lib/intent";
 import { initialState, useAppState } from "@/lib/store";
 import { REASONS, applySignal } from "@/lib/taste";
@@ -38,10 +38,8 @@ export default function UncoverApp({ city }: { city: City }) {
   const cityView = useMemo(() => ({ ...city, places: allPlaces }), [city, allPlaces]);
   const byId = useMemo(() => Object.fromEntries(allPlaces.map((p) => [p.id, p])) as Record<string, Place>, [allPlaces]);
   const stay = city.stays.find((s) => s.id === state.setup?.stayId) ?? city.stays[0];
-  const drives = useMemo(
-    () => Object.fromEntries(allPlaces.map((p) => [p.id, estimateDriveMinutes(stay, p.location)])) as Record<string, number>,
-    [allPlaces, stay],
-  );
+  const driveInfo = useMemo(() => Object.fromEntries(allPlaces.map((p) => [p.id, driveFromStay(city, stay, p)])), [allPlaces, stay, city]);
+  const drives = useMemo(() => Object.fromEntries(Object.entries(driveInfo).map(([id, d]) => [id, d.min])) as Record<string, number>, [driveInfo]);
   const dates = useMemo(() => (state.setup ? tripDates(state.setup.start, state.setup.end) : []), [state.setup]);
   const [forecast, setForecast] = useState<Record<string, Weather>>(() => sampleForecast(dates));
   useEffect(() => {
@@ -298,6 +296,7 @@ export default function UncoverApp({ city }: { city: City }) {
               key={detail.id}
               place={detail}
               drive={drives[detail.id]}
+              driveReal={driveInfo[detail.id]?.real ?? false}
               byId={byId}
               dates={dates}
               forecast={forecast}

@@ -1,0 +1,69 @@
+id: patriots-point
+name: Patriots Point & USS Yorktown
+category: history
+tagline: Climb aboard a WWII aircraft carrier.
+neighborhood: Mount Pleasant
+depth: 1
+tags: [history, ship, museum, kids]
+moods: [family, rainy]
+
+location:
+  address: 40 Patriots Point Rd, Mount Pleasant, SC 29464
+  lat: 32.79651
+  lng: -79.90227
+
+price:
+  perPerson: 30
+  label: "$$"
+  note: Around $25–35 for adults
+
+bestTime: morning
+durationMin: 150
+indoor: true
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/USS_Yorktown_CV-10_Patriots_Point.jpg/1280px-USS_Yorktown_CV-10_Patriots_Point.jpg
+    credit: "Michael.Forman"
+    license: "CC BY 3.0"
+    source: https://commons.wikimedia.org/wiki/File:USS_Yorktown_CV-10_Patriots_Point.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/USS_Yorktown%2C_Patriots_Point.jpg/1280px-USS_Yorktown%2C_Patriots_Point.jpg
+    credit: "Michael Rivera"
+    license: "CC BY-SA 4.0"
+    source: https://commons.wikimedia.org/wiki/File:USS_Yorktown,_Patriots_Point.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Walkway_to_USS_Yorktown%2C_Patriots_Point.jpg/1280px-Walkway_to_USS_Yorktown%2C_Patriots_Point.jpg
+    credit: "Michael Rivera"
+    license: "CC BY-SA 4.0"
+    source: https://commons.wikimedia.org/wiki/File:Walkway_to_USS_Yorktown,_Patriots_Point.jpg
+
+whyFound: >-
+  Walking the flight deck of an actual aircraft carrier is a big wow for all ages, and much of it is under cover.
+insiderTip: >-
+  The flight deck is the highlight. Skip the steep ladders with a baby carrier.
+
+localsSay:
+  text: >-
+    Locals recommend it for kids who love planes and ships.
+  sourced: false
+
+realityCheck:
+  hours: "Typically 9 AM–6:30 PM"
+  warnings: []
+  officialUrl: https://patriotspoint.org
+  lastChecked: null
+
+rainPlan:
+  text: Much of it is indoors below deck.
+
+booking:
+  best: Official site. Combine with a Fort Sumter boat from here.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Genuinely impressive.
+
+kidFit:
+  score: 2
+  stroller: false
+  notes: Steep ship ladders. Bring a carrier, not a stroller.

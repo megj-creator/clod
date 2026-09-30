@@ -1,5 +1,5 @@
 import { tripDates, toMinutes, fmtTime } from "./dates";
-import { estimateDriveMinutes, formatDrive, milesBetween } from "./geo";
+import { driveBetween, driveFromStay, formatDrive, milesBetween } from "./geo";
 import type { BestTime, City, Place, Stay, TripSetup } from "./types";
 import type { Weather } from "./weather";
 
@@ -123,7 +123,7 @@ export function buildPlan(opts: {
 
     const sorted = [...group].sort((a, b) => RIGIDITY[a.bestTime] - RIGIDITY[b.bestTime]);
     for (const p of sorted) {
-      const fromStay = estimateDriveMinutes(stay, p.location);
+      const fromStay = driveFromStay(city, stay, p).min;
       const notes: string[] = [];
       let time: number;
 
@@ -157,13 +157,13 @@ export function buildPlan(opts: {
     stops.sort((a, b) => a.time - b.time);
     stops.forEach((s, i) => {
       const prev = i === 0 ? stay : stops[i - 1].place.location;
-      s.driveFromPrev = estimateDriveMinutes(prev, s.place.location);
+      s.driveFromPrev = i === 0 ? driveFromStay(city, stay, s.place).min : driveBetween(city, { id: stops[i - 1].place.id, ...prev }, s.place);
     });
 
     const all: PlanStop[] = [...stops];
     if (kids && !napInCar) {
       const before = stops.filter((s) => s.time < napS).pop();
-      const back = before ? estimateDriveMinutes(before.place.location, stay) : 0;
+      const back = before ? driveFromStay(city, stay, before.place).min : 0;
       all.push({
         kind: "nap",
         time: napS,

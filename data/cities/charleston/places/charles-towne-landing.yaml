@@ -1,0 +1,70 @@
+id: charles-towne-landing
+name: Charles Towne Landing
+category: family
+tagline: Where Charleston began, with bison, otters, and a tall ship.
+neighborhood: West Ashley
+depth: 2
+tags: [kids, animals, history, nature, outdoors]
+moods: [family, outdoors]
+
+location:
+  address: 1500 Old Towne Rd, Charleston, SC 29407
+  lat: 32.81001
+  lng: -79.99530
+
+price:
+  perPerson: 12
+  label: "$"
+  note: State park admission. Kids are cheaper.
+
+bestTime: morning
+durationMin: 150
+indoor: false
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/Charles_Towne_Landing_State_Historic_Site_4-5-15_03.jpg/1280px-Charles_Towne_Landing_State_Historic_Site_4-5-15_03.jpg
+    credit: "mogollon_1"
+    license: "CC BY 2.0"
+    source: https://commons.wikimedia.org/wiki/File:Charles_Towne_Landing_State_Historic_Site_4-5-15_03.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Cabin_at_Charles_Towne_Landing%2C_South_Carolina%2C_August_2016.jpg/1280px-Cabin_at_Charles_Towne_Landing%2C_South_Carolina%2C_August_2016.jpg
+    credit: "The ed17"
+    license: "CC BY-SA 4.0"
+    source: https://commons.wikimedia.org/wiki/File:Cabin_at_Charles_Towne_Landing,_South_Carolina,_August_2016.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Charles-towne-landing-visitor-center-sc1.jpg/1280px-Charles-towne-landing-visitor-center-sc1.jpg
+    credit: "Brian Stansberry"
+    license: "CC BY 3.0"
+    source: https://commons.wikimedia.org/wiki/File:Charles-towne-landing-visitor-center-sc1.jpg
+
+whyFound: >-
+  The site of the original 1670 settlement, now a big shady park with an animal forest (otters, bison, black bears) and a replica ship kids can board.
+insiderTip: >-
+  Do the animal forest first, while the animals are active in the morning.
+
+localsSay:
+  text: >-
+    Local parents call it an underrated, uncrowded family morning.
+  sourced: false
+
+realityCheck:
+  hours: Typically 9 AM–5 PM daily
+  warnings: []
+  officialUrl: https://southcarolinaparks.com/charles-towne-landing
+  lastChecked: null
+
+rainPlan:
+  text: Mostly outdoors. Swap in the SC Aquarium.
+  backupId: sc-aquarium
+
+booking:
+  best: Pay at the gate.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: More fun than it sounds.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Paved paths through the animal forest, with plenty of shade.

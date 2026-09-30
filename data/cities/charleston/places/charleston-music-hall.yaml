@@ -1,0 +1,61 @@
+id: charleston-music-hall
+name: Charleston Music Hall
+category: music
+tagline: A restored 1850s train station turned intimate concert hall.
+neighborhood: Upper King
+depth: 1
+tags: [live-music, concerts, evening, indoor]
+moods: [music, special]
+
+location:
+  address: 37 John St, Charleston, SC 29403
+  lat: 32.78834
+  lng: -79.93683
+
+price:
+  perPerson: 40
+  label: "$$"
+  note: Tickets vary by show
+
+bestTime: evening
+durationMin: 150
+indoor: true
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/Charleston_Music_Hall%2C_exterior%2C_December_2014.jpg/1280px-Charleston_Music_Hall%2C_exterior%2C_December_2014.jpg
+    credit: "lns1122"
+    license: "CC BY 2.0"
+    source: https://commons.wikimedia.org/wiki/File:Charleston_Music_Hall,_exterior,_December_2014.jpg
+
+whyFound: >-
+  A beautiful, intimate room that pulls in touring acts. Check the calendar for your dates.
+insiderTip: >-
+  Balcony seats are the sweet spot.
+
+localsSay:
+  text: >-
+    Locals love the room's acoustics and size.
+  sourced: false
+
+realityCheck:
+  hours: Show nights vary
+  warnings: []
+  officialUrl: https://charlestonmusichall.com
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: "Buy on the venue's site to avoid reseller fees."
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: A lovely room for a show.
+
+kidFit:
+  score: 1
+  stroller: false
+  notes: Evening shows are best without little ones.

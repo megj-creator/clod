@@ -1,0 +1,69 @@
+id: old-slave-mart
+name: Old Slave Mart Museum
+category: history
+tagline: A small museum in a building where enslaved people were sold.
+neighborhood: French Quarter
+depth: 2
+tags: [history, museum, indoor, important]
+moods: [rainy]
+
+location:
+  address: 6 Chalmers St, Charleston, SC 29401
+  lat: 32.77783
+  lng: -79.92842
+
+price:
+  perPerson: 10
+  label: "$"
+  note: Small admission fee
+
+bestTime: afternoon
+durationMin: 45
+indoor: true
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Old-slave-mart-facade-sc1.jpg/1280px-Old-slave-mart-facade-sc1.jpg
+    credit: "Brian Stansberry"
+    license: "CC BY 3.0"
+    source: https://commons.wikimedia.org/wiki/File:Old-slave-mart-facade-sc1.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Old_Slave_Mart_Museum%2C_French_Quarter%2C_Charleston%2C_SC_%2849392281001%29.jpg/1280px-Old_Slave_Mart_Museum%2C_French_Quarter%2C_Charleston%2C_SC_%2849392281001%29.jpg
+    credit: "Warren LeMay from Covington, KY, United States"
+    license: "CC0"
+    source: https://commons.wikimedia.org/wiki/File:Old_Slave_Mart_Museum,_French_Quarter,_Charleston,_SC_(49392281001).jpg
+  - src: https://upload.wikimedia.org/wikipedia/commons/b/bc/Old_Slave_Mart_Museum.jpg
+    credit: "Benjamin Dahlhoff"
+    license: "CC BY 3.0"
+    source: https://commons.wikimedia.org/wiki/File:Old_Slave_Mart_Museum.jpg
+
+whyFound: >-
+  A sobering, compact museum on a cobblestone street, telling the history of the domestic slave trade where it happened.
+insiderTip: >-
+  Pair it with the International African American Museum for the fuller story.
+
+localsSay:
+  text: >-
+    Locals recommend it as short but important.
+  sourced: false
+
+realityCheck:
+  hours: Typically Mon–Sat daytime
+  warnings: []
+  officialUrl: ""
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: At the door.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Small but powerful.
+
+kidFit:
+  score: 1
+  stroller: false
+  notes: Heavy content. Better for older kids.

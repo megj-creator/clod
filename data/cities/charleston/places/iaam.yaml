@@ -1,0 +1,57 @@
+id: iaam
+name: International African American Museum
+category: history
+tagline: A powerful museum at the wharf where many enslaved Africans arrived.
+neighborhood: Waterfront
+depth: 1
+tags: [history, museum, indoor, important]
+moods: [rainy]
+
+location:
+  address: 14 Wharfside St, Charleston, SC 29401
+  lat: 32.78868
+  lng: -79.92583
+
+price:
+  perPerson: 25
+  label: "$$"
+  note: Around $25 for adults
+
+bestTime: afternoon
+durationMin: 120
+indoor: true
+
+photos: []
+
+whyFound: >-
+  Opened in 2023 on Gadsden's Wharf. Its moving galleries and memorial garden tell stories every visitor should hear.
+insiderTip: >-
+  Book a timed ticket. The genealogy center can help with family history research.
+
+localsSay:
+  text: >-
+    Locals say it's essential, and they recommend giving it real time.
+  sourced: false
+
+realityCheck:
+  hours: Typically Tue–Sun 10 AM–5 PM
+  warnings: []
+  officialUrl: https://iaamuseum.org
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: Timed tickets on the official site.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 5
+  text: Essential.
+
+kidFit:
+  score: 2
+  stroller: true
+  notes: Stroller-accessible. Some content is heavy for young kids.

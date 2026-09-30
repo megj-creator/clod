@@ -1,0 +1,57 @@
+id: the-commodore
+name: The Commodore
+category: music
+tagline: Funk, soul, and a dance floor that fills late.
+neighborhood: Upper Peninsula
+depth: 2
+tags: [live-music, dancing, late, drinks, local]
+moods: [music, unusual]
+
+location:
+  address: 504 Meeting St, Charleston, SC 29403
+  lat: 32.79680
+  lng: -79.94081
+
+price:
+  perPerson: 10
+  label: "$"
+  note: Small cover some nights
+
+bestTime: evening
+durationMin: 150
+indoor: true
+
+photos: []
+
+whyFound: >-
+  A dimly lit, velvet-and-disco-ball lounge where locals go to dance to live funk and soul.
+insiderTip: >-
+  It gets going after 10. Wear dancing shoes.
+
+localsSay:
+  text: >-
+    Locals call it the most fun dance night in town.
+  sourced: false
+
+realityCheck:
+  hours: Evenings, late
+  warnings: []
+  officialUrl: ""
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: Walk in.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Pure fun.
+
+kidFit:
+  score: 1
+  stroller: false
+  notes: "A late-night grown-ups' spot."

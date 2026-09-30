@@ -1,0 +1,57 @@
+id: white-point-garden
+name: The Battery & White Point Garden
+category: explore
+tagline: Seawall promenade, cannons, and harbor breezes.
+neighborhood: South of Broad
+depth: 1
+tags: [walk, free, harbor, photogenic, stroller-ok]
+moods: [romantic, outdoors, family]
+
+location:
+  address: 2 Murray Blvd, Charleston, SC 29401
+  lat: 32.76964
+  lng: -79.93200
+
+price:
+  perPerson: 0
+  label: "Free"
+
+bestTime: sunset
+durationMin: 45
+indoor: false
+
+photos: []
+
+whyFound: >-
+  The classic Charleston stroll: grand houses on one side, harbor on the other. Toddlers love climbing on the old cannons.
+insiderTip: >-
+  Walk from here up East Bay past Rainbow Row at golden hour.
+
+localsSay:
+  text: >-
+    Touristy but beloved. Locals still jog and picnic here.
+  sourced: false
+
+realityCheck:
+  hours: Open daily
+  warnings: []
+  officialUrl: ""
+  lastChecked: null
+
+rainPlan:
+  text: Nowhere to hide. Swap in the Old Exchange.
+  backupId: old-exchange
+
+booking:
+  best: Free.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Iconic for a reason.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Flat, shady, with a gazebo and cannons.

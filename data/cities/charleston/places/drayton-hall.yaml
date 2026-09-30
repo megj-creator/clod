@@ -1,0 +1,69 @@
+id: drayton-hall
+name: Drayton Hall
+category: history
+tagline: An unrestored 1700s house, preserved exactly as it survived.
+neighborhood: Ashley River Road
+depth: 2
+tags: [history, architecture, quiet]
+moods: [unusual]
+
+location:
+  address: 3380 Ashley River Rd, Charleston, SC 29414
+  lat: 32.87090
+  lng: -80.07630
+
+price:
+  perPerson: 32
+  label: "$$"
+  note: Around $30 for adults
+
+bestTime: afternoon
+durationMin: 90
+indoor: true
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Drayton_Hall%2C_West_Ashley%2C_Charleston%2C_SC_%2850633980631%29.jpg/1280px-Drayton_Hall%2C_West_Ashley%2C_Charleston%2C_SC_%2850633980631%29.jpg
+    credit: "Warren LeMay from Covington, KY, United States"
+    license: "CC0"
+    source: https://commons.wikimedia.org/wiki/File:Drayton_Hall,_West_Ashley,_Charleston,_SC_(50633980631).jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/Drayton_Hall%2C_West_Ashley%2C_Charleston%2C_SC_%2850633950916%29.jpg/1280px-Drayton_Hall%2C_West_Ashley%2C_Charleston%2C_SC_%2850633950916%29.jpg
+    credit: "Warren LeMay from Covington, KY, United States"
+    license: "CC0"
+    source: https://commons.wikimedia.org/wiki/File:Drayton_Hall,_West_Ashley,_Charleston,_SC_(50633950916).jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Stair_Hall%2C_Drayton_Hall%2C_West_Ashley%2C_Charleston%2C_SC_%2850633115703%29.jpg/1280px-Stair_Hall%2C_Drayton_Hall%2C_West_Ashley%2C_Charleston%2C_SC_%2850633115703%29.jpg
+    credit: "Warren LeMay from Covington, KY, United States"
+    license: "CC0"
+    source: https://commons.wikimedia.org/wiki/File:Stair_Hall,_Drayton_Hall,_West_Ashley,_Charleston,_SC_(50633115703).jpg
+
+whyFound: >-
+  Instead of being restored, it's been preserved: no furniture, original paint, and honest storytelling about the people enslaved there.
+insiderTip: >-
+  The guided house tour is the heart of it. Walk the river trail after.
+
+localsSay:
+  text: >-
+    History-minded locals call it the most authentic of the river plantations.
+  sourced: false
+
+realityCheck:
+  hours: Typically 9 AM–5 PM, closed some days
+  warnings: []
+  officialUrl: https://draytonhall.org
+  lastChecked: null
+
+rainPlan:
+  text: The house tour is indoors.
+
+booking:
+  best: Official site.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Quietly remarkable.
+
+kidFit:
+  score: 1
+  stroller: false
+  notes: Better for older kids and adults.

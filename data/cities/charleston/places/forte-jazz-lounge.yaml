@@ -1,0 +1,57 @@
+id: forte-jazz-lounge
+name: Forte Jazz Lounge
+category: music
+tagline: Candlelit live jazz in a speakeasy-style room.
+neighborhood: Upper King
+depth: 2
+tags: [live-music, jazz, romantic, drinks]
+moods: [music, romantic, special]
+
+location:
+  address: 477 King St, Charleston, SC 29403
+  lat: 32.78933
+  lng: -79.93880
+
+price:
+  perPerson: 25
+  label: "$$"
+  note: Cover plus drinks
+
+bestTime: evening
+durationMin: 120
+indoor: true
+
+photos: []
+
+whyFound: >-
+  Intimate, candlelit, and all about the music. It's a perfect date-night pick.
+insiderTip: >-
+  Reserve a table for the early set.
+
+localsSay:
+  text: >-
+    Locals recommend it for a classy date night.
+  sourced: false
+
+realityCheck:
+  hours: Evenings, check the days
+  warnings: []
+  officialUrl: ""
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: Reserve ahead.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Classy and intimate.
+
+kidFit:
+  score: 1
+  stroller: false
+  notes: "Adults' night."

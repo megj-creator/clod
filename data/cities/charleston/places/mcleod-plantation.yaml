@@ -1,0 +1,66 @@
+id: mcleod-plantation
+name: McLeod Plantation Historic Site
+category: history
+tagline: History told through the lives of the people enslaved there.
+neighborhood: James Island
+depth: 2
+tags: [history, oaks, quiet, important]
+moods: [unusual]
+
+location:
+  address: 325 Country Club Dr, Charleston, SC 29412
+  lat: 32.76278
+  lng: -79.97242
+
+price:
+  perPerson: 15
+  label: "$"
+  note: County park admission
+
+bestTime: morning
+durationMin: 90
+indoor: false
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Outhouse%2C_McLeod_Plantation%2C_James_Island%2C_Charleston%2C_SC.jpg/1280px-Outhouse%2C_McLeod_Plantation%2C_James_Island%2C_Charleston%2C_SC.jpg
+    credit: "w_lemay"
+    license: "CC BY-SA 2.0"
+    source: https://commons.wikimedia.org/wiki/File:Outhouse,_McLeod_Plantation,_James_Island,_Charleston,_SC.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/McLeod_Plantation%2C_James_Island%2C_Charleston%2C_SC.jpg/1280px-McLeod_Plantation%2C_James_Island%2C_Charleston%2C_SC.jpg
+    credit: "w_lemay"
+    license: "CC BY-SA 2.0"
+    source: https://commons.wikimedia.org/wiki/File:McLeod_Plantation,_James_Island,_Charleston,_SC.jpg
+
+whyFound: >-
+  A thoughtful, honest site centered on Gullah Geechee history and the people who lived in the cabins, under a massive live oak.
+insiderTip: >-
+  Take the guided tour. The interpreters make it.
+
+localsSay:
+  text: >-
+    Locals often recommend it as the most honest plantation experience in the area.
+  sourced: false
+
+realityCheck:
+  hours: Typically Wed–Sun daytime
+  warnings: []
+  officialUrl: https://ccprc.com
+  lastChecked: null
+
+rainPlan:
+  text: Mostly outdoors. Swap in the International African American Museum.
+  backupId: iaam
+
+booking:
+  best: County parks website.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 5
+  text: Important, and beautifully done.
+
+kidFit:
+  score: 2
+  stroller: true
+  notes: Flat grounds. Best for older kids.

@@ -1,0 +1,70 @@
+id: fort-sumter
+name: Fort Sumter
+category: history
+tagline: Take a boat to the island fort where the Civil War began.
+neighborhood: Harbor · boats from Liberty Square
+depth: 1
+tags: [history, boat, harbor, outdoors]
+moods: [family, outdoors]
+
+location:
+  address: 340 Concord St, Charleston, SC 29401
+  lat: 32.79055
+  lng: -79.92528
+
+price:
+  perPerson: 40
+  label: "$$"
+  note: The boat ticket is around $35–40. Kids are cheaper.
+
+bestTime: morning
+durationMin: 150
+indoor: false
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Charleston_Harbor_-_Fort_Sumter_01.jpg/1280px-Charleston_Harbor_-_Fort_Sumter_01.jpg
+    credit: "Unknown author"
+    license: "Public domain"
+    source: https://commons.wikimedia.org/wiki/File:Charleston_Harbor_-_Fort_Sumter_01.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Charleston_-_Fort_Sumter_%281904%29.jpg/1280px-Charleston_-_Fort_Sumter_%281904%29.jpg
+    credit: "Raphael Tuck & Sons"
+    license: "Public domain"
+    source: https://commons.wikimedia.org/wiki/File:Charleston_-_Fort_Sumter_(1904).jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Charleston_Harbor_-_Fort_Sumter_2.jpg/1280px-Charleston_Harbor_-_Fort_Sumter_2.jpg
+    credit: "Published for Daniel Ravenel Co. by The Albertype Company, B"
+    license: "Public domain"
+    source: https://commons.wikimedia.org/wiki/File:Charleston_Harbor_-_Fort_Sumter_2.jpg
+
+whyFound: >-
+  The boat ride across the harbor is half the fun, and standing in the fort where the war started is powerful.
+insiderTip: >-
+  Sit on the upper deck for dolphins. Bring layers, because it's windy on the water.
+
+localsSay:
+  text: >-
+    Locals say do it once. The boat ride is the highlight for kids.
+  sourced: false
+
+realityCheck:
+  hours: Typically several boats a day, with times varying by season
+  warnings: []
+  officialUrl: https://www.nps.gov/fosu
+  lastChecked: null
+
+rainPlan:
+  text: The boats can cancel in bad weather. Swap in the Charleston Museum.
+  backupId: charleston-museum
+
+booking:
+  best: Only book through the official concessioner linked from the NPS site. Skip the resellers.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Worth it once, especially with kids who like boats.
+
+kidFit:
+  score: 2
+  stroller: true
+  notes: The boat is fine, and the fort has some uneven ground.

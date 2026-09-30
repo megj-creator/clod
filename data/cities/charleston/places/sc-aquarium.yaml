@@ -1,0 +1,69 @@
+id: sc-aquarium
+name: South Carolina Aquarium
+category: family
+tagline: Sea turtles, a two-story ocean tank, and a harbor view.
+neighborhood: Waterfront
+depth: 1
+tags: [kids, indoor, animals, toddler]
+moods: [family, rainy]
+
+location:
+  address: 100 Aquarium Wharf, Charleston, SC 29401
+  lat: 32.79107
+  lng: -79.92548
+
+price:
+  perPerson: 40
+  label: "$$"
+  note: Around $35–45 for adults. Kids are cheaper, and little ones are often free.
+
+bestTime: morning
+durationMin: 120
+indoor: true
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Jellyfish_at_South_Carolina_Aquarium_IMG_4616.JPG/1280px-Jellyfish_at_South_Carolina_Aquarium_IMG_4616.JPG
+    credit: "Billy Hathorn"
+    license: "CC BY 3.0"
+    source: https://commons.wikimedia.org/wiki/File:Jellyfish_at_South_Carolina_Aquarium_IMG_4616.JPG
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Albino_alligator%2C_South_Carolina_Aquarium_at_Charleston_IMG_4633.JPG/1280px-Albino_alligator%2C_South_Carolina_Aquarium_at_Charleston_IMG_4633.JPG
+    credit: "Billy Hathorn"
+    license: "Public domain"
+    source: https://commons.wikimedia.org/wiki/File:Albino_alligator,_South_Carolina_Aquarium_at_Charleston_IMG_4633.JPG
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/South_Carolina_Aquarium_sign_IMG_4592.JPG/1280px-South_Carolina_Aquarium_sign_IMG_4592.JPG
+    credit: "Billy Hathorn"
+    license: "CC BY-SA 3.0"
+    source: https://commons.wikimedia.org/wiki/File:South_Carolina_Aquarium_sign_IMG_4592.JPG
+
+whyFound: >-
+  The definitive rainy-day win with small kids. Toddlers go wide-eyed at the big ocean tank, and the sea turtle hospital is genuinely moving.
+insiderTip: >-
+  Book a timed ticket online and go at opening. Don't miss the sea turtle care center.
+
+localsSay:
+  text: >-
+    Local parents say it's pricey but worth it on a hot or rainy day.
+  sourced: false
+
+realityCheck:
+  hours: Typically 9 AM–5 PM daily
+  warnings: []
+  officialUrl: https://scaquarium.org
+  lastChecked: null
+
+rainPlan:
+  text: Indoors. This is the rainy-day plan.
+
+booking:
+  best: Buy timed tickets on the official site. Check for Fort Sumter combo deals.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Not huge, but excellent for little ones.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Stroller-friendly, with changing tables. Built for kids.

@@ -1,0 +1,57 @@
+id: leons-oyster-shop
+name: "Leon's Oyster Shop"
+category: eat
+tagline: Fried chicken and oysters in a converted body shop.
+neighborhood: Upper King
+depth: 2
+tags: [oysters, fried-chicken, patio, local, casual]
+moods: [casual]
+
+location:
+  address: 698 King St, Charleston, SC 29403
+  lat: 32.79840
+  lng: -79.94586
+
+price:
+  perPerson: 30
+  label: "$$"
+  note: Mains around $15–30
+
+bestTime: dinner
+durationMin: 75
+indoor: true
+
+photos: []
+
+whyFound: >-
+  A locals' favorite that feels effortlessly cool: a garage-turned-oyster hall with a great patio and some of the best fried chicken in town.
+insiderTip: >-
+  Order the fried chicken plus a dozen oysters and split them. Ask for the patio.
+
+localsSay:
+  text: >-
+    Often named when locals are asked where they'd take a friend who wants 'cool but not fancy.'
+  sourced: false
+
+realityCheck:
+  hours: Typically lunch and dinner daily
+  warnings: []
+  officialUrl: https://leonsoystershop.com
+  lastChecked: null
+
+rainPlan:
+  text: Plenty of indoor seating.
+
+booking:
+  best: Reservations accepted. Walk in early with kids.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Consistently great, and it earns its buzz.
+
+kidFit:
+  score: 2
+  stroller: true
+  notes: Relaxed, but it gets loud and busy at peak dinner time.

@@ -1,0 +1,58 @@
+id: lewis-barbecue
+name: Lewis Barbecue
+category: eat
+tagline: Texas brisket with a big fenced backyard for kids to roam.
+neighborhood: NoMo · Upper Peninsula
+depth: 2
+tags: [bbq, casual, patio, local, brisket]
+moods: [casual, family]
+
+location:
+  address: 464 N Nassau St, Charleston, SC 29403
+  lat: 32.80153
+  lng: -79.94242
+
+price:
+  perPerson: 25
+  label: "$$"
+  note: Meat by the pound. Figure about $25 a person.
+
+bestTime: dinner
+durationMin: 75
+indoor: false
+
+photos: []
+
+whyFound: >-
+  The brisket is Central-Texas serious, and the huge outdoor yard is a gift if you're traveling with little ones. It's where locals take visiting family.
+insiderTip: >-
+  Go early on weekends. The brisket can sell out, and the yard fills with families by 6.
+
+localsSay:
+  text: >-
+    Locals rave about the brisket and the laid-back yard, and warn that popular cuts sell out.
+  sourced: false
+
+realityCheck:
+  hours: Typically 11 AM–9 PM, closed some Mondays
+  warnings: []
+  officialUrl: https://lewisbarbecue.com
+  lastChecked: null
+
+rainPlan:
+  text: "There's indoor seating, but the yard is the draw. Swap in Rodney Scott's if it's pouring."
+  backupId: rodney-scotts-bbq
+
+booking:
+  best: No reservations. Order at the counter.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Some of the best brisket outside Texas.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: A fenced yard with room to run. Very family-friendly.

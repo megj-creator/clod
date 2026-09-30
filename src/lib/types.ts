@@ -26,13 +26,17 @@ export type Place = {
   photos: Photo[];
   whyFound: string;
   insiderTip: string;
-  localsSay: { text: string; sourced: boolean };
+  localsSay: { text: string; sourced: boolean; sources?: { title: string; url: string }[]; checked?: string };
   realityCheck: {
     hours: string;
     seasonal?: string;
     warnings?: string[];
     officialUrl: string;
     lastChecked: string | null;
+    // Filled from checks.json by scripts/check-facts.mjs
+    checkedUrl?: string;
+    evidence?: string;
+    checkNote?: string;
   };
   rainPlan: { text: string; backupId?: string | null };
   booking: { best: string; tips?: string[]; lastChecked: string | null };
@@ -40,6 +44,8 @@ export type Place = {
   kidFit: { score: 1 | 2 | 3; stroller: boolean; notes: string };
   // Present on places Gemini found by hunting beyond the curated list
   live?: { foundAt: string; mode: "search" | "knowledge"; sources: { title: string; url: string }[] };
+  // Real road minutes from a stay, looked up when a live find arrives
+  driveFrom?: Record<string, number>;
 };
 
 export type Stay = { id: string; name: string; area: string; lat: number; lng: number };
@@ -55,6 +61,8 @@ export type City = {
   stays: Stay[];
   gettingAround: string[];
   places: Place[];
+  // Real road times from scripts/drive-times.mjs (minutes)
+  drives?: { checked: string; source: string; stays: Record<string, Record<string, number>>; between: Record<string, Record<string, number>> };
 };
 
 export type TripSetup = {

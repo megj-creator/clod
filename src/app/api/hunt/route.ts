@@ -45,6 +45,25 @@ const milesApart = (a: { lat: number; lng: number }, b: { lat: number; lng: numb
   return 2 * 3958.8 * Math.asin(Math.sqrt(h));
 };
 
+async function roadMinutes(from: { lat: number; lng: number }, to: { lat: number; lng: number }[]): Promise<(number | null)[]> {
+  if (!to.length) return [];
+  const coords = [from, ...to].map((p) => `${p.lng},${p.lat}`).join(";");
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 6000);
+  try {
+    const res = await fetch(`https://router.project-osrm.org/table/v1/driving/${coords}?sources=0&annotations=duration`, {
+      headers: { "User-Agent": "Uncover/0.3 (travel app prototype)" },
+      signal: ctrl.signal,
+    });
+    const data = await res.json();
+    return (data.durations?.[0] ?? []).slice(1).map((s: number | null) => (s == null ? null : Math.max(3, Math.round(s / 60) + 2)));
+  } catch {
+    return to.map(() => null);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 const STOP = new Set(["the", "and", "of", "restaurant", "bar", "grill", "cafe", "park", "house", "co", "company", "shop", "sc", "charleston"]);
 
 async function commonsPhoto(name: string, city: string) {
@@ -101,7 +120,7 @@ export async function POST(req: Request) {
 
   let body: {
     city?: string;
-    stay?: { name: string; lat: number; lng: number };
+    stay?: { id?: string; name: string; lat: number; lng: number };
     request?: string;
     crew?: string;
     maxDrive?: number;
@@ -226,6 +245,12 @@ hype (1-5), hypeText (1 honest sentence), officialUrl (official website or "").`
         if (photo) p.photos = [photo] as never[];
       }),
     );
+
+    // Real road times from where they're staying (one routing call for all finds)
+    const times = await roadMinutes(stay, fit.map((p) => p.location));
+    fit.forEach((p, i) => {
+      if (times[i] != null && body.stay?.id) (p as { driveFrom?: Record<string, number> }).driveFrom = { [body.stay.id]: times[i]! };
+    });
 
     return NextResponse.json({ places: fit, mode, model: out.model });
   } catch (e) {

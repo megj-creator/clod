@@ -1,0 +1,69 @@
+id: riverfront-park
+name: Riverfront Park
+category: family
+tagline: A breezy riverside park with sculptures and a fountain on the old Navy base.
+neighborhood: North Charleston
+depth: 2
+tags: [kids, park, free, fountain, outdoors]
+moods: [family, outdoors]
+
+location:
+  address: 1061 Everglades Ave, North Charleston, SC 29405
+  lat: 32.86750
+  lng: -79.96688
+
+price:
+  perPerson: 0
+  label: "Free"
+
+bestTime: afternoon
+durationMin: 60
+indoor: false
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Riverfront_Park_%284333191392%29.jpg/1280px-Riverfront_Park_%284333191392%29.jpg
+    credit: "North Charleston from North Charleston, SC, United States"
+    license: "CC BY-SA 2.0"
+    source: https://commons.wikimedia.org/wiki/File:Riverfront_Park_(4333191392).jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Riverfront_Park_%2817183204560%29.jpg/1280px-Riverfront_Park_%2817183204560%29.jpg
+    credit: "North Charleston from North Charleston, SC, United States"
+    license: "CC BY-SA 2.0"
+    source: https://commons.wikimedia.org/wiki/File:Riverfront_Park_(17183204560).jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Riverfront_Park_%2816750512973%29.jpg/1280px-Riverfront_Park_%2816750512973%29.jpg
+    credit: "North Charleston from North Charleston, SC, United States"
+    license: "CC BY-SA 2.0"
+    source: https://commons.wikimedia.org/wiki/File:Riverfront_Park_(16750512973).jpg
+
+whyFound: >-
+  A big, quiet park on the Cooper River with a splash fountain, playground, and pier. Lots of space, few tourists.
+insiderTip: >-
+  Bring a picnic. It's perfect for toddlers who need to run.
+
+localsSay:
+  text: >-
+    North Charleston locals call it an underrated gem.
+  sourced: false
+
+realityCheck:
+  hours: Typically dawn to dusk
+  warnings: []
+  officialUrl: ""
+  lastChecked: null
+
+rainPlan:
+  text: Outdoors. Swap in the SC Aquarium.
+  backupId: sc-aquarium
+
+booking:
+  best: Free.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Surprisingly lovely.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Paved, wide open, and a toddler favorite.

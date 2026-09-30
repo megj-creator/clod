@@ -1,0 +1,57 @@
+id: charleston-museum
+name: The Charleston Museum
+category: history
+tagline: "America's first museum, with a whale skeleton to greet you."
+neighborhood: Upper King
+depth: 1
+tags: [history, museum, indoor]
+moods: [rainy, family]
+
+location:
+  address: 360 Meeting St, Charleston, SC 29403
+  lat: 32.78935
+  lng: -79.93566
+
+price:
+  perPerson: 18
+  label: "$"
+  note: Kids are cheaper
+
+bestTime: afternoon
+durationMin: 90
+indoor: true
+
+photos: []
+
+whyFound: >-
+  The first museum in America (1773). It's a good all-in-one history overview, and kids love the natural history room.
+insiderTip: >-
+  Ask about combo tickets with the Heyward-Washington and Joseph Manigault houses.
+
+localsSay:
+  text: >-
+    Locals recommend it as the best big-picture history stop, especially on a rainy day.
+  sourced: false
+
+realityCheck:
+  hours: Typically 9 AM–5 PM daily
+  warnings: []
+  officialUrl: https://charlestonmuseum.org
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: Official site, or at the door.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 3
+  text: Solid, not flashy.
+
+kidFit:
+  score: 2
+  stroller: true
+  notes: Stroller-friendly. The Kidstory area is great for little ones.

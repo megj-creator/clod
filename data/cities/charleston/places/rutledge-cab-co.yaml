@@ -1,0 +1,57 @@
+id: rutledge-cab-co
+name: Rutledge Cab Co.
+category: eat
+tagline: An old service station turned neighborhood diner.
+neighborhood: Wagener Terrace
+depth: 2
+tags: [diner, casual, local, burgers]
+moods: [casual, family]
+
+location:
+  address: 1300 Rutledge Ave, Charleston, SC 29403
+  lat: 32.81252
+  lng: -79.95478
+
+price:
+  perPerson: 20
+  label: "$"
+  note: Mains around $12–20
+
+bestTime: afternoon
+durationMin: 60
+indoor: true
+
+photos: []
+
+whyFound: >-
+  A lived-in local hangout in a residential neighborhood that most visitors never see. It's comfort food with zero pretense.
+insiderTip: >-
+  It's a good stop on the way back from Hampton Park.
+
+localsSay:
+  text: >-
+    A true neighborhood spot, where the crowd is mostly locals.
+  sourced: false
+
+realityCheck:
+  hours: Typically lunch and dinner
+  warnings: []
+  officialUrl: https://rutledgecabco.com
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: Walk in.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 3
+  text: "Not a destination, and that's the charm."
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Easygoing with kids.

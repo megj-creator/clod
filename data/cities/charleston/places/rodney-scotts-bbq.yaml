@@ -1,0 +1,57 @@
+id: rodney-scotts-bbq
+name: "Rodney Scott's BBQ"
+category: eat
+tagline: Whole hogs smoked over wood coals all night long.
+neighborhood: Upper King
+depth: 2
+tags: [bbq, casual, local, whole-hog]
+moods: [casual, family]
+
+location:
+  address: 1011 King St, Charleston, SC 29403
+  lat: 32.80344
+  lng: -79.95121
+
+price:
+  perPerson: 20
+  label: "$"
+  note: Plates around $15–25
+
+bestTime: dinner
+durationMin: 60
+indoor: true
+
+photos: []
+
+whyFound: >-
+  The pitmaster won a James Beard award for cooking whole hogs the old South Carolina way, and it's still a counter-service, paper-plate kind of place. Big flavor, zero fuss.
+insiderTip: >-
+  Get the whole-hog plate and a side of hushpuppies. Weekday lunch beats the dinner rush.
+
+localsSay:
+  text: >-
+    Locals argue about the city's best BBQ constantly. Rodney Scott's is almost always in the final round.
+  sourced: false
+
+realityCheck:
+  hours: Typically 11 AM–9 PM daily
+  warnings: []
+  officialUrl: https://rodneyscottsbbq.com
+  lastChecked: null
+
+rainPlan:
+  text: Indoors, so it works rain or shine.
+
+booking:
+  best: No reservations. Order at the counter.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 5
+  text: "The hype is real. It's still unfussy."
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Loud and casual. Nobody minds a messy toddler.

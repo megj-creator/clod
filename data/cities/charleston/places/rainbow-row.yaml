@@ -1,0 +1,65 @@
+id: rainbow-row
+name: Rainbow Row
+category: explore
+tagline: "Thirteen pastel houses, Charleston's most famous postcard."
+neighborhood: French Quarter
+depth: 1
+tags: [photogenic, free, walk, quick]
+moods: [outdoors]
+
+location:
+  address: 83 E Bay St, Charleston, SC 29401
+  lat: 32.77534
+  lng: -79.92735
+
+price:
+  perPerson: 0
+  label: "Free"
+
+bestTime: morning
+durationMin: 20
+indoor: false
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Rainbow_Row_Charleston_July_2024_1.jpg/1280px-Rainbow_Row_Charleston_July_2024_1.jpg
+    credit: "Thomson200"
+    license: "CC0"
+    source: https://commons.wikimedia.org/wiki/File:Rainbow_Row_Charleston_July_2024_1.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Rainbow_Row_Charleston_July_2024_2.jpg/1280px-Rainbow_Row_Charleston_July_2024_2.jpg
+    credit: "Thomson200"
+    license: "CC0"
+    source: https://commons.wikimedia.org/wiki/File:Rainbow_Row_Charleston_July_2024_2.jpg
+
+whyFound: >-
+  A quick look is worth it. Pair it with the Battery for a lovely walk.
+insiderTip: >-
+  Early morning means soft light and no crowds in your photos.
+
+localsSay:
+  text: >-
+    Locals say see it, snap it, and keep walking to the quieter streets nearby.
+  sourced: false
+
+realityCheck:
+  hours: "Anytime (they're private homes, so view from the sidewalk)"
+  warnings: []
+  officialUrl: ""
+  lastChecked: null
+
+rainPlan:
+  text: Five minutes from the Old Exchange.
+  backupId: old-exchange
+
+booking:
+  best: Free.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 3
+  text: "It's a photo stop, not an activity."
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: "Sidewalks are narrow, but it's quick."

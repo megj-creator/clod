@@ -1,0 +1,69 @@
+id: hymans-seafood
+name: "Hyman's Seafood"
+category: eat
+tagline: A family institution with a menu the size of a newspaper.
+neighborhood: French Quarter
+depth: 1
+tags: [seafood, family, classic, lowcountry]
+moods: [casual, family]
+
+location:
+  address: 215 Meeting St, Charleston, SC 29401
+  lat: 32.78161
+  lng: -79.93184
+
+price:
+  perPerson: 30
+  label: "$$"
+  note: Mains around $18–35
+
+bestTime: dinner
+durationMin: 75
+indoor: true
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/Hyman%27s_Seafood_-_01.jpg/1280px-Hyman%27s_Seafood_-_01.jpg
+    credit: "Oleg Yunakov"
+    license: "CC BY-SA 4.0"
+    source: https://commons.wikimedia.org/wiki/File:Hyman%27s_Seafood_-_01.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Hyman%27s_Seafood_-_65.jpg/1280px-Hyman%27s_Seafood_-_65.jpg
+    credit: "Oleg Yunakov"
+    license: "CC BY-SA 4.0"
+    source: https://commons.wikimedia.org/wiki/File:Hyman%27s_Seafood_-_65.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Hyman%27s_Seafood_-_64.jpg/1280px-Hyman%27s_Seafood_-_64.jpg
+    credit: "Oleg Yunakov"
+    license: "CC BY-SA 4.0"
+    source: https://commons.wikimedia.org/wiki/File:Hyman%27s_Seafood_-_64.jpg
+
+whyFound: >-
+  Touristy? Yes. But it's been family-run for generations, and it's one of the easiest downtown seafood dinners with small kids.
+insiderTip: >-
+  Go at 5 PM to skip the wait. The crispy flounder is the move.
+
+localsSay:
+  text: >-
+    Locals admit it's touristy, but many still take family there for the reliability and the kid-friendliness.
+  sourced: false
+
+realityCheck:
+  hours: Typically lunch and dinner daily
+  warnings: []
+  officialUrl: https://hymanseafood.com
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: Limited reservations. Arrive early.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 3
+  text: Not a hidden gem, but a reliable family win.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: "Kids' menu, and very used to families."

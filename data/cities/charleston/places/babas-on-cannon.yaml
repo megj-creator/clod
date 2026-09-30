@@ -1,0 +1,57 @@
+id: babas-on-cannon
+name: Babas on Cannon
+category: eat
+tagline: Espresso by day, spritzes by evening, in a corner café.
+neighborhood: Cannonborough
+depth: 2
+tags: [coffee, breakfast, cute, local, drinks]
+moods: [casual, romantic]
+
+location:
+  address: 11 Cannon St, Charleston, SC 29403
+  lat: 32.79161
+  lng: -79.94128
+
+price:
+  perPerson: 15
+  label: "$"
+  note: Coffee and small plates
+
+bestTime: morning
+durationMin: 45
+indoor: true
+
+photos: []
+
+whyFound: >-
+  A tiny European-style café in a residential corner of downtown, and the kind of place a local friend would bring you for coffee.
+insiderTip: >-
+  Morning coffee and a pastry, or come back for an early-evening aperitivo.
+
+localsSay:
+  text: >-
+    Locals describe it as one of the cutest, most charming spots in town.
+  sourced: false
+
+realityCheck:
+  hours: Typically morning through evening
+  warnings: []
+  officialUrl: https://babasoncannon.com
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: Walk in.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Small and charming.
+
+kidFit:
+  score: 2
+  stroller: false
+  notes: Small space. Fine for a quick coffee.

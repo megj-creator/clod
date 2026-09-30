@@ -19,6 +19,7 @@ const LOOK_ICONS: Record<string, string> = { site: "🌐", photos: "📷", maps:
 export function DetailSheet({
   place,
   drive,
+  driveReal,
   byId,
   dates,
   forecast,
@@ -36,6 +37,7 @@ export function DetailSheet({
   subreddit?: string;
   place: Place;
   drive: number;
+  driveReal: boolean;
   byId: Record<string, Place>;
   dates: string[];
   forecast: Record<string, Weather>;
@@ -108,7 +110,7 @@ export function DetailSheet({
           <p className="detail-tagline">{place.tagline}</p>
 
           <div className="facts">
-            <Fact icon={<IconCar size={16} />} label="From your stay" value={formatDrive(drive)} sub="estimate" />
+            <Fact icon={<IconCar size={16} />} label="From your stay" value={formatDrive(drive)} sub={driveReal ? "real route · no traffic" : "estimate"} />
             <Fact icon={<IconTicket size={16} />} label="Price" value={priceLong(place)} sub={place.price.note} />
             <Fact icon={<IconClock size={16} />} label="Plan for" value={formatDrive(place.durationMin)} sub={`best: ${place.bestTime}`} />
           </div>
@@ -152,9 +154,16 @@ export function DetailSheet({
                 ))}
               </ul>
             )}
-            {place.realityCheck.officialUrl && (
-              <a className="source-link" href={place.realityCheck.officialUrl} target="_blank" rel="noreferrer">
-                Official site <IconExternal size={13} />
+            {place.realityCheck.evidence && (
+              <blockquote className="evidence">
+                “{place.realityCheck.evidence}”
+                <cite>From the official site</cite>
+              </blockquote>
+            )}
+            {place.realityCheck.checkNote && <p className="check-note">{place.realityCheck.checkNote}</p>}
+            {(place.realityCheck.checkedUrl || place.realityCheck.officialUrl) && (
+              <a className="source-link" href={place.realityCheck.checkedUrl || place.realityCheck.officialUrl} target="_blank" rel="noreferrer">
+                {place.realityCheck.lastChecked ? "See it on the official site" : "Official site"} <IconExternal size={13} />
               </a>
             )}
           </Section>
@@ -196,7 +205,25 @@ export function DetailSheet({
 
           <Section icon={<IconChat size={16} />} title="What locals are saying" tone="locals">
             <blockquote>{place.localsSay.text}</blockquote>
-            {!place.localsSay.sourced && <p className="micro">Summary for now. Real local sources (Reddit, local writers) are coming next.</p>}
+            {place.localsSay.sourced && place.localsSay.sources?.length ? (
+              <>
+                <p className="micro">
+                  Paraphrased from {place.localsSay.sources.length} local {place.localsSay.sources.length === 1 ? "thread" : "threads"}
+                  {place.localsSay.checked ? ` · read ${place.localsSay.checked}` : ""}
+                </p>
+                <ul className="sources">
+                  {place.localsSay.sources.map((s) => (
+                    <li key={s.url}>
+                      <a href={s.url} target="_blank" rel="noreferrer">
+                        💬 {s.title} <IconExternal size={11} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              !place.localsSay.sourced && <p className="micro">Summary for now. Tap "What locals say" above to read the real local threads.</p>
+            )}
           </Section>
 
           <Section icon={<IconFlame size={16} />} title="Hype check" badge={<HypeMeter score={place.hypeCheck.score} />}>

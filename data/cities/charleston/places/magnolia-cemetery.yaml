@@ -1,0 +1,69 @@
+id: magnolia-cemetery
+name: Magnolia Cemetery
+category: history
+tagline: Victorian cemetery on the marsh, draped in Spanish moss.
+neighborhood: Upper Peninsula
+depth: 3
+tags: [quiet, photogenic, free, eerie, nature]
+moods: [unusual]
+
+location:
+  address: 70 Cunnington Ave, Charleston, SC 29405
+  lat: 32.81570
+  lng: -79.94947
+
+price:
+  perPerson: 0
+  label: "Free"
+
+bestTime: morning
+durationMin: 45
+indoor: false
+
+photos:
+  - src: https://upload.wikimedia.org/wikipedia/commons/5/56/Charleston_-_Magnolia_Cemetery.jpg
+    credit: "Rotograph Company"
+    license: "Public domain"
+    source: https://commons.wikimedia.org/wiki/File:Charleston_-_Magnolia_Cemetery.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/5/50/Charleston_-_View_in_Magnolia_Cemetery.jpg/1280px-Charleston_-_View_in_Magnolia_Cemetery.jpg
+    credit: "The American News Co., New York City (publisher)"
+    license: "Public domain"
+    source: https://commons.wikimedia.org/wiki/File:Charleston_-_View_in_Magnolia_Cemetery.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/b/ba/Charleston_-_The_lake%2C_Magnolia_Cemetery.jpg/1280px-Charleston_-_The_lake%2C_Magnolia_Cemetery.jpg
+    credit: "F. M. Kirby & Co."
+    license: "Public domain"
+    source: https://commons.wikimedia.org/wiki/File:Charleston_-_The_lake,_Magnolia_Cemetery.jpg
+
+whyFound: >-
+  An 1850 garden cemetery with marsh views, ornate monuments, and live oaks. It's peaceful, strange, and very Charleston.
+insiderTip: >-
+  Drive the loop, then walk to the marsh edge.
+
+localsSay:
+  text: >-
+    Locals recommend it to visitors who want atmosphere without crowds.
+  sourced: false
+
+realityCheck:
+  hours: Typically daytime
+  warnings: []
+  officialUrl: ""
+  lastChecked: null
+
+rainPlan:
+  text: Outdoors. Swap in the Charleston Museum.
+  backupId: charleston-museum
+
+booking:
+  best: Free.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Hauntingly beautiful.
+
+kidFit:
+  score: 2
+  stroller: true
+  notes: Quiet, with paved lanes.

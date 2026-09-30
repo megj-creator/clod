@@ -1,0 +1,65 @@
+id: hampton-park
+name: Hampton Park
+category: explore
+tagline: "Locals' favorite park, with a duck pond and a big loop."
+neighborhood: Wagener Terrace
+depth: 2
+tags: [park, free, local, walk, stroller-ok]
+moods: [outdoors, family]
+
+location:
+  address: 30 Mary Murray Dr, Charleston, SC 29403
+  lat: 32.80034
+  lng: -79.95653
+
+price:
+  perPerson: 0
+  label: "Free"
+
+bestTime: morning
+durationMin: 60
+indoor: false
+
+photos:
+  - src: https://upload.wikimedia.org/wikipedia/commons/f/fe/Charleston_-_Scene_in_Hampton_Park_01.jpg
+    credit: "Published for F. J. Martschink Co. by Curt Teich & Co."
+    license: "Public domain"
+    source: https://commons.wikimedia.org/wiki/File:Charleston_-_Scene_in_Hampton_Park_01.jpg
+  - src: https://upload.wikimedia.org/wikipedia/commons/1/1e/Hampton_Park_2.jpg
+    credit: "ProfReader"
+    license: "Public domain"
+    source: https://commons.wikimedia.org/wiki/File:Hampton_Park_2.jpg
+
+whyFound: >-
+  Where Charlestonians actually run, walk dogs, and let kids feed ducks. It's a lovely slice of everyday local life.
+insiderTip: >-
+  The flat loop is perfect for a stroller nap. Rutledge Cab Co. is nearby for lunch.
+
+localsSay:
+  text: >-
+    One of the most-loved local green spaces.
+  sourced: false
+
+realityCheck:
+  hours: Open daily
+  warnings: []
+  officialUrl: ""
+  lastChecked: null
+
+rainPlan:
+  text: "Outdoors. Swap in the Children's Museum."
+  backupId: childrens-museum
+
+booking:
+  best: Free.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: The real local city park.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Flat paved loop and a duck pond.

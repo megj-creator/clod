@@ -1,0 +1,57 @@
+id: jestines-kitchen
+name: "Jestine's Kitchen"
+category: eat
+tagline: "Fried chicken and 'table wine' sweet tea, grandma-style."
+neighborhood: Downtown
+depth: 1
+tags: [southern, fried-chicken, classic, casual]
+moods: [casual, family]
+
+location:
+  address: 251 Meeting St, Charleston, SC 29401
+  lat: 32.78334
+  lng: -79.93219
+
+price:
+  perPerson: 20
+  label: "$"
+  note: Plates around $12–20
+
+bestTime: afternoon
+durationMin: 60
+indoor: true
+
+photos: []
+
+whyFound: >-
+  Home-style Southern cooking named after the woman who helped raise the owner. It's the downtown comfort-food lunch.
+insiderTip: >-
+  Save room for the Coca-Cola cake. Lunch lines are shorter before noon.
+
+localsSay:
+  text: >-
+    Locals say it's touristy now, but the fried chicken and cake still hold up.
+  sourced: false
+
+realityCheck:
+  hours: Typically lunch and early dinner, closed some days
+  warnings: []
+  officialUrl: https://jestineskitchen.com
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: No reservations. Expect a line at peak.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 3
+  text: Comforting more than revelatory.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Very family-friendly.

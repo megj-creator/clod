@@ -1,0 +1,69 @@
+id: music-farm
+name: Music Farm
+category: music
+tagline: "The city's scrappy, standing-room rock club."
+neighborhood: Upper King
+depth: 2
+tags: [live-music, late, concerts, drinks]
+moods: [music]
+
+location:
+  address: 32 Ann St, Charleston, SC 29403
+  lat: 32.78976
+  lng: -79.93800
+
+price:
+  perPerson: 25
+  label: "$"
+  note: Tickets vary
+
+bestTime: evening
+durationMin: 150
+indoor: true
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Music_Farm.JPG/1280px-Music_Farm.JPG
+    credit: "ProfReader"
+    license: "CC BY-SA 3.0"
+    source: https://commons.wikimedia.org/wiki/File:Music_Farm.JPG
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Green_River_Ordinance_at_Music_Farm_2.jpg/1280px-Green_River_Ordinance_at_Music_Farm_2.jpg
+    credit: "susieq3c"
+    license: "CC BY 2.0"
+    source: https://commons.wikimedia.org/wiki/File:Green_River_Ordinance_at_Music_Farm_2.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Green_River_Ordinance_at_Music_Farm_1.jpg/1280px-Green_River_Ordinance_at_Music_Farm_1.jpg
+    credit: "susieq3c"
+    license: "CC BY 2.0"
+    source: https://commons.wikimedia.org/wiki/File:Green_River_Ordinance_at_Music_Farm_1.jpg
+
+whyFound: >-
+  A former train depot that's been Charleston's go-to club for touring bands for decades.
+insiderTip: >-
+  Check the calendar for your dates.
+
+localsSay:
+  text: >-
+    Locals have fond memories and cheap tickets here.
+  sourced: false
+
+realityCheck:
+  hours: Show nights vary
+  warnings: []
+  officialUrl: https://musicfarm.com
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: "Buy on the venue's site."
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 3
+  text: Depends on the show.
+
+kidFit:
+  score: 1
+  stroller: false
+  notes: "A grown-ups' night."

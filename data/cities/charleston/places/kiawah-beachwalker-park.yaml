@@ -1,0 +1,59 @@
+id: kiawah-beachwalker-park
+name: Beachwalker Park, Kiawah
+category: explore
+tagline: Wide, wild beach at the tip of Kiawah Island.
+neighborhood: Kiawah Island
+depth: 2
+tags: [beach, nature, quiet, outdoors]
+moods: [outdoors, family]
+
+location:
+  address: 8 Beachwalker Dr, Kiawah Island, SC 29455
+  lat: 32.58840
+  lng: -80.13071
+
+price:
+  perPerson: 5
+  label: "$"
+  note: Parking fee per car
+
+bestTime: morning
+durationMin: 150
+indoor: false
+
+photos: []
+
+whyFound: >-
+  The only public access to Kiawah's beautiful beach. It's wide, calm, and far quieter than Folly.
+insiderTip: >-
+  Arrive before 10 in summer, because parking fills. The beach wagon rental is a lifesaver with kids.
+
+localsSay:
+  text: >-
+    Locals' pick for a calm family beach day.
+  sourced: false
+
+realityCheck:
+  hours: Typically daytime
+  seasonal: Lifeguards and facilities in season
+  warnings: []
+  officialUrl: https://ccprc.com
+  lastChecked: null
+
+rainPlan:
+  text: Beach day off. Swap in the SC Aquarium.
+  backupId: sc-aquarium
+
+booking:
+  best: Pay parking at the gate.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Beautiful and uncrowded.
+
+kidFit:
+  score: 3
+  stroller: false
+  notes: Restrooms and showers. Bring a beach wagon.

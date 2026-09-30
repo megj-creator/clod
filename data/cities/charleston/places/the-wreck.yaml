@@ -1,0 +1,59 @@
+id: the-wreck
+name: The Wreck of the Richard & Charlene
+category: eat
+tagline: A hard-to-find fish shack on Shem Creek with paper plates.
+neighborhood: Old Village · Mount Pleasant
+depth: 3
+tags: [seafood, shack, local, waterfront, casual]
+moods: [casual, unusual]
+
+location:
+  address: 106 Haddrell St, Mount Pleasant, SC 29464
+  lat: 32.78897
+  lng: -79.88553
+
+price:
+  perPerson: 35
+  label: "$$"
+  note: Fried seafood platters
+
+bestTime: dinner
+durationMin: 90
+indoor: false
+
+photos: []
+
+whyFound: >-
+  No sign to speak of, down a dead-end street, with fried shrimp by the water. It's the opposite of the bright Shem Creek strip, and locals like it that way.
+insiderTip: >-
+  Bring cash just in case, and go for sunset on the porch.
+
+localsSay:
+  text: >-
+    Locals treasure it as a no-frills fish camp. They tell visitors not to expect polish.
+  sourced: false
+
+realityCheck:
+  hours: Typically dinner, check the days
+  warnings:
+    - Hours are limited, so check before you drive over
+  officialUrl: ""
+  lastChecked: null
+
+rainPlan:
+  text: "There's a covered porch, but on a stormy night try Page's Okra Grill nearby."
+  backupId: pages-okra-grill
+
+booking:
+  best: No reservations.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: "It's about the vibe as much as the food."
+
+kidFit:
+  score: 2
+  stroller: false
+  notes: "Casual, but it's by the water. Hold hands."

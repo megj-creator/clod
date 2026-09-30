@@ -1,0 +1,68 @@
+id: city-market
+name: Charleston City Market
+category: explore
+tagline: Four blocks of covered sheds, and real sweetgrass basket weavers.
+neighborhood: City Market
+depth: 1
+tags: [market, shopping, indoor, crafts]
+moods: [rainy, family]
+
+location:
+  address: 188 Meeting St, Charleston, SC 29401
+  lat: 32.78092
+  lng: -79.92931
+
+price:
+  perPerson: 0
+  label: "Free"
+
+bestTime: afternoon
+durationMin: 45
+indoor: true
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Charleston_City_Market_in_Charleston%2C_SC.jpg/1280px-Charleston_City_Market_in_Charleston%2C_SC.jpg
+    credit: "Mollz03"
+    license: "CC BY-SA 4.0"
+    source: https://commons.wikimedia.org/wiki/File:Charleston_City_Market_in_Charleston,_SC.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Charleston_Old_City_Market.jpg/1280px-Charleston_Old_City_Market.jpg
+    credit: "Jesse Lee Tucker"
+    license: "CC BY-SA 4.0"
+    source: https://commons.wikimedia.org/wiki/File:Charleston_Old_City_Market.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/Charleston_City_Market%2C_Charleston%2C_SC_%2849330093493%29.jpg/1280px-Charleston_City_Market%2C_Charleston%2C_SC_%2849330093493%29.jpg
+    credit: "Warren LeMay from Covington, KY, United States"
+    license: "CC0"
+    source: https://commons.wikimedia.org/wiki/File:Charleston_City_Market,_Charleston,_SC_(49330093493).jpg
+
+whyFound: >-
+  Mostly souvenirs, but the Gullah sweetgrass basket makers are the real thing, carrying on a centuries-old craft.
+insiderTip: >-
+  Skip the trinkets and buy a sweetgrass basket directly from the weaver.
+
+localsSay:
+  text: >-
+    Locals call it touristy, but they respect the basket makers.
+  sourced: false
+
+realityCheck:
+  hours: Typically daily, daytime (a night market runs on some weekends)
+  warnings: []
+  officialUrl: https://thecharlestoncitymarket.com
+  lastChecked: null
+
+rainPlan:
+  text: Covered.
+
+booking:
+  best: Free.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 2
+  text: Touristy. Go for the baskets.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Covered and flat, but crowded on weekends.

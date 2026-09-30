@@ -36,6 +36,24 @@ You can do all of this right on github.com: open the file, click the ✏️ penc
 
 City-wide settings (stays, getting-around tips, sunset time) live in `data/cities/charleston/city.yaml`.
 
+## The research tools (run once per city, not per visitor)
+
+These do the slow, careful work up front, so the app is instant and costs nothing per visitor. Run them from this folder after adding or changing places:
+
+| Command | What it does |
+|---|---|
+| `npm run geocode` | Finds map coordinates from each new place's address (OpenStreetMap). |
+| `npm run drives` | Looks up **real road drive times** from every stay to every place, and between places. Saves `drives.json`. |
+| `npm run photos` | Finds **freely licensed photos** on Wikimedia Commons for places without any. Always look them over before publishing. |
+| `npm run check-facts` | Reads each place's **official website** and has Gemini pull out hours, seasonal closures, and prices, using only what the site says. Saves `checks.json` with the date and a quote as proof. A date you type into a place file yourself always wins. |
+| `npm run locals` | Reads real **local Reddit threads** about each place and paraphrases what locals say, with links. Needs Reddit access (below). |
+
+### Real local voices (Reddit)
+Reddit requires approval before an app can read its data. To apply:
+1. Sign in to Reddit, and go to **https://www.reddit.com/prefs/apps** (or Reddit's developer / Data API page, if it sends you there).
+2. Create an app. Choose **"script"**, name it `Uncover`, and use `https://clod-orpin.vercel.app` as the redirect URL. If Reddit asks for a use-case form, say: *"Non-commercial travel prototype that reads public r/Charleston threads to summarize local recommendations, with links back to the threads. Low volume (a few hundred requests per month)."*
+3. Once approved, put the two codes Reddit gives you into `.env.local` as `REDDIT_CLIENT_ID=` and `REDDIT_CLIENT_SECRET=`, then run `npm run locals`.
+
 ## Running it on your computer
 
 You need [Node.js](https://nodejs.org) (the LTS version). Then, in this folder:
@@ -69,9 +87,10 @@ The key stays on the server and never reaches visitors' phones. There's a small 
 | Thing | Status |
 |---|---|
 | Photos | ✅ Real, licensed (Wikimedia Commons, with credits). 6 places still use painted placeholders. |
-| Drive times | ⚠️ **Estimates** from straight-line distance. Replacing this with a real routing service is next. |
-| Hours, prices, booking | ⚠️ From memory or the web, marked **Not yet verified**. |
-| "What locals are saying" | ⚠️ Summaries, marked as such. Not yet sourced from real local voices. |
+| Drive times | ✅ **Real road routes** (OpenStreetMap) from every stay, without traffic, plus 2 minutes to park. Live finds get real times too. |
+| Hours, prices, booking | ✅ Checked against official websites where the site lists them, with a date and a quote. The rest say **Not yet verified** or "call ahead." |
+| "What locals are saying" | ⚠️ Summaries for now, plus a "What locals say" button that opens the real r/Charleston threads. Real paraphrased local voices turn on once Reddit approves access. |
+| Places | 54 curated places across eat, music, explore, family, and history, plus unlimited live finds from Go hunting. |
 | Forecast | ✅ Live from Open-Meteo (free, no key) for the next ~2 weeks. Dates further out show typical weather, labeled as such. |
 | Live web search for "Go hunting" | ⚠️ Your Gemini key's free plan doesn't include Google Search, so hunting currently uses Gemini's own knowledge and says so on each card. Enable billing on the key and it switches to live search automatically. |
 | "Type what you want" | ✅ Gemini, once the key is set (see above). Falls back to keyword matching otherwise. |

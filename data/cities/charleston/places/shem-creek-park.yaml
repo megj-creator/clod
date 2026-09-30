@@ -1,0 +1,57 @@
+id: shem-creek-park
+name: Shem Creek Park Boardwalk
+category: explore
+tagline: Marsh boardwalk with shrimp boats and dolphins.
+neighborhood: Mount Pleasant
+depth: 2
+tags: [boardwalk, free, dolphins, sunset, stroller-ok]
+moods: [outdoors, family, romantic]
+
+location:
+  address: 514 Mill St, Mount Pleasant, SC 29464
+  lat: 32.79317
+  lng: -79.87800
+
+price:
+  perPerson: 0
+  label: "Free"
+
+bestTime: sunset
+durationMin: 45
+indoor: false
+
+photos: []
+
+whyFound: >-
+  A long boardwalk into the marsh where you'll often spot dolphins and pelicans, with shrimp boats docking nearby.
+insiderTip: >-
+  Go at sunset, then eat on the creek. Watch for dolphins at low tide.
+
+localsSay:
+  text: >-
+    Locals love the boardwalk even if the restaurants are busy.
+  sourced: false
+
+realityCheck:
+  hours: Typically dawn to dusk
+  warnings: []
+  officialUrl: ""
+  lastChecked: null
+
+rainPlan:
+  text: Watch from a covered deck at a creekside restaurant.
+  backupId: pages-okra-grill
+
+booking:
+  best: Free.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Lovely and easy.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Flat boardwalk with railings.

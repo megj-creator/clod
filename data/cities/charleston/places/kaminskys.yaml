@@ -1,0 +1,57 @@
+id: kaminskys
+name: "Kaminsky's Dessert Cafe"
+category: eat
+tagline: Towering cakes and hot chocolate after dark.
+neighborhood: City Market
+depth: 1
+tags: [dessert, evening, sweet]
+moods: [romantic, family]
+
+location:
+  address: 78 N Market St, Charleston, SC 29401
+  lat: 32.78106
+  lng: -79.92999
+
+price:
+  perPerson: 12
+  label: "$"
+  note: Slices around $8–12
+
+bestTime: evening
+durationMin: 40
+indoor: true
+
+photos: []
+
+whyFound: >-
+  The late-night dessert stop: giant slices of layer cake and boozy coffees. A sweet way to end a downtown evening.
+insiderTip: >-
+  Split one slice. They're enormous.
+
+localsSay:
+  text: >-
+    Locals call it touristy but fun for a sugar fix.
+  sourced: false
+
+realityCheck:
+  hours: Typically afternoon until late
+  warnings: []
+  officialUrl: https://kaminskys.com
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: Walk in.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 3
+  text: Fun, sweet, a little touristy.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Kids love it, maybe before bedtime.

@@ -1,0 +1,57 @@
+id: pages-okra-grill
+name: "Page's Okra Grill"
+category: eat
+tagline: "Mount Pleasant's favorite Southern breakfast, with shrimp and grits all day."
+neighborhood: Mount Pleasant
+depth: 2
+tags: [breakfast, brunch, southern, local, casual]
+moods: [casual, family]
+
+location:
+  address: 302 Coleman Blvd, Mount Pleasant, SC 29464
+  lat: 32.79076
+  lng: -79.87725
+
+price:
+  perPerson: 18
+  label: "$"
+  note: Plates around $12–20
+
+bestTime: morning
+durationMin: 60
+indoor: true
+
+photos: []
+
+whyFound: >-
+  A neighborhood diner where locals line up for biscuits, fried green tomatoes, and shrimp and grits. It's easy with kids, and easy on the wallet.
+insiderTip: >-
+  Go early on weekends. By 9:30 the wait is long.
+
+localsSay:
+  text: >-
+    A go-to local recommendation for breakfast east of the bridge.
+  sourced: false
+
+realityCheck:
+  hours: Typically breakfast through dinner
+  warnings: []
+  officialUrl: https://pagesokragrill.com
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: Use the waitlist or walk in.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Unpretentious and dependable.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: "Kids' menu and a casual crowd."

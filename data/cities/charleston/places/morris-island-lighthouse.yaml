@@ -1,0 +1,69 @@
+id: morris-island-lighthouse
+name: Morris Island Lighthouse
+category: explore
+tagline: A lonely lighthouse standing in the sea at the end of Folly.
+neighborhood: Folly Beach
+depth: 2
+tags: [lighthouse, sunset, walk, free, photogenic]
+moods: [unusual, romantic, outdoors]
+
+location:
+  address: 1776 E Ashley Ave, Folly Beach, SC 29439
+  lat: 32.68160   # the trailhead parking lot, where you actually drive to
+  lng: -79.89190
+
+price:
+  perPerson: 0
+  label: "Free"
+
+bestTime: sunset
+durationMin: 60
+indoor: false
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Charleston_South_Carolina-Morris_Island_Lighthouse_from_Folly_Island-20060428172849.jpg/1280px-Charleston_South_Carolina-Morris_Island_Lighthouse_from_Folly_Island-20060428172849.jpg
+    credit: "Brian Zinnel"
+    license: "CC BY-SA 4.0"
+    source: https://commons.wikimedia.org/wiki/File:Charleston_South_Carolina-Morris_Island_Lighthouse_from_Folly_Island-20060428172849.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Charleston_South_Carolina-Morris_Island_Lighthouse_from_Folly_Island-20060428173501.jpg/1280px-Charleston_South_Carolina-Morris_Island_Lighthouse_from_Folly_Island-20060428173501.jpg
+    credit: "Brian Zinnel"
+    license: "CC BY-SA 4.0"
+    source: https://commons.wikimedia.org/wiki/File:Charleston_South_Carolina-Morris_Island_Lighthouse_from_Folly_Island-20060428173501.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Charleston%27s_Morris_Island_Lighthouse.jpg/1280px-Charleston%27s_Morris_Island_Lighthouse.jpg
+    credit: "Chey Dubia"
+    license: "CC BY-SA 4.0"
+    source: https://commons.wikimedia.org/wiki/File:Charleston%27s_Morris_Island_Lighthouse.jpg
+
+whyFound: >-
+  Walk the sandy path to the beach, and there it is, standing alone in the water. It's one of the most striking sunsets around.
+insiderTip: >-
+  The walk is about 10–15 minutes on sand. Bring a carrier, not a stroller.
+
+localsSay:
+  text: >-
+    Locals' favorite secret-ish sunset spot.
+  sourced: false
+
+realityCheck:
+  hours: Open daily
+  warnings: []
+  officialUrl: ""
+  lastChecked: null
+
+rainPlan:
+  text: Exposed. Save it for a clear evening.
+  backupId: sc-aquarium
+
+booking:
+  best: Free. Parking is limited.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 5
+  text: Unforgettable at sunset.
+
+kidFit:
+  score: 2
+  stroller: false
+  notes: Sandy walk. Use a carrier.

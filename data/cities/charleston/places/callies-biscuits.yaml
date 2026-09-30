@@ -1,0 +1,57 @@
+id: callies-biscuits
+name: "Callie's Hot Little Biscuit"
+category: eat
+tagline: Tiny shop, warm biscuits, a line out the door.
+neighborhood: Upper King
+depth: 2
+tags: [breakfast, biscuits, quick, local]
+moods: [casual, family]
+
+location:
+  address: 476 King St, Charleston, SC 29403
+  lat: 32.79001
+  lng: -79.93887
+
+price:
+  perPerson: 10
+  label: "$"
+  note: Biscuits a few dollars each
+
+bestTime: morning
+durationMin: 30
+indoor: true
+
+photos: []
+
+whyFound: >-
+  The fastest way to eat something that tastes like Charleston: buttery biscuits with country ham or pimento cheese, ready to grab and go.
+insiderTip: >-
+  Take them to go and eat in Marion Square a few blocks away. There's barely any seating inside.
+
+localsSay:
+  text: >-
+    Locals love the biscuits but suggest going on a weekday to skip the tourist line.
+  sourced: false
+
+realityCheck:
+  hours: Typically mornings to early afternoon
+  warnings: []
+  officialUrl: https://calliesbiscuits.com
+  lastChecked: null
+
+rainPlan:
+  text: Grab and go. On a wet day, eat them back at your stay.
+
+booking:
+  best: "No booking. There's a short line most mornings."
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Small, simple, and very good.
+
+kidFit:
+  score: 3
+  stroller: false
+  notes: The shop is tiny. Grab and go with the stroller outside.

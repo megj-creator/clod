@@ -3228,3 +3228,27 @@ h3 {
   color: #ffd79c;
   font-weight: 700;
 }
+
+.evidence {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(115, 201, 181, 0.08);
+  border-left: 2px solid var(--teal);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-2);
+}
+.evidence cite {
+  display: block;
+  margin-top: 4px;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--teal);
+}
+.check-note {
+  margin-top: 10px;
+  font-size: 13px !important;
+  color: var(--amber-2) !important;
+}

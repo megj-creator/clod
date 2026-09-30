@@ -1,0 +1,61 @@
+id: aiken-rhett-house
+name: Aiken-Rhett House Museum
+category: history
+tagline: An unrestored mansion with peeling paint and original slave quarters.
+neighborhood: Upper King
+depth: 2
+tags: [history, architecture, eerie, quiet]
+moods: [unusual]
+
+location:
+  address: 48 Elizabeth St, Charleston, SC 29403
+  lat: 32.79145
+  lng: -79.93485
+
+price:
+  perPerson: 15
+  label: "$"
+  note: Self-guided audio tour
+
+bestTime: afternoon
+durationMin: 60
+indoor: true
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/Entrance%2C_Aiken-Rhett_House%2C_48_Elizabeth_Street%2C_Charleston%2C_SC_-_Flickr_-_Spencer_Means.jpg/1280px-Entrance%2C_Aiken-Rhett_House%2C_48_Elizabeth_Street%2C_Charleston%2C_SC_-_Flickr_-_Spencer_Means.jpg
+    credit: "Spencer Means from New York City, USA"
+    license: "CC BY-SA 2.0"
+    source: https://commons.wikimedia.org/wiki/File:Entrance,_Aiken-Rhett_House,_48_Elizabeth_Street,_Charleston,_SC_-_Flickr_-_Spencer_Means.jpg
+
+whyFound: >-
+  Instead of polished rooms, you get faded wallpaper and the work yard, as they truly survived. It's eerie and unforgettable.
+insiderTip: >-
+  The self-guided audio tour lets you go at your own pace.
+
+localsSay:
+  text: >-
+    Locals often call it the most atmospheric house museum downtown.
+  sourced: false
+
+realityCheck:
+  hours: Typically 10 AM–5 PM
+  warnings: []
+  officialUrl: https://historiccharleston.org
+  lastChecked: null
+
+rainPlan:
+  text: Indoors.
+
+booking:
+  best: Official site.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Haunting in the best way.
+
+kidFit:
+  score: 1
+  stroller: false
+  notes: Stairs, and not stroller-friendly. Better for older kids.

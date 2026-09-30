@@ -1,0 +1,59 @@
+id: james-island-county-park
+name: James Island County Park
+category: family
+tagline: Marsh trails, a climbing wall, and a seasonal splash zone.
+neighborhood: James Island
+depth: 2
+tags: [kids, park, outdoors, playground, free]
+moods: [family, outdoors]
+
+location:
+  address: 871 Riverland Dr, Charleston, SC 29412
+  lat: 32.73691
+  lng: -79.98248
+
+price:
+  perPerson: 2
+  label: "$"
+  note: Small entry fee per person. The splash zone costs extra in season.
+
+bestTime: morning
+durationMin: 120
+indoor: false
+
+photos: []
+
+whyFound: >-
+  Where local families actually spend a Saturday: huge playgrounds, marsh boardwalks, a dog park, and a water park in summer.
+insiderTip: >-
+  From mid-November, the Holiday Festival of Lights here is a big local tradition.
+
+localsSay:
+  text: >-
+    Locals love it for low-key family days out.
+  sourced: false
+
+realityCheck:
+  hours: Typically 8 AM to dark
+  seasonal: The splash zone is open in warm months only. The Festival of Lights runs Nov–Jan.
+  warnings: []
+  officialUrl: https://ccprc.com
+  lastChecked: null
+
+rainPlan:
+  text: "Outdoors. Swap in the Children's Museum."
+  backupId: childrens-museum
+
+booking:
+  best: Pay at the gate.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: "A real local's park."
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Built for families.

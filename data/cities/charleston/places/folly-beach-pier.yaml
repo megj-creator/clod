@@ -1,0 +1,59 @@
+id: folly-beach-pier
+name: Folly Beach Pier
+category: explore
+tagline: A long fishing pier over the surf at the beach town locals love.
+neighborhood: Folly Beach
+depth: 1
+tags: [beach, sunset, pier, walk]
+moods: [outdoors, family, romantic]
+
+location:
+  address: 101 E Arctic Ave, Folly Beach, SC 29439
+  lat: 32.65480
+  lng: -79.93945
+
+price:
+  perPerson: 0
+  label: "Free"
+  note: "Beach parking fees apply. There's a small pier fee."
+
+bestTime: sunset
+durationMin: 60
+indoor: false
+
+photos: []
+
+whyFound: >-
+  Folly is Charleston's laid-back surf town. Walk the pier over the waves, then dig toes in the sand.
+insiderTip: >-
+  Go at sunset and grab tacos on Center Street after.
+
+localsSay:
+  text: >-
+    Locals call Folly the 'Edge of America' and love its unpolished vibe.
+  sourced: false
+
+realityCheck:
+  hours: Pier typically open daily
+  seasonal: Beach crowds peak in summer. Fall is lovely.
+  warnings: []
+  officialUrl: https://ccprc.com
+  lastChecked: null
+
+rainPlan:
+  text: Beach day washed out? Swap in the SC Aquarium.
+  backupId: sc-aquarium
+
+booking:
+  best: Free, plus parking.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Easy, breezy, and fun.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: The pier is stroller-friendly, and the beach is great for toddlers.

@@ -1,0 +1,70 @@
+id: middleton-place
+name: Middleton Place
+category: history
+tagline: "America's oldest landscaped gardens, with terraces down to the river."
+neighborhood: Ashley River Road
+depth: 1
+tags: [gardens, history, photogenic, animals]
+moods: [romantic, outdoors]
+
+location:
+  address: 4300 Ashley River Rd, Charleston, SC 29414
+  lat: 32.89982
+  lng: -80.13654
+
+price:
+  perPerson: 35
+  label: "$$"
+  note: Around $30–35 for adults
+
+bestTime: morning
+durationMin: 180
+indoor: false
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Charleston_-_Middleton_Place_Gardens.jpg/1280px-Charleston_-_Middleton_Place_Gardens.jpg
+    credit: "Published for Lanneau's Art Store, Charleston by The Alberty"
+    license: "Public domain"
+    source: https://commons.wikimedia.org/wiki/File:Charleston_-_Middleton_Place_Gardens.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/Middleton_Place_Gardens_-_The_Mausoleum_01.jpg/1280px-Middleton_Place_Gardens_-_The_Mausoleum_01.jpg
+    credit: "Published for Lanneau's Art Store, Charleston by The Alberty"
+    license: "Public domain"
+    source: https://commons.wikimedia.org/wiki/File:Middleton_Place_Gardens_-_The_Mausoleum_01.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/Middleton_Place_-_Tudor_Mansion.jpg/1280px-Middleton_Place_-_Tudor_Mansion.jpg
+    credit: "Published for Lanneau's Art Store, Charleston by The Alberty"
+    license: "Public domain"
+    source: https://commons.wikimedia.org/wiki/File:Middleton_Place_-_Tudor_Mansion.jpg
+
+whyFound: >-
+  Formal, symmetrical gardens rolling down to butterfly lakes, plus a working stableyard. It's the elegant counterpart to wilder Magnolia.
+insiderTip: >-
+  The restaurant on site does a great Lowcountry lunch. Take the Beyond the Fields tour for the full history.
+
+localsSay:
+  text: >-
+    Locals tend to pick Middleton for formal gardens and Magnolia for wild ones.
+  sourced: false
+
+realityCheck:
+  hours: Typically 9 AM–5 PM daily
+  warnings: []
+  officialUrl: https://middletonplace.org
+  lastChecked: null
+
+rainPlan:
+  text: The gardens are the point. Swap in the Charleston Museum.
+  backupId: charleston-museum
+
+booking:
+  best: Official site.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: "Beautiful, and it doesn't rush you."
+
+kidFit:
+  score: 2
+  stroller: true
+  notes: The stableyard animals are a toddler hit, and the paths are gravel.
