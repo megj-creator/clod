@@ -4,13 +4,15 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import { prettyTag, tasteSummary } from "@/lib/taste";
 import type { AppState } from "@/lib/types";
-import { IconSparkle, IconX } from "./icons";
+import { play, setSoundOn, soundOn } from "@/lib/sfx";
+import { IconSound, IconSparkle, IconX } from "./icons";
 
 export function TasteSheet({ state, onClose, onReset }: { state: AppState; onClose: () => void; onReset: () => void }) {
   const { likes, dislikes, lines } = tasteSummary(state.taste);
   const max = Math.max(1, ...likes.map(([, v]) => v));
   const passes = Object.keys(state.passed).length;
   const [confirming, setConfirming] = useState(false);
+  const [sound, setSound] = useState(soundOn);
 
   return (
     <motion.div className="sheet-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
@@ -67,6 +69,19 @@ export function TasteSheet({ state, onClose, onReset }: { state: AppState; onClo
             </div>
           </>
         )}
+
+        <button
+          className="sound-row"
+          onClick={() => {
+            setSoundOn(!sound);
+            setSound(!sound);
+            if (!sound) setTimeout(() => play("save"), 50);
+          }}
+        >
+          <IconSound size={18} on={sound} />
+          <span>Sounds &amp; haptics</span>
+          <b className={sound ? "on" : ""}>{sound ? "On" : "Off"}</b>
+        </button>
 
         <p className="micro">This lives on your phone only. Nothing is shared.</p>
         {confirming ? (

@@ -137,15 +137,19 @@ export async function interpret(
   places: Place[],
   drives: Record<string, number>,
   crew: string,
+  seen: Set<string> = new Set(),
 ): Promise<Intent> {
   try {
+    // Only offer places they haven't already saved or passed, so the picks are always new
+    const fresh = places.filter((p) => !seen.has(p.id));
+    if (!fresh.length) throw new Error("nothing new");
     const res = await fetch("/api/intent", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         text,
         crew,
-        places: places.map((p) => ({
+        places: fresh.map((p) => ({
           id: p.id,
           name: p.name,
           category: p.category,

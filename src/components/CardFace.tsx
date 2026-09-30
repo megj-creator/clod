@@ -53,7 +53,7 @@ export function CardFace({
           </div>
         )}
         <div className="cf-badges">
-          <span className={`depth depth-${place.depth}`}>{DEPTH[place.depth].label}</span>
+          <span className={`depth depth-${place.live ? "live" : place.depth}`}>{place.live ? "✦ Fresh find" : DEPTH[place.depth].label}</span>
           <span className="cat-chip">
             {cat.emoji} {cat.label}
           </span>
@@ -63,17 +63,15 @@ export function CardFace({
           <h2>{place.name}</h2>
           <p className="cf-tagline">{place.tagline}</p>
         </div>
-        {photo ? (
+        {photo && (
           <span className="cf-credit">
             {photo.caption ? `${photo.caption} · ` : ""}📷 {photo.credit} · {photo.license}
           </span>
-        ) : (
-          <span className="cf-credit">Painted placeholder · licensed photos pending</span>
         )}
         {overlay}
       </div>
 
-      <div className="cf-body">
+      <div className="cf-body" onClick={guard(onOpen)} role="button" tabIndex={-1}>
         <div className="cf-meta">
           <span className="pill">
             <IconCar size={14} /> {formatDrive(drive)}
@@ -98,7 +96,13 @@ export function CardFace({
 
         <div className="cf-foot">
           <span className="cf-weather">{weather}</span>
-          <button className="cf-more" onClick={guard(onOpen)}>
+          <button
+            className="cf-more"
+            onClick={(e) => {
+              e.stopPropagation();
+              guard(onOpen)();
+            }}
+          >
             Full story <IconChevron size={14} />
           </button>
         </div>

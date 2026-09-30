@@ -8,7 +8,9 @@ import { chipIntent, type Intent } from "@/lib/intent";
 import { initialState, useAppState } from "@/lib/store";
 import { REASONS, applySignal } from "@/lib/taste";
 import type { AppState, City, Place, Rating } from "@/lib/types";
-import { sampleForecast } from "@/lib/weather";
+import { play } from "@/lib/sfx";
+import { fetchForecast, sampleForecast, type Weather } from "@/lib/weather";
+import { Burst } from "./Burst";
 import { DetailSheet } from "./DetailSheet";
 import { Discover, type Decision } from "./Discover";
 import { IconCompass, IconSparkle, IconSuitcase, IconUndo } from "./icons";
@@ -29,15 +31,37 @@ export default function UncoverApp({ city }: { city: City }) {
   const [intent, setIntent] = useState<Intent | null>(null);
   const [depthLevel, setDepthLevel] = useState(1);
   const [toast, setToast] = useState<Toast | null>(null);
+  const [burst, setBurst] = useState<{ id: number; kind: "save" | "sparkle"; x: string; y: string } | null>(null);
 
-  const byId = useMemo(() => Object.fromEntries(city.places.map((p) => [p.id, p])) as Record<string, Place>, [city.places]);
+  // The curated list plus anything Gemini hunted down live
+  const allPlaces = useMemo(() => [...city.places, ...Object.values(state.found ?? {})], [city.places, state.found]);
+  const cityView = useMemo(() => ({ ...city, places: allPlaces }), [city, allPlaces]);
+  const byId = useMemo(() => Object.fromEntries(allPlaces.map((p) => [p.id, p])) as Record<string, Place>, [allPlaces]);
   const stay = city.stays.find((s) => s.id === state.setup?.stayId) ?? city.stays[0];
   const drives = useMemo(
-    () => Object.fromEntries(city.places.map((p) => [p.id, estimateDriveMinutes(stay, p.location)])) as Record<string, number>,
-    [city.places, stay],
+    () => Object.fromEntries(allPlaces.map((p) => [p.id, estimateDriveMinutes(stay, p.location)])) as Record<string, number>,
+    [allPlaces, stay],
   );
   const dates = useMemo(() => (state.setup ? tripDates(state.setup.start, state.setup.end) : []), [state.setup]);
-  const forecast = useMemo(() => sampleForecast(dates), [dates]);
+  const [forecast, setForecast] = useState<Record<string, Weather>>(() => sampleForecast(dates));
+  useEffect(() => {
+    setForecast(sampleForecast(dates));
+    if (!dates.length) return;
+    let live = true;
+    fetchForecast(stay.lat, stay.lng, dates)
+      .then((f) => live && setForecast(f))
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [dates, stay.lat, stay.lng]);
+
+  const fire = (kind: "save" | "sparkle", x = "50%", y = "84%") => setBurst({ id: Date.now(), kind, x, y });
+  useEffect(() => {
+    if (!burst) return;
+    const t = setTimeout(() => setBurst(null), 1400);
+    return () => clearTimeout(t);
+  }, [burst]);
 
   // Deep links, e.g. /?tab=trip or /?mood=eat
   useEffect(() => {
@@ -67,6 +91,8 @@ export default function UncoverApp({ city }: { city: City }) {
         taste: applySignal(s.taste, place, d),
       };
     });
+    play(d === "save" ? "save" : d === "more" ? "more" : "pass");
+    if (d !== "pass") fire("save", d === "more" ? "50%" : "68%");
     const count = d === "pass" ? state.saved.length : state.saved.length + 1;
     setToast({
       id: Date.now(),
@@ -87,6 +113,22 @@ export default function UncoverApp({ city }: { city: City }) {
   };
 
   const unsave = (id: string) => update((s) => ({ ...s, saved: s.saved.filter((x) => x !== id) }));
+
+  // Keep live finds so a saved one survives a reload
+  const addFound = (places: Place[]) =>
+    update((s) => ({ ...s, found: { ...(s.found ?? {}), ...Object.fromEntries(places.map((p) => [p.id, p])) } }));
+
+  // From "fill this day": save it and slot it straight into the existing plan
+  const addToPlan = (id: string) => {
+    play("save");
+    fire("sparkle", "50%", "50%");
+    update((s) => ({
+      ...s,
+      saved: s.saved.includes(id) ? s.saved : [...s.saved, id],
+      planFor: s.planFor ? [...new Set([...s.planFor, id])] : s.planFor,
+      taste: applySignal(s.taste, byId[id], "save"),
+    }));
+  };
 
   const feedback = (id: string, rating: Rating, liked: string[]) =>
     update((s) => ({ ...s, feedback: { ...s.feedback, [id]: { rating, liked } }, taste: applySignal(s.taste, byId[id], rating) }));
@@ -134,7 +176,8 @@ export default function UncoverApp({ city }: { city: City }) {
             >
               {tab === "discover" && (
                 <Discover
-                  city={city}
+                  city={cityView}
+                  onFound={addFound}
                   stay={stay}
                   state={state}
                   drives={drives}
@@ -151,17 +194,35 @@ export default function UncoverApp({ city }: { city: City }) {
                 />
               )}
               {tab === "surprise" && (
-                <Surprise city={city} state={state} drives={drives} dates={dates} forecast={forecast} onDecide={decide} onOpen={setDetailId} />
+                <Surprise
+                  city={cityView}
+                  state={state}
+                  drives={drives}
+                  dates={dates}
+                  forecast={forecast}
+                  onDecide={decide}
+                  onOpen={setDetailId}
+                  onReveal={() => {
+                    play("chime");
+                    fire("sparkle", "50%", "42%");
+                  }}
+                />
               )}
               {tab === "trip" && (
                 <MyTrip
-                  city={city}
+                  city={cityView}
                   stay={stay}
                   state={state}
                   byId={byId}
                   drives={drives}
                   forecast={forecast}
-                  onBuild={() => update((s) => ({ ...s, planFor: [...s.saved] }))}
+                  onBuild={() => {
+                    play("chime");
+                    fire("sparkle", "50%", "40%");
+                    update((s) => ({ ...s, planFor: [...s.saved] }));
+                  }}
+                  onAddToPlan={addToPlan}
+                  onToast={(text) => setToast({ id: Date.now(), kind: "info", text })}
                   onUnsave={unsave}
                   onFeedback={feedback}
                   onOpen={setDetailId}
@@ -210,6 +271,8 @@ export default function UncoverApp({ city }: { city: City }) {
           )}
         </AnimatePresence>
 
+        <AnimatePresence>{burst && <Burst key={burst.id} kind={burst.kind} x={burst.x} y={burst.y} />}</AnimatePresence>
+
         <nav className="tabbar">
           <button className={tab === "discover" ? "on" : ""} onClick={() => setTab("discover")}>
             <IconCompass size={22} />
@@ -239,6 +302,7 @@ export default function UncoverApp({ city }: { city: City }) {
               dates={dates}
               forecast={forecast}
               isSaved={state.saved.includes(detail.id)}
+              stay={stay}
               onClose={() => setDetailId(null)}
               onDecide={decide}
               onUnsave={unsave}
@@ -253,6 +317,7 @@ export default function UncoverApp({ city }: { city: City }) {
               onReset={() => {
                 replace(initialState());
                 setTasteOpen(false);
+                setTab("discover");
                 setIntent(null);
                 setDepthLevel(1);
                 setTab("discover");
@@ -277,6 +342,27 @@ function WhyChips({ chosen, onPick }: { chosen: string[]; onPick: (id: string) =
   );
 }
 
+// On a computer: scan to open the same page on your phone.
+function PhoneQR() {
+  const [svg, setSvg] = useState("");
+  useEffect(() => {
+    import("qrcode")
+      .then((QR) => QR.toString(window.location.origin, { type: "svg", margin: 0, color: { dark: "#f7f0e6", light: "#0000" } }))
+      .then(setSvg)
+      .catch(() => {});
+  }, []);
+  if (!svg) return null;
+  return (
+    <div className="phone-qr">
+      <span className="qr" dangerouslySetInnerHTML={{ __html: svg }} />
+      <span>
+        <b>Best on your phone</b>
+        Scan to open it there
+      </span>
+    </div>
+  );
+}
+
 // The phone-shaped frame on desktop, full-bleed on phones.
 function Shell({ city, children }: { city: City; children: ReactNode }) {
   return (
@@ -288,6 +374,7 @@ function Shell({ city, children }: { city: City; children: ReactNode }) {
           Go somewhere <em>you wouldn't have found yourself.</em>
         </h2>
         <p>An AI trip planner that works like an obsessive traveler who interviewed a local. Now digging through {city.name}.</p>
+        <PhoneQR />
       </aside>
       <div className="device">{children}</div>
     </div>

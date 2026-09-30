@@ -8,7 +8,8 @@ import { buildPlan, type PlanDay, type PlaceStop } from "@/lib/plan";
 import { LIKED_OPTIONS } from "@/lib/taste";
 import type { AppState, City, Place, Rating, Stay } from "@/lib/types";
 import { weatherEmoji, type Weather } from "@/lib/weather";
-import { IconCar, IconEdit, IconMoon, IconRain, IconSparkle, IconTicket, IconX } from "./icons";
+import { IconCalendar, IconCar, IconEdit, IconMoon, IconPin, IconRain, IconShare, IconSparkle, IconTicket, IconX } from "./icons";
+import { MapView } from "./MapView";
 import { PlaceImage } from "./PlaceImage";
 import { CATS } from "./ui";
 
@@ -27,12 +28,15 @@ type Props = {
   onOpen: (id: string) => void;
   onEdit: () => void;
   onDiscover: () => void;
+  onAddToPlan: (id: string) => void;
+  onToast: (text: string) => void;
 };
 
-export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onUnsave, onFeedback, onOpen, onEdit, onDiscover }: Props) {
+export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onUnsave, onFeedback, onOpen, onEdit, onDiscover, onAddToPlan, onToast }: Props) {
   const setup = state.setup!;
   const kids = setup.toddler || setup.baby;
   const saved = state.saved.map((id) => byId[id]).filter(Boolean);
+  const stayName = setup.hotelName || stay.name;
   const [building, setBuilding] = useState(false);
   const [line, setLine] = useState(0);
 
@@ -43,6 +47,89 @@ export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onU
   }, [state.planFor, byId, setup, stay, city, forecast]);
 
   const planStale = !!state.planFor && (state.planFor.length !== state.saved.length || state.planFor.some((id) => !state.saved.includes(id)));
+
+  // Ideas for light days: unsaved places inside your limits, nearest first, rain-aware, no repeats
+  const ideas = useMemo(() => {
+    if (!plan) return {} as Record<string, Place[]>;
+    const taken = new Set([...state.saved, ...Object.keys(state.passed)]);
+    const pool = city.places
+      .filter((p) => !taken.has(p.id) && drives[p.id] <= setup.maxDrive && p.price.perPerson <= setup.maxPrice)
+      .filter((p) => !kids || p.kidFit.score >= 2)
+      .sort((a, b) => drives[a.id] - drives[b.id]);
+    const used = new Set<string>();
+    const out: Record<string, Place[]> = {};
+    for (const day of plan) {
+      const count = day.stops.filter((s) => s.kind === "place").length;
+      if (count >= 2) continue;
+      const hasMeal = day.stops.some((s) => s.kind === "place" && s.place.category === "eat");
+      const rainy = day.weather?.kind === "rain";
+      const picks = pool
+        .filter((p) => !used.has(p.id) && (!rainy || p.indoor) && (!hasMeal || p.category !== "eat"))
+        .slice(0, 2);
+      picks.forEach((p) => used.add(p.id));
+      if (picks.length) out[day.date] = picks;
+    }
+    return out;
+  }, [plan, city.places, state.saved, state.passed, drives, setup.maxDrive, setup.maxPrice, kids]);
+
+  const planText = () => {
+    if (!plan) return "";
+    const lines = [`${city.name} · ${fmtRange(setup.start, setup.end)} (planned with Uncover)`, ""];
+    for (const d of plan) {
+      const f = fmtDay(d.date);
+      lines.push(`${f.long}, ${f.short}${d.weather ? ` · ${weatherEmoji(d.weather.kind)} ${d.weather.hi}°` : ""}`);
+      const places = d.stops.filter((s): s is PlaceStop => s.kind === "place");
+      if (!places.length) lines.push("  Open day");
+      for (const s of places) lines.push(`  ${fmtTime(s.time)}  ${s.place.name}${s.place.booking.best ? ` (${s.place.booking.best})` : ""}`);
+      lines.push("");
+    }
+    return lines.join("\n");
+  };
+
+  const share = async () => {
+    const text = planText();
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: `${city.name} trip`, text, url: window.location.origin });
+        return;
+      }
+      await navigator.clipboard.writeText(text);
+      onToast("Trip copied. Paste it anywhere.");
+    } catch {
+      /* user cancelled share */
+    }
+  };
+
+  const toCalendar = () => {
+    if (!plan) return;
+    const stamp = (date: string, min: number) => `${date.replace(/-/g, "")}T${String(Math.floor(min / 60)).padStart(2, "0")}${String(min % 60).padStart(2, "0")}00`;
+    const esc = (s: string) => s.replace(/[\\;,]/g, (m) => `\\${m}`).replace(/\n/g, "\\n");
+    const events = plan.flatMap((d) =>
+      d.stops
+        .filter((s): s is PlaceStop => s.kind === "place")
+        .map((s) =>
+          [
+            "BEGIN:VEVENT",
+            `UID:${d.date}-${s.place.id}@uncover`,
+            `DTSTAMP:${stamp(d.date, 0)}Z`,
+            `DTSTART:${stamp(d.date, s.time)}`,
+            `DTEND:${stamp(d.date, s.time + s.place.durationMin)}`,
+            `SUMMARY:${esc(s.place.name)}`,
+            `LOCATION:${esc(s.place.location.address)}`,
+            `DESCRIPTION:${esc([s.place.insiderTip, s.place.booking.best && `Booking: ${s.place.booking.best}`].filter(Boolean).join("\n"))}`,
+            "END:VEVENT",
+          ].join("\r\n"),
+        ),
+    );
+    const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Uncover//Trip//EN", ...events, "END:VCALENDAR"].join("\r\n");
+    const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${city.id}-trip.ics`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    onToast("Calendar file saved. Open it to add the trip.");
+  };
 
   const build = () => {
     setBuilding(true);
@@ -81,6 +168,16 @@ export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onU
           <button className="icon-btn trip-edit" onClick={onEdit} aria-label="Edit trip">
             <IconEdit size={16} />
           </button>
+          {plan && (
+            <div className="trip-actions">
+              <button className="btn small" onClick={share}>
+                <IconShare size={14} /> Share
+              </button>
+              <button className="btn small" onClick={toCalendar}>
+                <IconCalendar size={14} /> Add to calendar
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
@@ -113,6 +210,16 @@ export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onU
           </div>
         )}
       </section>
+
+      {saved.length > 0 && !plan && (
+        <div className="trip-map">
+          <MapView
+            points={saved.map((p) => ({ lat: p.location.lat, lng: p.location.lng, label: p.name, color: CATS[p.category].color, onClick: () => onOpen(p.id) }))}
+            home={{ ...stay, label: stayName }}
+            theme="dark"
+          />
+        </div>
+      )}
 
       {saved.length > 0 && (!plan || planStale) && (
         <motion.section className="build-cta" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
@@ -148,7 +255,21 @@ export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onU
       {plan && (
         <section className="plan">
           {plan.map((day, i) => (
-            <DayCard key={day.date} day={day} index={i} kids={kids} byId={byId} stayName={setup.hotelName || stay.name} state={state} onOpen={onOpen} onFeedback={onFeedback} />
+            <DayCard
+              key={day.date}
+              day={day}
+              index={i}
+              kids={kids}
+              byId={byId}
+              stay={stay}
+              stayName={stayName}
+              state={state}
+              ideas={ideas[day.date] ?? []}
+              drives={drives}
+              onOpen={onOpen}
+              onFeedback={onFeedback}
+              onAdd={onAddToPlan}
+            />
           ))}
         </section>
       )}
@@ -177,23 +298,37 @@ function DayCard({
   index,
   kids,
   byId,
+  stay,
   stayName,
   state,
+  ideas,
+  drives,
   onOpen,
   onFeedback,
+  onAdd,
 }: {
   day: PlanDay;
   index: number;
   kids: boolean;
   byId: Record<string, Place>;
+  stay: Stay;
   stayName: string;
   state: AppState;
+  ideas: Place[];
+  drives: Record<string, number>;
   onOpen: (id: string) => void;
   onFeedback: (id: string, rating: Rating, liked: string[]) => void;
+  onAdd: (id: string) => void;
 }) {
   const [rainMode, setRainMode] = useState(day.weather?.kind === "rain");
+  const [showMap, setShowMap] = useState(false);
   const f = fmtDay(day.date);
   const hasOutdoor = day.stops.some((s) => s.kind === "place" && !s.place.indoor);
+  const placeStops = day.stops.filter((s): s is PlaceStop => s.kind === "place");
+  const shownFor = (s: PlaceStop) => {
+    const b = s.place.rainPlan.backupId ? byId[s.place.rainPlan.backupId] : null;
+    return rainMode && !s.place.indoor && b ? b : s.place;
+  };
 
   return (
     <motion.article
@@ -222,16 +357,38 @@ function DayCard({
           <IconRain size={15} /> Rain likely, so I've swapped in your rain plan.
         </p>
       )}
-      {hasOutdoor && (
-        <label className="rain-toggle">
-          <input type="checkbox" checked={rainMode} onChange={(e) => setRainMode(e.target.checked)} />
-          <span className="switch" />
-          If it rains
-        </label>
-      )}
+      <div className="day-controls">
+        {hasOutdoor && (
+          <label className="rain-toggle">
+            <input type="checkbox" checked={rainMode} onChange={(e) => setRainMode(e.target.checked)} />
+            <span className="switch" />
+            If it rains
+          </label>
+        )}
+        {placeStops.length > 0 && (
+          <button className={`map-toggle ${showMap ? "on" : ""}`} onClick={() => setShowMap((v) => !v)}>
+            <IconPin size={13} /> {showMap ? "Hide map" : "Map"}
+          </button>
+        )}
+      </div>
+      <AnimatePresence initial={false}>
+        {showMap && (
+          <motion.div className="day-map" initial={{ height: 0, opacity: 0 }} animate={{ height: 220, opacity: 1 }} exit={{ height: 0, opacity: 0 }}>
+            <MapView
+              theme="light"
+              line
+              home={{ ...stay, label: stayName }}
+              points={placeStops.map((s, i) => {
+                const p = shownFor(s);
+                return { lat: p.location.lat, lng: p.location.lng, label: p.name, n: i + 1, color: CATS[p.category].color, onClick: () => onOpen(p.id) };
+              })}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {day.stops.length === 0 ? (
-        <p className="open-day">Open day. Rest, pool time, or tap Surprise me.</p>
+        <p className="open-day">Open day. Rest, pool time, or add one of these.</p>
       ) : (
         <ol className="timeline">
           {day.stops.map((s, i) =>
@@ -261,6 +418,29 @@ function DayCard({
             ),
           )}
         </ol>
+      )}
+
+      {ideas.length > 0 && (
+        <div className="ideas">
+          <p className="ideas-label">{day.stops.length === 0 ? "Ideas nearby" : "Room for one more?"}</p>
+          {ideas.map((p) => (
+            <div key={p.id} className="idea" style={{ ["--cat" as string]: CATS[p.category].color }}>
+              <button className="idea-open" onClick={() => onOpen(p.id)}>
+                <PlaceImage place={p} />
+                <span>
+                  <b>{p.name}</b>
+                  <small>
+                    {formatDrive(drives[p.id])} · {p.price.perPerson === 0 ? "Free" : p.price.label}
+                    {p.indoor ? " · indoor" : ""}
+                  </small>
+                </span>
+              </button>
+              <button className="idea-add" onClick={() => onAdd(p.id)} aria-label={`Add ${p.name} to this trip`}>
+                +
+              </button>
+            </div>
+          ))}
+        </div>
       )}
 
       {day.tip && <p className="day-tip">🧭 {day.tip}</p>}
@@ -320,6 +500,14 @@ function PlaceRow({
             <IconTicket size={13} /> {shown.booking.best}
           </p>
         )}
+        <a
+          className="stop-dir"
+          href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${shown.name}, ${shown.location.address}`)}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Directions ↗
+        </a>
 
         {fb ? (
           <p className="fb-done">

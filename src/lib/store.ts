@@ -16,6 +16,7 @@ export const initialState = (): AppState => ({
   taste: emptyTaste(),
   feedback: {},
   planFor: null,
+  found: {},
 });
 
 export function useAppState() {

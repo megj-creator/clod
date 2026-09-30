@@ -5,7 +5,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { fmtRange } from "@/lib/dates";
 import { CATEGORY_CHIPS, EXAMPLES, MOOD_CHIPS, chipIntent, interpret, type Intent } from "@/lib/intent";
 import { buildQueue, type Ranked } from "@/lib/rank";
-import type { AppState, City, Stay } from "@/lib/types";
+import { play } from "@/lib/sfx";
+import type { AppState, City, Place, Stay } from "@/lib/types";
 import type { Weather } from "@/lib/weather";
 import { CardFace } from "./CardFace";
 import { IconArrow, IconBack, IconHeart, IconSearch, IconSend, IconSparkle, IconX } from "./icons";
@@ -29,6 +30,7 @@ type Props = {
   onOpen: (id: string) => void;
   onSurprise: () => void;
   onOpenTaste: () => void;
+  onFound: (places: Place[]) => void;
 };
 
 export function Discover(props: Props) {
@@ -47,7 +49,8 @@ function PromptPanel({ city, state, stay, drives, setIntent, onSurprise, onOpenT
     if (!q || thinking) return;
     setThinking(true);
     const crew = [`${setup.adults} adults`, setup.toddler && "a toddler", setup.baby && "a baby"].filter(Boolean).join(", ");
-    const intent = await interpret(q, city.places, drives, `${crew}; max drive ${setup.maxDrive} min; max $${setup.maxPrice}/person`);
+    const seen = new Set([...state.saved, ...Object.keys(state.passed)]);
+    const intent = await interpret(q, city.places, drives, `${crew}; max drive ${setup.maxDrive} min; max $${setup.maxPrice}/person`, seen);
     setThinking(false);
     setIntent(intent);
   };
@@ -56,7 +59,11 @@ function PromptPanel({ city, state, stay, drives, setIntent, onSurprise, onOpenT
     const t = setInterval(() => setEx((i) => (i + 1) % EXAMPLES.length), 4200);
     return () => clearInterval(t);
   }, []);
-  const strip = useMemo(() => [...city.places, ...city.places], [city.places]);
+  // Real photos lead the strip; posters fill in after
+  const strip = useMemo(() => {
+    const ordered = [...city.places].sort((a, b) => Number(b.photos.length > 0) - Number(a.photos.length > 0));
+    return [...ordered, ...ordered];
+  }, [city.places]);
 
   return (
     <div className="screen prompt">
@@ -162,10 +169,11 @@ function PromptPanel({ city, state, stay, drives, setIntent, onSurprise, onOpenT
 const DIG_LINES: Record<number, string[]> = {
   2: ["Going past the famous spots…", "Pulling places locals mention more than guidebooks…", "Checking they fit your limits…"],
   3: ["Going further…", "Opening the deep-cut list…", "Keeping only what's worth the effort…"],
+  4: ["Going beyond my list…", "Looking for what locals actually love…", "Skipping the tourist traps…", "Checking it fits your limits…", "Writing up what I found…"],
 };
 
 function Deck(props: Props & { intent: Intent }) {
-  const { city, state, drives, dates, forecast, intent, setIntent, depthLevel, setDepthLevel, onDecide, onOpen, onOpenTaste } = props;
+  const { city, stay, state, drives, dates, forecast, intent, setIntent, depthLevel, setDepthLevel, onDecide, onOpen, onOpenTaste, onFound } = props;
   const setup = state.setup!;
   const kids = setup.toddler || setup.baby;
   const [showHidden, setShowHidden] = useState(false);
@@ -199,11 +207,54 @@ function Deck(props: Props & { intent: Intent }) {
     return () => window.removeEventListener("keydown", onKey);
   });
 
+  // Past the curated deep cuts, Gemini goes hunting for new places
+  const hunt = async () => {
+    setDigging(4);
+    setDigLine(0);
+    play("whoosh");
+    const spin = setInterval(() => setDigLine((i) => Math.min(i + 1, DIG_LINES[4].length - 1)), 2600);
+    try {
+      const likedTags = Object.entries(state.taste.tags).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]).map(([t]) => t);
+      const res = await fetch("/api/hunt", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          city: `${city.name}, ${city.state}`,
+          stay: { name: setup.hotelName || stay.name, lat: stay.lat, lng: stay.lng },
+          request: intent.heard[0] === "everything" ? "the best things most visitors miss" : `${intent.label} (${intent.heard.join(", ")})`,
+          crew: [`${setup.adults} adults`, setup.toddler && "a toddler", setup.baby && "a baby"].filter(Boolean).join(", "),
+          maxDrive: setup.maxDrive,
+          maxPrice: setup.maxPrice,
+          exclude: city.places.map((p) => p.name),
+          liked: likedTags,
+        }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      const data = (await res.json()) as { places: Place[]; mode: "search" | "knowledge" };
+      if (!data.places?.length) throw new Error("none");
+      onFound(data.places);
+      setIntent({
+        ...intent,
+        picks: Object.fromEntries(data.places.map((p) => [p.id, p.whyFound])),
+        heard: [...intent.heard.filter((h) => h !== "hunted beyond my list"), "hunted beyond my list"],
+        source: "ai",
+      });
+      play("chime");
+      setDugMsg(data.mode === "search" ? `Found ${data.places.length} live. Fresh from the web.` : `Found ${data.places.length} beyond my list.`);
+    } catch (e) {
+      setDugMsg(String(e).includes("429") ? "I'm hunting too fast. Give me a minute." : "Couldn't reach the AI just now. Try again shortly.");
+    } finally {
+      clearInterval(spin);
+      setDigging(null);
+    }
+  };
+
   const digDeeper = () => {
     if (depthLevel >= 3) {
-      setDugMsg("That's as deep as I've dug in Charleston so far. More coming as I research.");
+      hunt();
       return;
     }
+    play("whoosh");
     const next = depthLevel + 1;
     setDigging(next);
     setDigLine(0);
@@ -243,8 +294,11 @@ function Deck(props: Props & { intent: Intent }) {
             {depthLevel > 1 && <span className="heard-chip deep">{depthLevel === 2 ? "local favorites +" : "deep cuts"}</span>}
           </div>
         </div>
-        <button className="dig-btn" onClick={digDeeper}>
-          <IconSearch size={15} /> Dig deeper
+        <button className="icon-btn small taste-mini" onClick={onOpenTaste} aria-label="What I've learned about you">
+          <IconSparkle size={15} />
+        </button>
+        <button className={`dig-btn ${depthLevel >= 3 ? "hunt" : ""}`} onClick={digDeeper} disabled={digging !== null}>
+          <IconSearch size={15} /> {depthLevel >= 3 ? "Go hunting" : "Dig deeper"}
         </button>
       </header>
 
@@ -283,11 +337,9 @@ function Deck(props: Props & { intent: Intent }) {
           <motion.div className="deck-empty" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}>
             <p className="display-sm">That's everything I've found for this vibe.</p>
             <div className="deck-empty-actions">
-              {depthLevel < 3 && (
-                <button className="btn primary" onClick={digDeeper}>
-                  <IconSearch size={16} /> Dig deeper
-                </button>
-              )}
+              <button className="btn primary" onClick={digDeeper}>
+                <IconSearch size={16} /> {depthLevel >= 3 ? "Go hunting beyond my list" : "Dig deeper"}
+              </button>
               <button className="btn" onClick={() => { setIntent(null); setDepthLevel(1); }}>
                 Try another mood
               </button>

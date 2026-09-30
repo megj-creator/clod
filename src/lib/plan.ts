@@ -44,7 +44,10 @@ export function buildPlan(opts: {
 
   // 1. How many days to use. Lighter days with little ones.
   const perDay = kids ? 2.5 : 3.5;
-  const k = Math.min(dates.length, Math.max(1, Math.ceil(places.length / perDay)));
+  const isMeal = (p: Place) => p.category === "eat";
+  const meals = places.filter(isMeal).length;
+  // Enough days that nobody eats two dinners in one evening (max lunch + dinner per day).
+  const k = Math.min(dates.length, places.length, Math.max(1, Math.ceil(places.length / perDay), Math.ceil(meals / 2)));
 
   // 2. Seed clusters with the places farthest apart, then assign by distance with a cap.
   const loc = (p: Place) => p.location;
@@ -67,10 +70,10 @@ export function buildPlan(opts: {
     })
     .sort((a, b) => b.gap - a.gap);
   for (const { p, ds } of order) {
-    const choice = ds
-      .map((d, i) => ({ d, i }))
-      .sort((a, b) => a.d - b.d)
-      .find(({ i }) => clusters[i].length < cap) ?? { i: ds.indexOf(Math.min(...ds)) };
+    const byDistance = ds.map((d, i) => ({ d, i })).sort((a, b) => a.d - b.d);
+    const roomy = ({ i }: { i: number }) =>
+      clusters[i].length < cap && (!isMeal(p) || clusters[i].filter(isMeal).length < 2);
+    const choice = byDistance.find(roomy) ?? byDistance.find(({ i }) => clusters[i].length < cap) ?? byDistance[0];
     clusters[choice.i].push(p);
   }
 
@@ -114,6 +117,7 @@ export function buildPlan(opts: {
       evening: kids ? 1140 : 1260,
     };
     const used = new Set<Slot>();
+    const mealsUsed = new Set<"lunch" | "dinner">();
     const stops: PlaceStop[] = [];
     let napInCar = false;
 
@@ -123,12 +127,20 @@ export function buildPlan(opts: {
       const notes: string[] = [];
       let time: number;
 
-      const flexible = ["morning", "afternoon", "anytime"].includes(p.bestTime);
+      const flexible = !isMeal(p) && ["morning", "afternoon", "anytime"].includes(p.bestTime);
       if (kids && fromStay > 35 && flexible && !used.has("napDrive")) {
         used.add("napDrive");
         napInCar = true;
         time = napS + fromStay;
         notes.push(`Leave at ${fmtTime(napS)}. The ${formatDrive(fromStay)} drive doubles as nap time.`);
+      } else if (isMeal(p)) {
+        // Restaurants take a meal: dinner (or a sunset dinner) first, lunch if dinner's taken.
+        const wantsEvening = ["dinner", "sunset", "evening"].includes(p.bestTime);
+        const dinnerSlot: Slot = p.bestTime === "sunset" && !used.has("sunset") ? "sunset" : "dinner";
+        const slot: Slot = wantsEvening && !mealsUsed.has("dinner") ? dinnerSlot : !mealsUsed.has("lunch") ? "lunch" : dinnerSlot;
+        mealsUsed.add(slot === "lunch" ? "lunch" : "dinner");
+        used.add(slot);
+        time = T[slot];
       } else {
         const slot =
           PREFS[p.bestTime].find((s) => !used.has(s)) ??

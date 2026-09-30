@@ -50,14 +50,14 @@ export function applySignal(t: Taste, place: Place, signal: Signal): Taste {
       break;
     case "pass":
     case "meh":
-      tagged(-0.4);
+      tagged(-0.25);
       break;
     case "expensive":
       next.price += 1;
       break;
     case "touristy":
+      // It's about fame, not the place's style, so only nudge toward deeper cuts
       next.depth += 1;
-      tagged(-0.5);
       break;
     case "notme":
     case "vibe":
@@ -94,7 +94,8 @@ export const prettyTag = (tag: string) => tag.replace(/-/g, " ");
 export function tasteSummary(t: Taste) {
   const entries = Object.entries(t.tags);
   const likes = entries.filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]).slice(0, 6);
-  const dislikes = entries.filter(([, v]) => v < 0).sort((a, b) => a[1] - b[1]).slice(0, 4);
+  // Only call something "less your thing" once there's a real signal, not one stray pass
+  const dislikes = entries.filter(([, v]) => v <= -0.9).sort((a, b) => a[1] - b[1]).slice(0, 4);
   const lines: string[] = [];
   if (t.depth > 0.8) lines.push("You lean toward local spots over famous ones.");
   if (t.depth < -0.8) lines.push("You don't mind the classics, as long as they're good.");

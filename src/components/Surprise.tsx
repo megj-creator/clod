@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useMemo, useState } from "react";
 import { pickSurprise } from "@/lib/rank";
+import { play } from "@/lib/sfx";
 import { prettyTag } from "@/lib/taste";
 import type { AppState, City, Place } from "@/lib/types";
 import type { Weather } from "@/lib/weather";
@@ -21,7 +22,9 @@ export function Surprise({
   forecast,
   onDecide,
   onOpen,
+  onReveal,
 }: {
+  onReveal: () => void;
   city: City;
   state: AppState;
   drives: Record<string, number>;
@@ -38,6 +41,7 @@ export function Surprise({
   const exclude = useMemo(() => new Set([...state.saved, ...Object.keys(state.passed)]), [state.saved, state.passed]);
 
   const go = () => {
+    play("whoosh");
     setPhase("digging");
     setLine(0);
     LINES.forEach((_, i) => setTimeout(() => setLine(i), i * 650));
@@ -46,6 +50,7 @@ export function Surprise({
       setPick(p);
       if (p) setShown((s) => [...s, p.id]);
       setPhase(p ? "reveal" : "empty");
+      if (p) setTimeout(onReveal, 350);
     }, LINES.length * 650 + 250);
   };
 

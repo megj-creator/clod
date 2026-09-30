@@ -4,11 +4,12 @@ import { motion } from "motion/react";
 import type { ReactNode } from "react";
 import { fmtDay } from "@/lib/dates";
 import { formatDrive } from "@/lib/geo";
-import type { Place } from "@/lib/types";
+import type { Place, Stay } from "@/lib/types";
+import { MapView } from "./MapView";
 import { weatherEmoji, type Weather } from "@/lib/weather";
 import type { Decision } from "./Discover";
 import {
-  IconAlert, IconArrow, IconBaby, IconCar, IconChat, IconClock, IconExternal, IconFlame, IconHeart, IconPin, IconRain, IconSparkle, IconTicket, IconX,
+  IconAlert, IconArrow, IconBaby, IconCar, IconChat, IconClock, IconExternal, IconFlame, IconHeart, IconPin, IconRain, IconSearch, IconSparkle, IconTicket, IconX,
 } from "./icons";
 import { PlaceImage } from "./PlaceImage";
 import { CATS, DEPTH, HypeMeter, KidDots, VerifyBadge, priceLong } from "./ui";
@@ -20,11 +21,13 @@ export function DetailSheet({
   dates,
   forecast,
   isSaved,
+  stay,
   onClose,
   onDecide,
   onUnsave,
   onOpen,
 }: {
+  stay: Stay;
   place: Place;
   drive: number;
   byId: Record<string, Place>;
@@ -39,6 +42,7 @@ export function DetailSheet({
   const cat = CATS[place.category];
   const backup = place.rainPlan.backupId ? byId[place.rainPlan.backupId] : null;
   const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${place.name}, ${place.location.address}`)}`;
+  const directions = `https://www.google.com/maps/dir/?api=1&origin=${stay.lat},${stay.lng}&destination=${encodeURIComponent(`${place.name}, ${place.location.address}`)}`;
   const act = (d: Decision) => {
     onDecide(place.id, d);
     onClose();
@@ -83,7 +87,7 @@ export function DetailSheet({
 
         <div className="detail-body">
           <div className="detail-badges">
-            <span className={`depth depth-${place.depth}`}>{DEPTH[place.depth].label}</span>
+            <span className={`depth depth-${place.live ? "live" : place.depth}`}>{place.live ? "✦ Fresh find" : DEPTH[place.depth].label}</span>
             <span className="cat-chip">
               {cat.emoji} {cat.label}
             </span>
@@ -150,7 +154,9 @@ export function DetailSheet({
                 </span>
               ))}
             </div>
-            <p className="micro">Sample forecast, for now</p>
+            <p className="micro">
+              {dates.some((d) => forecast[d]?.live) ? "Live forecast from Open-Meteo. Days beyond ~2 weeks show typical weather." : "Typical weather. The live forecast appears about 2 weeks out."}
+            </p>
           </Section>
 
           <Section icon={<IconTicket size={16} />} title="Best way to book" badge={<VerifyBadge date={place.booking.lastChecked} compact />}>
@@ -178,11 +184,40 @@ export function DetailSheet({
             <p className="micro">{place.kidFit.stroller ? "Stroller-friendly" : "Leave the stroller, bring the carrier"}</p>
           </Section>
 
-          <a className="address" href={maps} target="_blank" rel="noreferrer">
-            <IconPin size={16} />
-            <span>{place.location.address}</span>
-            <IconExternal size={13} />
-          </a>
+          {place.live && (
+            <Section icon={<IconSearch size={16} />} title={place.live.mode === "search" ? "Found live on the web" : "Found beyond my list"}>
+              <p>
+                {place.live.mode === "search"
+                  ? `Gemini found this on ${place.live.foundAt} by searching local sources. Nothing here has been checked against the official site yet.`
+                  : `Gemini suggested this on ${place.live.foundAt} from what it knows, not from a live search. Confirm it's open before you go.`}
+              </p>
+              {place.live.sources.length > 0 && (
+                <ul className="sources">
+                  {place.live.sources.map((s) => (
+                    <li key={s.url}>
+                      <a href={s.url} target="_blank" rel="noreferrer">
+                        {s.title || new URL(s.url).hostname} <IconExternal size={11} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Section>
+          )}
+
+          <div className="detail-map">
+            <MapView points={[{ lat: place.location.lat, lng: place.location.lng, label: place.name, color: cat.color }]} home={{ ...stay, label: stay.name }} line theme="dark" />
+          </div>
+          <div className="map-actions">
+            <a className="address" href={maps} target="_blank" rel="noreferrer">
+              <IconPin size={16} />
+              <span>{place.location.address}</span>
+              <IconExternal size={13} />
+            </a>
+            <a className="btn directions" href={directions} target="_blank" rel="noreferrer">
+              <IconCar size={16} /> Directions
+            </a>
+          </div>
         </div>
 
         <div className="sheet-actions">

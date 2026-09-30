@@ -38,6 +38,8 @@ export type Place = {
   booking: { best: string; tips?: string[]; lastChecked: string | null };
   hypeCheck: { score: number; text: string };
   kidFit: { score: 1 | 2 | 3; stroller: boolean; notes: string };
+  // Present on places Gemini found by hunting beyond the curated list
+  live?: { foundAt: string; mode: "search" | "knowledge"; sources: { title: string; url: string }[] };
 };
 
 export type Stay = { id: string; name: string; area: string; lat: number; lng: number };
@@ -89,4 +91,5 @@ export type AppState = {
   taste: Taste;
   feedback: Record<string, { rating: Rating; liked: string[] }>;
   planFor: string[] | null; // the saved ids the current plan was built from
+  found: Record<string, Place>; // places Gemini hunted down, kept so saves survive reloads
 };

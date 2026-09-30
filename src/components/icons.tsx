@@ -100,6 +100,18 @@ export const IconExternal = (p: P) => (
 export const IconEdit = (p: P) => (
   <svg {...base(p)}><path d="M4 20h4L19 9l-4-4L4 16z" /><path d="M13.5 6.5l4 4" /></svg>
 );
+export const IconShare = (p: P) => (
+  <svg {...base(p)}><path d="M12 15V4M8 8l4-4 4 4" /><path d="M5 12v6a2 2 0 002 2h10a2 2 0 002-2v-6" /></svg>
+);
+export const IconCalendar = (p: P) => (
+  <svg {...base(p)}><rect x="4" y="5.5" width="16" height="14" rx="2.5" /><path d="M4 10h16M9 3.5v4M15 3.5v4" /></svg>
+);
+export const IconSound = ({ on, ...p }: P & { on?: boolean }) => (
+  <svg {...base(p)}>
+    <path d="M4 10v4h4l5 4V6L8 10z" />
+    {on ? <path d="M16.5 9a4 4 0 010 6M19 6.5a7.5 7.5 0 010 11" /> : <path d="M17 10l4 4M21 10l-4 4" />}
+  </svg>
+);
 export const IconChevron = (p: P) => (
   <svg {...base(p)}><path d="M9 6l6 6-6 6" /></svg>
 );

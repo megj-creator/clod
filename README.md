@@ -17,7 +17,11 @@ Test city: Charleston, SC. Next up: Austin, TX.
 | **Surprise me** | Picks something you probably wouldn't have searched for, based on what you've taught it. |
 | **Full story** | Tap a card to see: why I found it, insider tip, reality check (hours, seasonal closures, "last checked" date), rain plan, best way to book, what locals say, hype check, kid fit. |
 | **My Trip** | "You saved 8 things. Want me to build these into your trip?" Days are grouped by proximity and planned around meals, sunset, and nap time (long drives become car naps). There's a rain-plan toggle on every day, and "How was it?" feedback afterward. |
-| **What I've learned** | The sparkle button. Shows your taste profile, all stored on your phone only. |
+| **What I've learned** | The sparkle button. Shows your taste profile, all stored on your phone only, plus the sounds and haptics switch. |
+| **Go hunting** | Past the deep cuts, Gemini hunts beyond the curated list for places locals love. Each find gets a "✦ Fresh find" badge, an honest note on where it came from, and a licensed Wikimedia photo when one exists. |
+| **Maps** | Every place has a map with directions. Each day in My Trip has a route map. Maps are free vector maps from OpenFreeMap, with no key needed. |
+| **Share & calendar** | Share the whole trip as text, or save it as a calendar file with every stop, time, and address. |
+| **Ideas for light days** | Empty days suggest nearby places that fit your limits and the weather. One tap adds them to the plan. |
 
 ## Editing places (no coding needed)
 
@@ -68,7 +72,8 @@ The key stays on the server and never reaches visitors' phones. There's a small 
 | Drive times | ⚠️ **Estimates** from straight-line distance. Replacing this with a real routing service is next. |
 | Hours, prices, booking | ⚠️ From memory or the web, marked **Not yet verified**. |
 | "What locals are saying" | ⚠️ Summaries, marked as such. Not yet sourced from real local voices. |
-| Forecast | ⚠️ Sample (day 3 is always rainy, so you can see the rain plan). |
+| Forecast | ✅ Live from Open-Meteo (free, no key) for the next ~2 weeks. Dates further out show typical weather, labeled as such. |
+| Live web search for "Go hunting" | ⚠️ Your Gemini key's free plan doesn't include Google Search, so hunting currently uses Gemini's own knowledge and says so on each card. Enable billing on the key and it switches to live search automatically. |
 | "Type what you want" | ✅ Gemini, once the key is set (see above). Falls back to keyword matching otherwise. |
 | Your saves and taste | Stored on your phone only (browser storage). Supabase comes when we add accounts. |
 
