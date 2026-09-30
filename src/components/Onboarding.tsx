@@ -3,8 +3,9 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState, type ReactNode } from "react";
 import { addDaysIso } from "@/lib/dates";
+import { CitySearchError, searchCity } from "@/lib/cities";
 import type { City, TripSetup } from "@/lib/types";
-import { IconArrow, IconBack, IconCheck } from "./icons";
+import { IconArrow, IconBack, IconCheck, IconSearch } from "./icons";
 
 const STEPS = ["welcome", "city", "when", "stay", "limits", "crew"] as const;
 
@@ -28,16 +29,56 @@ function defaults(city: City): TripSetup {
   };
 }
 
-export function Onboarding({ city, initial, onDone }: { city: City; initial: TripSetup | null; onDone: (s: TripSetup) => void }) {
-  const [step, setStep] = useState(initial ? 2 : 0);
+const SUGGESTIONS = ["Lisbon", "Kyoto", "Asheville, NC", "Mexico City", "Edinburgh", "Santa Fe, NM"];
+
+export function Onboarding({
+  city: current,
+  featured,
+  initial,
+  onPickCity,
+  onDone,
+}: {
+  city: City;
+  featured: City;
+  initial: TripSetup | null;
+  onPickCity: (c: City) => void;
+  onDone: (s: TripSetup) => void;
+}) {
+  // Editing an existing trip starts at "Where?" so you can change destination too
+  const [step, setStep] = useState(initial ? 1 : 0);
   const [dir, setDir] = useState(1);
-  const [s, setS] = useState<TripSetup>(initial ?? defaults(city));
+  const [city, setCity] = useState<City>(current);
+  const [s, setS] = useState<TripSetup>(initial ?? defaults(current));
   const [finishing, setFinishing] = useState(false);
+  const [query, setQuery] = useState("");
+  const [searching, setSearching] = useState<string | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
   const set = <K extends keyof TripSetup>(k: K, v: TripSetup[K]) => setS((prev) => ({ ...prev, [k]: v }));
+
+  const choose = (c: City) => {
+    setCity(c);
+    setSearchError(null);
+    if (c.id !== s.cityId) setS((prev) => ({ ...prev, cityId: c.id, stayId: c.stays[0].id }));
+  };
+  const search = async (q: string) => {
+    q = q.trim();
+    if (!q || searching) return;
+    setQuery(q);
+    if (/^charleston\b/i.test(q) && !/wv|west virginia|il\b|illinois/i.test(q)) return choose(featured);
+    setSearching(q);
+    setSearchError(null);
+    try {
+      choose(await searchCity(q));
+    } catch (e) {
+      setSearchError(e instanceof CitySearchError ? e.message : "Something went wrong. Try again.");
+    } finally {
+      setSearching(null);
+    }
+  };
 
   const valid: Record<(typeof STEPS)[number], boolean> = {
     welcome: true,
-    city: true,
+    city: !searching && s.cityId === city.id,
     when: !!s.start && !!s.end && s.end >= s.start,
     stay: !!s.stayId,
     limits: s.maxDrive >= 5 && s.maxDrive <= 300 && s.maxPrice >= 0 && s.maxPrice <= 2000,
@@ -53,14 +94,24 @@ export function Onboarding({ city, initial, onDone }: { city: City; initial: Tri
     if (step === STEPS.length - 1) {
       setFinishing(true);
       setTimeout(() => onDone(s), 1500);
-    } else go(1);
+    } else {
+      // Picking the city starts finding its places now, while you fill in the rest
+      if (name === "city") onPickCity(city);
+      go(1);
+    }
   };
 
   return (
     <div className="onb">
       <div className={`onb-hero ${step === 0 ? "tall" : ""}`}>
-        <img src={city.hero.src} alt="Rainbow Row, Charleston" />
-        <span className="onb-credit">📷 {city.hero.credit} · {city.hero.license}</span>
+        {city.hero ? (
+          <>
+            <img key={city.hero.src} src={city.hero.src} alt={city.name} />
+            <span className="onb-credit">📷 {city.hero.credit} · {city.hero.license}</span>
+          </>
+        ) : (
+          <div className="onb-hero-fill" />
+        )}
       </div>
 
       {step > 0 && !finishing && (
@@ -108,20 +159,54 @@ export function Onboarding({ city, initial, onDone }: { city: City; initial: Tri
               {name === "city" && (
                 <>
                   <Q>Where are we going?</Q>
+                  <form
+                    className={`ask city-search ${searching ? "is-thinking" : ""}`}
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      search(query);
+                    }}
+                  >
+                    <input
+                      type="search"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="Any city, town, or island…"
+                      aria-label="Search for a destination"
+                      enterKeyHint="search"
+                      disabled={!!searching}
+                    />
+                    <button type="submit" aria-label="Search" disabled={!query.trim() || !!searching}>
+                      {searching ? <span className="spinner" /> : <IconSearch size={18} />}
+                    </button>
+                    {searching && <p className="ask-status">Finding {searching}: where people stay, how to get around…</p>}
+                  </form>
+                  {searchError && <p className="city-error">{searchError}</p>}
                   <div className="city-cards">
-                    <button className="city-card on" onClick={next}>
-                      <img src={city.hero.src} alt="" />
+                    <button className={`city-card on ${city.hero ? "" : "no-photo"}`} onClick={next} disabled={!!searching}>
+                      {city.hero && <img src={city.hero.src} alt="" />}
                       <span>
-                        <b>{city.name}</b>
+                        <b>
+                          {city.name}
+                          {city.state ? <small>, {city.state}</small> : null}
+                        </b>
                         {city.tagline}
+                        <i className="city-source">{city.generated ? "✦ Found by Gemini just now" : "✓ Hand-checked by locals"}</i>
                       </span>
                       <IconCheck size={18} />
                     </button>
-                    <div className="city-card soon">
-                      <span>
-                        <b>Austin</b>Next up
-                      </span>
-                    </div>
+                  </div>
+                  <p className="onb-hint">Or try</p>
+                  <div className="chip-row">
+                    {city.id !== featured.id && (
+                      <button className="chip small" onClick={() => { setQuery(""); choose(featured); }} disabled={!!searching}>
+                        {featured.name}
+                      </button>
+                    )}
+                    {SUGGESTIONS.filter((q) => !q.toLowerCase().startsWith(city.name.toLowerCase())).slice(0, 5).map((q) => (
+                      <button key={q} className="chip small" onClick={() => search(q)} disabled={!!searching}>
+                        {q}
+                      </button>
+                    ))}
                   </div>
                 </>
               )}
@@ -156,7 +241,7 @@ export function Onboarding({ city, initial, onDone }: { city: City; initial: Tri
                   </div>
                   <label className="field">
                     <span>Hotel or rental name (optional)</span>
-                    <input type="text" value={s.hotelName} placeholder="e.g. The Vendue" onChange={(e) => set("hotelName", e.target.value)} />
+                    <input type="text" value={s.hotelName} placeholder={city.generated ? "e.g. the name on your booking" : "e.g. The Vendue"} onChange={(e) => set("hotelName", e.target.value)} />
                   </label>
                 </>
               )}

@@ -3,7 +3,7 @@
 **Go somewhere you wouldn't have found yourself.**
 An AI trip planner that works like an obsessive traveler who interviewed a local. It does the digging, and you just say yes or no.
 
-Test city: Charleston, SC. Next up: Austin, TX.
+**Works anywhere.** Type any city, town, or island and Gemini builds it on the spot. Charleston, SC stays in as the hand-checked showcase city.
 
 ---
 
@@ -11,7 +11,8 @@ Test city: Charleston, SC. Next up: Austin, TX.
 
 | Screen | What it does |
 |---|---|
-| **Setup** | Where, when, where you're staying, your own max drive time and max price per person, who's coming (toddler/baby → nap window). |
+| **Setup** | Where (search anywhere), when, where you're staying, your own max drive time and max price per person, who's coming (toddler/baby → nap window). |
+| **Search any destination** | OpenStreetMap finds where it is. Gemini writes up the neighborhoods people stay in and getting-around tips, then finds ~29 real places across eat, explore, history, family, and music. It works on one category at a time, in parallel, while you finish setup. Each place gets real road times from every neighborhood and a licensed Wikimedia photo when one exists. Switching destination starts a fresh trip, but your taste profile comes along. |
 | **Discover** | Tap a mood, or just type what you want (*"tired, want somewhere cute for dinner, toddler in tow"*). Then swipe through Discoveries, nearest first and inside your limits. **→ Save · ↑ More like this · ← Not for me** (then it asks *why*). |
 | **Dig deeper** | Goes past the famous spots: Classic → Local favorite → Deep cut. |
 | **Surprise me** | Picks something you probably wouldn't have searched for, based on what you've taught it. |
@@ -23,7 +24,9 @@ Test city: Charleston, SC. Next up: Austin, TX.
 | **Share & calendar** | Share the whole trip as text, or save it as a calendar file with every stop, time, and address. |
 | **Ideas for light days** | Empty days suggest nearby places that fit your limits and the weather. One tap adds them to the plan. |
 
-## Editing places (no coding needed)
+## Editing the showcase city (no coding needed)
+
+Searched cities need no files: Gemini finds everything on the fly. The files below are only for the hand-checked showcase city, Charleston.
 
 Every place is one file in [`data/cities/charleston/places/`](data/cities/charleston/places/).
 
@@ -74,7 +77,7 @@ The code lives on GitHub, and **Vercel** hosts it. Every time something changes 
 
 ## Turning on Gemini (the AI)
 
-When you type what you want, Gemini reads it and picks the places that fit, each with a one-line reason why. Without a key, the app quietly falls back to simple keyword matching, so it never breaks.
+Gemini powers searching any destination and finding its places. When you type what you want, it also reads your request and picks the places that fit, each with a one-line reason why. Without a key, only Charleston works, and typed requests fall back to simple keyword matching, so the app never breaks.
 
 1. Get a free key at **https://aistudio.google.com/apikey** (click **Create API key**).
 2. **Live site:** in Vercel, open your project → **Settings** → **Environment Variables**. Add the name `GEMINI_API_KEY` and paste your key as the value → **Save**. Then go to **Deployments** → **⋯** → **Redeploy**.
@@ -90,7 +93,8 @@ The key stays on the server and never reaches visitors' phones. There's a small 
 | Drive times | ✅ **Real road routes** (OpenStreetMap) from every stay, without traffic, plus 2 minutes to park. Live finds get real times too. |
 | Hours, prices, booking | ✅ Checked against official websites where the site lists them, with a date and a quote. The rest say **Not yet verified** or "call ahead." The trip builder uses the verified days: it never schedules a place on a day it's closed, and warns you if it can't avoid it. |
 | "What locals are saying" | ⚠️ Summaries for now, plus a "What locals say" button that opens the real r/Charleston threads. Real paraphrased local voices turn on once Reddit approves access. |
-| Places | 54 curated places across eat, music, explore, family, and history, plus unlimited live finds from Go hunting. |
+| Places | Charleston: 54 curated places. Anywhere else: found by Gemini on the spot and marked as unverified, with the same "confirm before you go" note as live finds. Plus unlimited live finds from Go hunting. |
+| Searched cities | ⚠️ Pin locations come from Gemini (anything implausibly far from the city is dropped), so an occasional pin may be off by a block or two. Prices are in US dollars. Results are cached on the server for a day, so the next person to search the same city gets it instantly. |
 | Forecast | ✅ Live from Open-Meteo (free, no key) for the next ~2 weeks. Dates further out show typical weather, labeled as such. |
 | Live web search for "Go hunting" | ⚠️ Your Gemini key's free plan doesn't include Google Search, so hunting currently uses Gemini's own knowledge and says so on each card. Enable billing on the key and it switches to live search automatically. |
 | "Type what you want" | ✅ Gemini, once the key is set (see above). Falls back to keyword matching otherwise. |

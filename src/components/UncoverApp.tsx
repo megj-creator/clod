@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { usePlaceLoader } from "@/lib/cities";
 import { tripDates } from "@/lib/dates";
 import { driveFromStay } from "@/lib/geo";
 import { chipIntent, type Intent } from "@/lib/intent";
@@ -22,8 +23,18 @@ import { TasteSheet } from "./TasteSheet";
 type Tab = "discover" | "surprise" | "trip";
 type Toast = { id: number; kind: "why" | "info"; placeId?: string; text: string; undo?: AppState };
 
-export default function UncoverApp({ city }: { city: City }) {
+export default function UncoverApp({ featured }: { featured: City }) {
   const { state, update, replace, ready } = useAppState();
+  // A city searched on the fly, or the hand-checked featured one
+  const city = state.city ?? featured;
+  const [retry, setRetry] = useState(0);
+  usePlaceLoader(state, update, retry);
+  const retryPlaces = () => {
+    update((s) =>
+      s.city?.generated ? { ...s, city: { ...s.city, generated: { ...s.city.generated, pending: s.city.generated.failed, failed: [] } } } : s,
+    );
+    setRetry((n) => n + 1);
+  };
   const [tab, setTab] = useState<Tab>("discover");
   const [detailId, setDetailId] = useState<string | null>(null);
   const [tasteOpen, setTasteOpen] = useState(false);
@@ -131,6 +142,23 @@ export default function UncoverApp({ city }: { city: City }) {
   const feedback = (id: string, rating: Rating, liked: string[]) =>
     update((s) => ({ ...s, feedback: { ...s.feedback, [id]: { rating, liked } }, taste: applySignal(s.taste, byId[id], rating) }));
 
+  // Switching destination starts a fresh trip (saves are per city), but your taste comes along
+  const pickCity = (next: City) => {
+    if (next.id === (state.city ?? featured).id) return;
+    update((s) => ({
+      ...s,
+      city: next.id === featured.id ? null : next,
+      saved: [],
+      passed: {},
+      moreLike: [],
+      feedback: {},
+      planFor: null,
+      found: {},
+    }));
+    setIntent(null);
+    setDepthLevel(1);
+  };
+
   if (!ready) {
     return (
       <Shell city={city}>
@@ -146,6 +174,8 @@ export default function UncoverApp({ city }: { city: City }) {
       <Shell city={city}>
         <Onboarding
           city={city}
+          featured={featured}
+          onPickCity={pickCity}
           initial={state.setup}
           onDone={(setup) => {
             update((s) => ({ ...s, setup, planFor: null }));
@@ -176,6 +206,7 @@ export default function UncoverApp({ city }: { city: City }) {
                 <Discover
                   city={cityView}
                   onFound={addFound}
+                  onRetryPlaces={retryPlaces}
                   stay={stay}
                   state={state}
                   drives={drives}
@@ -368,7 +399,7 @@ function PhoneQR() {
 function Shell({ city, children }: { city: City; children: ReactNode }) {
   return (
     <div className="stage">
-      <div className="stage-bg" style={{ backgroundImage: `url(${city.hero.src})` }} />
+      <div className="stage-bg" style={city.hero ? { backgroundImage: `url(${city.hero.src})` } : undefined} />
       <aside className="stage-copy">
         <p className="wordmark">Uncover</p>
         <h2>

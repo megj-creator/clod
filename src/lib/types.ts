@@ -42,8 +42,8 @@ export type Place = {
   booking: { best: string; tips?: string[]; lastChecked: string | null };
   hypeCheck: { score: number; text: string };
   kidFit: { score: 1 | 2 | 3; stroller: boolean; notes: string };
-  // Present on places Gemini found by hunting beyond the curated list
-  live?: { foundAt: string; mode: "search" | "knowledge"; sources: { title: string; url: string }[] };
+  // Present on places Gemini found: for a searched city ("city") or by hunting beyond what's shown ("hunt", the default)
+  live?: { foundAt: string; mode: "search" | "knowledge"; origin?: "city" | "hunt"; sources: { title: string; url: string }[] };
   // Real road minutes from a stay, looked up when a live find arrives
   driveFrom?: Record<string, number>;
   // Days open (0 = Sunday), from hours verified on the official site
@@ -59,12 +59,23 @@ export type City = {
   tagline: string;
   sunset: string;
   subreddit?: string;
-  hero: Photo;
+  hero: Photo | null;
   stays: Stay[];
   gettingAround: string[];
   places: Place[];
   // Real road times from scripts/drive-times.mjs (minutes)
   drives?: { checked: string; source: string; stays: Record<string, Record<string, number>>; between: Record<string, Record<string, number>> };
+  // Set on cities searched on the fly (/api/city); their places arrive per category from /api/places
+  generated?: {
+    query: string;
+    country: string;
+    lat: number;
+    lng: number;
+    radius: number; // miles from the center that places may be
+    createdAt: string;
+    pending: Category[];
+    failed: Category[];
+  };
 };
 
 export type TripSetup = {
@@ -103,4 +114,5 @@ export type AppState = {
   feedback: Record<string, { rating: Rating; liked: string[] }>;
   planFor: string[] | null; // the saved ids the current plan was built from
   found: Record<string, Place>; // places Gemini hunted down, kept so saves survive reloads
+  city: City | null; // a city searched on the fly; null means the hand-checked featured city
 };

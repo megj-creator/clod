@@ -31,7 +31,30 @@ type Props = {
   onSurprise: () => void;
   onOpenTaste: () => void;
   onFound: (places: Place[]) => void;
+  onRetryPlaces: () => void;
 };
+
+// For a searched city: "still finding places…" while categories load, or a retry if some failed
+function LoadingLine({ city, onRetry }: { city: City; onRetry: () => void }) {
+  const g = city.generated;
+  if (!g) return null;
+  if (g.pending.length)
+    return (
+      <p className="places-loading">
+        <span className="spinner" /> Still digging through {city.name}. {city.places.length ? `${city.places.length} places so far…` : "The first finds take about 20 seconds…"}
+      </p>
+    );
+  if (g.failed.length)
+    return (
+      <p className="places-loading failed">
+        Couldn't find the {g.failed.join(" & ")} spots just now.{" "}
+        <button className="status-link" onClick={onRetry}>
+          Try again
+        </button>
+      </p>
+    );
+  return null;
+}
 
 export function Discover(props: Props) {
   if (!props.intent) return <PromptPanel {...props} />;
@@ -40,7 +63,7 @@ export function Discover(props: Props) {
 
 /* ───────────────────────── Prompt ───────────────────────── */
 
-function PromptPanel({ city, state, stay, drives, setIntent, onSurprise, onOpenTaste }: Props) {
+function PromptPanel({ city, state, stay, drives, setIntent, onSurprise, onOpenTaste, onRetryPlaces }: Props) {
   const setup = state.setup!;
   const [text, setText] = useState("");
   const [thinking, setThinking] = useState(false);
@@ -79,6 +102,8 @@ function PromptPanel({ city, state, stay, drives, setIntent, onSurprise, onOpenT
           {state.taste.signals > 0 && <span>{state.taste.signals}</span>}
         </button>
       </header>
+
+      <LoadingLine city={city} onRetry={onRetryPlaces} />
 
       <div className="marquee" aria-hidden>
         <div className="marquee-track">
@@ -173,7 +198,8 @@ const DIG_LINES: Record<number, string[]> = {
 };
 
 function Deck(props: Props & { intent: Intent }) {
-  const { city, stay, state, drives, dates, forecast, intent, setIntent, depthLevel, setDepthLevel, onDecide, onOpen, onOpenTaste, onFound } = props;
+  const { city, stay, state, drives, dates, forecast, intent, setIntent, depthLevel, setDepthLevel, onDecide, onOpen, onOpenTaste, onFound, onRetryPlaces } = props;
+  const stillLoading = !!city.generated?.pending.length;
   const setup = state.setup!;
   const kids = setup.toddler || setup.baby;
   const [showHidden, setShowHidden] = useState(false);
@@ -313,6 +339,7 @@ function Deck(props: Props & { intent: Intent }) {
         )}
       </div>
       {relaxed && <p className="relaxed">Nothing matched exactly, so here's the closest I have.</p>}
+      <LoadingLine city={city} onRetry={onRetryPlaces} />
 
       <div className="deck">
         <AnimatePresence custom={exitDir}>
@@ -336,7 +363,7 @@ function Deck(props: Props & { intent: Intent }) {
 
         {!queue.length && (
           <motion.div className="deck-empty" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}>
-            <p className="display-sm">That's everything I've found for this vibe.</p>
+            <p className="display-sm">{stillLoading ? "Still digging. More places are on the way." : "That's everything I've found for this vibe."}</p>
             <div className="deck-empty-actions">
               <button className="btn primary" onClick={digDeeper}>
                 <IconSearch size={16} /> {depthLevel >= 3 ? "Go hunting beyond my list" : "Dig deeper"}

@@ -17,6 +17,7 @@ export const initialState = (): AppState => ({
   feedback: {},
   planFor: null,
   found: {},
+  city: null,
 });
 
 export function useAppState() {

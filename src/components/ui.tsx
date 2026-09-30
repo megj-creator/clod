@@ -76,6 +76,9 @@ export function lookLinks(place: Place, cityName: string, subreddit?: string) {
   return links;
 }
 
+// Hunted beyond what was shown (not the places that make up a searched city)
+export const isFreshFind = (place: Place) => !!place.live && place.live.origin !== "city";
+
 export const photosUrl = (place: Place, cityName: string) =>
   `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(`${place.name} ${cityName}`)}`;
 

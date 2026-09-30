@@ -3252,3 +3252,78 @@ h3 {
   font-size: 13px !important;
   color: var(--amber-2) !important;
 }
+
+/* ───────── Search any destination ───────── */
+.ask.city-search {
+  margin-top: 0;
+}
+.city-search input {
+  width: 100%;
+  height: 26px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 16px;
+  color: var(--text);
+}
+.city-search input::placeholder {
+  color: var(--text-3);
+  font-style: italic;
+  font-family: var(--serif);
+}
+.city-search input::-webkit-search-cancel-button {
+  display: none;
+}
+.city-search button:disabled {
+  opacity: 0.45;
+}
+.city-search.is-thinking button:disabled {
+  opacity: 1;
+}
+.city-error {
+  font-size: 13.5px;
+  color: #f08b77;
+  margin-top: -4px;
+}
+.city-card.no-photo {
+  background: radial-gradient(120% 140% at 100% 0%, rgba(188, 170, 242, 0.35), transparent 55%),
+    linear-gradient(135deg, #3a2716, #1a1411);
+}
+.city-card b small {
+  font-size: 0.6em;
+  color: var(--text-2);
+}
+.city-card .city-source {
+  margin-top: 4px;
+  font-style: normal;
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--amber-2);
+}
+.onb-hero-fill {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(90% 90% at 80% 10%, rgba(244, 169, 72, 0.4), transparent 60%),
+    radial-gradient(80% 80% at 10% 80%, rgba(188, 170, 242, 0.3), transparent 60%), #1a1411;
+}
+.places-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 2px 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13.5px;
+  color: var(--lilac);
+}
+.places-loading .spinner {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-color: rgba(188, 170, 242, 0.3);
+  border-top-color: var(--lilac);
+}
+.places-loading.failed {
+  display: block;
+  color: var(--amber-2);
+}

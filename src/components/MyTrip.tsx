@@ -152,7 +152,7 @@ export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onU
     <div className="screen trip">
       <header className="trip-head">
         <div className="trip-head-img">
-          <img src={city.hero.src} alt="" />
+          {city.hero && <img src={city.hero.src} alt="" />}
         </div>
         <div className="trip-head-body">
           <p className="eyebrow">Your trip</p>

@@ -12,7 +12,7 @@ import {
   IconAlert, IconArrow, IconBaby, IconCar, IconChat, IconClock, IconExternal, IconFlame, IconHeart, IconPin, IconRain, IconSearch, IconSparkle, IconTicket, IconX,
 } from "./icons";
 import { PlaceImage } from "./PlaceImage";
-import { CATS, DEPTH, HypeMeter, KidDots, VerifyBadge, lookLinks, photosUrl, priceLong } from "./ui";
+import { CATS, DEPTH, HypeMeter, KidDots, VerifyBadge, isFreshFind, lookLinks, photosUrl, priceLong } from "./ui";
 
 const LOOK_ICONS: Record<string, string> = { site: "🌐", photos: "📷", maps: "📍", locals: "💬" };
 
@@ -100,7 +100,7 @@ export function DetailSheet({
 
         <div className="detail-body">
           <div className="detail-badges">
-            <span className={`depth depth-${place.live ? "live" : place.depth}`}>{place.live ? "✦ Fresh find" : DEPTH[place.depth].label}</span>
+            <span className={`depth depth-${isFreshFind(place) ? "live" : place.depth}`}>{isFreshFind(place) ? "✦ Fresh find" : DEPTH[place.depth].label}</span>
             <span className="cat-chip">
               {cat.emoji} {cat.label}
             </span>
@@ -236,7 +236,7 @@ export function DetailSheet({
           </Section>
 
           {place.live && (
-            <Section icon={<IconSearch size={16} />} title={place.live.mode === "search" ? "Found live on the web" : "Found beyond my list"}>
+            <Section icon={<IconSearch size={16} />} title={place.live.mode === "search" ? "Found live on the web" : place.live.origin === "city" ? "Suggested by Gemini" : "Found beyond my list"}>
               <p>
                 {place.live.mode === "search"
                   ? `Gemini found this on ${place.live.foundAt} by searching local sources. Nothing here has been checked against the official site yet.`

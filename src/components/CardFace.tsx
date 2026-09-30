@@ -5,7 +5,7 @@ import { formatDrive } from "@/lib/geo";
 import type { Place } from "@/lib/types";
 import { IconCar, IconChevron } from "./icons";
 import { PlaceImage } from "./PlaceImage";
-import { CATS, DEPTH, KidDots, photosUrl, priceShort } from "./ui";
+import { CATS, DEPTH, KidDots, isFreshFind, photosUrl, priceShort } from "./ui";
 
 export function CardFace({
   place,
@@ -55,7 +55,7 @@ export function CardFace({
           </div>
         )}
         <div className="cf-badges">
-          <span className={`depth depth-${place.live ? "live" : place.depth}`}>{place.live ? "✦ Fresh find" : DEPTH[place.depth].label}</span>
+          <span className={`depth depth-${isFreshFind(place) ? "live" : place.depth}`}>{isFreshFind(place) ? "✦ Fresh find" : DEPTH[place.depth].label}</span>
           <span className="cat-chip">
             {cat.emoji} {cat.label}
           </span>

@@ -1,7 +1,11 @@
 // Server-only helper for calling Gemini. Retries when Google is busy and
 // falls back to a lighter model, so a demand spike doesn't break the app.
 
-const MODELS = [process.env.GEMINI_MODEL || "gemini-flash-latest", "gemini-flash-lite-latest"];
+const FLASH = process.env.GEMINI_MODEL || "gemini-flash-latest";
+const LITE = "gemini-flash-lite-latest";
+const MODELS = [FLASH, LITE];
+// For long lists where speed matters more than polish (filling a whole city): lite first
+export const FAST_MODELS = [LITE, FLASH];
 
 export type GeminiResult = { text: string; sources: { title: string; url: string }[]; model: string };
 
@@ -14,9 +18,12 @@ export async function callGemini(opts: {
   system: string;
   prompt: string;
   schema?: object;
+  json?: boolean; // JSON output without a schema: much faster on the lite model for long lists
   search?: boolean;
   temperature?: number;
   timeoutMs?: number;
+  models?: string[];
+  deadline?: number; // epoch ms: never wait past this, so the route finishes inside the host's time limit
 }): Promise<GeminiResult> {
   const key = geminiKey();
   if (!key) throw new Error("no-key");
@@ -27,15 +34,17 @@ export async function callGemini(opts: {
     ...(opts.search ? { tools: [{ google_search: {} }] } : {}),
     generationConfig: {
       temperature: opts.temperature ?? 0.4,
-      ...(opts.schema ? { responseMimeType: "application/json", responseSchema: opts.schema } : {}),
+      ...(opts.schema ? { responseMimeType: "application/json", responseSchema: opts.schema } : opts.json ? { responseMimeType: "application/json" } : {}),
     },
   };
 
   let lastError = "unknown";
-  for (const model of MODELS) {
+  for (const model of opts.models ?? MODELS) {
     for (let attempt = 0; attempt < 2; attempt++) {
+      const left = (opts.deadline ?? Infinity) - Date.now();
+      if (left < 4000) break;
       const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), opts.timeoutMs ?? 25_000);
+      const timer = setTimeout(() => ctrl.abort(), Math.min(opts.timeoutMs ?? 25_000, left));
       try {
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
           method: "POST",
@@ -57,11 +66,16 @@ export async function callGemini(opts: {
           lastError = "empty";
         } else {
           lastError = `${res.status} ${(await res.text().catch(() => "")).slice(0, 300)}`;
-          // Only retry on "busy" errors. A quota 429 on search won't clear by retrying.
-          if (![500, 503, 504].includes(res.status) && !(res.status === 429 && !opts.search)) break;
+          // Only retry on "busy" errors. A quota 429 won't clear in a second, so move on to the lighter model.
+          if (![500, 503, 504].includes(res.status)) break;
         }
       } catch (e) {
         lastError = e instanceof Error ? e.message : String(e);
+        // Too slow: waiting on the same model again would blow the time budget, so try the lighter one
+        if (ctrl.signal.aborted) {
+          clearTimeout(timer);
+          break;
+        }
       } finally {
         clearTimeout(timer);
       }
@@ -81,17 +95,41 @@ export function parseJsonLoose<T>(text: string): T {
   } catch {
     const start = raw.search(/[[{]/);
     const end = Math.max(raw.lastIndexOf("}"), raw.lastIndexOf("]"));
-    return JSON.parse(raw.slice(start, end + 1)) as T;
+    const body = raw.slice(start, end + 1);
+    try {
+      return JSON.parse(body) as T;
+    } catch (e) {
+      // Lite models sometimes write JavaScript-style objects: unquoted keys (one per line) and trailing commas
+      const repaired = body.replace(/^(\s*)([A-Za-z_][A-Za-z0-9_]*)\s*:/gm, '$1"$2":').replace(/,(\s*[}\]])/g, "$1");
+      try {
+        return JSON.parse(repaired) as T;
+      } catch {
+        throw e;
+      }
+    }
   }
 }
 
 // Tiny per-instance rate limit so a public link can't burn through the free quota.
 const hits = new Map<string, number[]>();
-export function rateLimited(req: Request, max = 12, windowMs = 60_000) {
+export function rateLimited(req: Request, max = 12, windowMs = 60_000, bucket = "default") {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
+  const key = `${bucket}:${ip}`;
   const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < windowMs);
+  const recent = (hits.get(key) ?? []).filter((t) => now - t < windowMs);
   recent.push(now);
-  hits.set(ip, recent);
+  hits.set(key, recent);
   return recent.length > max;
+}
+
+// Best-effort memory cache (lives as long as the server instance stays warm), so the
+// second person to search "Lisbon" gets it instantly and doesn't spend quota.
+const cache = new Map<string, { at: number; value: unknown }>();
+export async function cached<T>(key: string, ttlMs: number, make: () => Promise<T>): Promise<T> {
+  const hit = cache.get(key);
+  if (hit && Date.now() - hit.at < ttlMs) return hit.value as T;
+  const value = await make();
+  cache.set(key, { at: Date.now(), value });
+  if (cache.size > 300) cache.delete(cache.keys().next().value!);
+  return value;
 }
