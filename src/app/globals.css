@@ -3327,3 +3327,22 @@ h3 {
   display: block;
   color: var(--amber-2);
 }
+
+/* ───────── Getting around & hotel lookup ───────── */
+.travel-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+}
+.hotel-found {
+  margin-top: -4px;
+  font-size: 13px;
+  color: var(--text-3);
+}
+.hotel-found.ok {
+  color: var(--amber-2);
+}

@@ -112,16 +112,37 @@ export function parseJsonLoose<T>(text: string): T {
   }
 }
 
-// Tiny per-instance rate limit so a public link can't burn through the free quota.
+// Per-instance rate limits so a public link can't burn through the free quota. (A hard limit across
+// all of Vercel's server instances would need a shared store such as Upstash, which needs its own account.)
 const hits = new Map<string, number[]>();
-export function rateLimited(req: Request, max = 12, windowMs = 60_000, bucket = "default") {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
-  const key = `${bucket}:${ip}`;
+function over(key: string, max: number, windowMs: number) {
   const now = Date.now();
   const recent = (hits.get(key) ?? []).filter((t) => now - t < windowMs);
   recent.push(now);
   hits.set(key, recent);
+  if (hits.size > 5000) hits.delete(hits.keys().next().value!); // bounded memory
   return recent.length > max;
+}
+export function rateLimited(req: Request, max = 12, windowMs = 60_000, bucket = "default", perDay?: number) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
+  return over(`${bucket}:${ip}`, max, windowMs) || (perDay != null && over(`${bucket}:day:${ip}`, perDay, 24 * 3600_000));
+}
+
+// For routes that spend Gemini quota: only this site's own pages may call them, no single visitor
+// may use more than a day's fair share, and each server instance has an overall ceiling per minute.
+export function guardGemini(req: Request, bucket: string, perMinute: number, perDay: number): string | null {
+  const origin = req.headers.get("origin");
+  const host = req.headers.get("host");
+  if (origin && host) {
+    let from = "";
+    try {
+      from = new URL(origin).host; // "null" (sandboxed pages) isn't a URL: treat as foreign
+    } catch {}
+    if (from !== host) return "forbidden";
+  }
+  if (rateLimited(req, perMinute, 60_000, bucket, perDay)) return "slow-down";
+  if (over("gemini:all", 60, 60_000)) return "busy";
+  return null;
 }
 
 // Shared, durable cache (Next.js Data Cache: on Vercel it's shared by every server instance and

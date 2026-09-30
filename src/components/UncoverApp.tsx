@@ -1,10 +1,11 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { useOsmFacts, usePlaceLoader } from "@/lib/cities";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { searchCity, useOsmFacts, usePlaceLoader } from "@/lib/cities";
 import { tripDates } from "@/lib/dates";
-import { driveFromStay } from "@/lib/geo";
+import { driveFromStay, type How, type TravelCtx } from "@/lib/geo";
+import { useSunsets } from "@/lib/sun";
 import { chipIntent, type Intent } from "@/lib/intent";
 import { initialState, useAppState } from "@/lib/store";
 import { REASONS, applySignal } from "@/lib/taste";
@@ -51,10 +52,46 @@ export default function UncoverApp({ featured }: { featured: City }) {
   const allPlaces = useMemo(() => [...city.places, ...Object.values(state.found ?? {})], [city.places, state.found]);
   const cityView = useMemo(() => ({ ...city, places: allPlaces }), [city, allPlaces]);
   const byId = useMemo(() => Object.fromEntries(allPlaces.map((p) => [p.id, p])) as Record<string, Place>, [allPlaces]);
-  const stay = city.stays.find((s) => s.id === state.setup?.stayId) ?? city.stays[0];
-  const driveInfo = useMemo(() => Object.fromEntries(allPlaces.map((p) => [p.id, driveFromStay(city, stay, p)])), [allPlaces, stay, city]);
+  // Their actual hotel when they typed one we could find on the map, else the neighborhood they picked
+  const stay = state.setup?.hotel ?? city.stays.find((s) => s.id === state.setup?.stayId) ?? city.stays[0];
+  const travelMode = state.setup?.travel ?? "drive";
+  const ctx = useMemo<TravelCtx>(
+    () => ({ mode: travelMode, hotelDrives: state.setup?.hotel ? state.hotelDrives : undefined }),
+    [travelMode, state.setup?.hotel, state.hotelDrives],
+  );
+  const driveInfo = useMemo(() => Object.fromEntries(allPlaces.map((p) => [p.id, driveFromStay(city, stay, p, ctx)])), [allPlaces, stay, city, ctx]);
   const drives = useMemo(() => Object.fromEntries(Object.entries(driveInfo).map(([id, d]) => [id, d.min])) as Record<string, number>, [driveInfo]);
+  const travel = useMemo(() => Object.fromEntries(Object.entries(driveInfo).map(([id, d]) => [id, d.how])) as Record<string, How>, [driveInfo]);
   const dates = useMemo(() => (state.setup ? tripDates(state.setup.start, state.setup.end) : []), [state.setup]);
+  const sunsets = useSunsets(stay.lat, stay.lng, dates);
+
+  // Real road times from a looked-up hotel (one routing request; again as more places arrive)
+  const triedHotel = useRef<{ key: string; ids: Set<string> }>({ key: "", ids: new Set() });
+  useEffect(() => {
+    const hotel = state.setup?.hotel;
+    if (!hotel || travelMode === "walk") return;
+    if (triedHotel.current.key !== hotel.id) triedHotel.current = { key: hotel.id, ids: new Set() };
+    const tried = triedHotel.current.ids;
+    const missing = allPlaces.filter((p) => state.hotelDrives?.[p.id] == null && !tried.has(p.id)).slice(0, 90);
+    if (!missing.length) return;
+    // Wait for places arriving in a burst to settle into one request
+    const t = setTimeout(() => {
+      missing.forEach((p) => tried.add(p.id));
+      fetch("/api/drive-times", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ from: { lat: hotel.lat, lng: hotel.lng }, to: missing.map((p) => ({ id: p.id, lat: p.location.lat, lng: p.location.lng })) }),
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d: { times?: Record<string, number> } | null) => {
+          if (d?.times && Object.keys(d.times).length)
+            update((s) => (s.setup?.hotel?.id === hotel.id ? { ...s, hotelDrives: { ...(s.hotelDrives ?? {}), ...d.times } } : s));
+        })
+        .catch(() => {});
+    }, 1200);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.setup?.hotel?.id, allPlaces.length, travelMode]);
   const [forecast, setForecast] = useState<Record<string, Weather>>(() => sampleForecast(dates));
   useEffect(() => {
     setForecast(sampleForecast(dates));
@@ -83,6 +120,24 @@ export default function UncoverApp({ featured }: { featured: City }) {
     const mood = q.get("mood");
     if (mood) setIntent(chipIntent(mood));
   }, []);
+
+  // A shared trip link (/?city=Lisbon) opens that destination in setup, preselected. It never
+  // replaces an existing trip on its own: they confirm with Next, or close to keep their trip.
+  const [shared, setShared] = useState<City | null>(null);
+  useEffect(() => {
+    if (!ready) return;
+    const q = new URLSearchParams(window.location.search).get("city")?.trim();
+    if (!q) return;
+    window.history.replaceState(null, "", window.location.pathname); // don't reopen on reload
+    const open = (c: City) => {
+      if (c.id === (state.city ?? featured).id) return; // already planning this city
+      setShared(c);
+      if (state.setup) setEditing(true);
+    };
+    if (/^charleston\b/i.test(q)) open(featured);
+    else searchCity(q).then(open).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready]);
 
   useEffect(() => {
     if (!toast) return;
@@ -174,17 +229,28 @@ export default function UncoverApp({ featured }: { featured: City }) {
 
   if (!state.setup || editing) {
     return (
-      <Shell city={city}>
+      <Shell city={shared ?? city}>
         <Onboarding
-          city={city}
+          key={shared?.id ?? "trip"}
+          city={shared ?? city}
           featured={featured}
           onPickCity={pickCity}
           initial={state.setup}
           onDone={(setup) => {
-            update((s) => ({ ...s, setup, planFor: null }));
+            // A different hotel means different road times
+            update((s) => ({ ...s, setup, planFor: null, hotelDrives: s.setup?.hotel?.id === setup.hotel?.id ? s.hotelDrives : undefined }));
             setEditing(false);
+            setShared(null);
             setTab(editing ? "trip" : "discover");
           }}
+          onCancel={
+            state.setup
+              ? () => {
+                  setEditing(false);
+                  setShared(null);
+                }
+              : undefined
+          }
         />
       </Shell>
     );
@@ -213,6 +279,7 @@ export default function UncoverApp({ featured }: { featured: City }) {
                   stay={stay}
                   state={state}
                   drives={drives}
+                  travel={travel}
                   dates={dates}
                   forecast={forecast}
                   intent={intent}
@@ -230,6 +297,7 @@ export default function UncoverApp({ featured }: { featured: City }) {
                   city={cityView}
                   state={state}
                   drives={drives}
+                  travel={travel}
                   dates={dates}
                   forecast={forecast}
                   onDecide={decide}
@@ -247,6 +315,8 @@ export default function UncoverApp({ featured }: { featured: City }) {
                   state={state}
                   byId={byId}
                   drives={drives}
+                  ctx={ctx}
+                  sunsets={sunsets}
                   forecast={forecast}
                   onBuild={() => {
                     play("chime");
@@ -331,6 +401,7 @@ export default function UncoverApp({ featured }: { featured: City }) {
               place={detail}
               drive={drives[detail.id]}
               driveReal={driveInfo[detail.id]?.real ?? false}
+              how={travel[detail.id]}
               byId={byId}
               dates={dates}
               forecast={forecast}

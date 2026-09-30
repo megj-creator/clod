@@ -78,32 +78,51 @@ function merge(s: AppState, cityId: string, cats: Category[], places: Place[] | 
 
 type OsmFacts = { hours?: string; website?: string; checked?: string; closed: boolean };
 
-// Folds OpenStreetMap's hours/website/closed flags into the searched city's places.
+const osmRef = (p: Place) => p.realityCheck.osm?.url?.replace(/^.*openstreetmap\.org\//, "");
+
+// OpenStreetMap's hours/website/closed flags for places matched there (one request)
+export async function fetchOsmFacts(places: Place[], signal?: AbortSignal): Promise<Record<string, OsmFacts>> {
+  const refs = places.map(osmRef).filter(Boolean);
+  if (!refs.length) return {};
+  const res = await fetch("/api/osm-facts", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ refs }),
+    signal,
+  });
+  if (!res.ok) throw new Error(String(res.status));
+  return ((await res.json()) as { facts: Record<string, OsmFacts> }).facts ?? {};
+}
+
+// One place with OpenStreetMap's facts folded in. "closed" when mappers marked it closed.
+export function withFacts(p: Place, facts: Record<string, OsmFacts>): Place | "closed" {
+  const ref = osmRef(p);
+  const f = ref ? facts[ref] : undefined;
+  if (!f) return p;
+  const rc = { ...p.realityCheck, osm: { ...p.realityCheck.osm!, checked: f.checked } };
+  const next: Place = { ...p, realityCheck: rc };
+  if (f.closed) return "closed";
+  if (f.hours) {
+    rc.osm.hours = f.hours;
+    rc.hours = osmHoursText(f.hours);
+    next.openDays = osmOpenDays(f.hours);
+  }
+  if (f.website && /^https?:\/\//.test(f.website)) rc.officialUrl = f.website;
+  return next;
+}
+
+// Folds OpenStreetMap's facts into the searched city's places.
 function applyFacts(s: AppState, cityId: string, facts: Record<string, OsmFacts> | null): AppState {
   const city = s.city;
   if (!city?.generated || city.id !== cityId) return s;
   if (!facts) return { ...s, city: { ...city, generated: { ...city.generated, facts: "failed" } } };
   const places: Place[] = [];
   for (const p of city.places) {
-    const url = p.realityCheck.osm?.url;
-    const f = url ? facts[url.replace(/^.*openstreetmap\.org\//, "")] : undefined;
-    if (!f) {
-      places.push(p);
-      continue;
-    }
-    const rc = { ...p.realityCheck, osm: { ...p.realityCheck.osm!, checked: f.checked } };
-    const next: Place = { ...p, realityCheck: rc };
-    if (f.closed) {
-      // Marked closed by local mappers: drop it, unless it's already saved (then say so)
-      if (!s.saved.includes(p.id)) continue;
-      rc.warnings = [...(rc.warnings ?? []), "OpenStreetMap lists this as closed. Check before you go."];
-    } else if (f.hours) {
-      rc.osm.hours = f.hours;
-      rc.hours = osmHoursText(f.hours);
-      next.openDays = osmOpenDays(f.hours);
-    }
-    if (f.website && /^https?:\/\//.test(f.website)) rc.officialUrl = f.website;
-    places.push(next);
+    const next = withFacts(p, facts);
+    if (next !== "closed") places.push(next);
+    // Marked closed by local mappers: drop it, unless it's already saved (then say so)
+    else if (s.saved.includes(p.id))
+      places.push({ ...p, realityCheck: { ...p.realityCheck, warnings: [...(p.realityCheck.warnings ?? []), "OpenStreetMap lists this as closed. Check before you go."] } });
   }
   return { ...s, city: { ...city, places, generated: { ...city.generated, facts: "done" } } };
 }
@@ -115,19 +134,9 @@ export function useOsmFacts(state: AppState, update: (fn: (s: AppState) => AppSt
   const ready = !!g && !g.pending.length && !g.facts;
   useEffect(() => {
     if (!ready || !city) return;
-    const refs = city.places.map((p) => p.realityCheck.osm?.url?.replace(/^.*openstreetmap\.org\//, "")).filter(Boolean);
     const ctrl = new AbortController();
-    fetch("/api/osm-facts", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ refs }),
-      signal: ctrl.signal,
-    })
-      .then(async (res) => {
-        if (!res.ok) throw new Error(String(res.status));
-        const data = (await res.json()) as { facts: Record<string, OsmFacts> };
-        update((s) => applyFacts(s, city.id, data.facts ?? {}));
-      })
+    fetchOsmFacts(city.places, ctrl.signal)
+      .then((facts) => update((s) => applyFacts(s, city.id, facts)))
       .catch(() => {
         if (!ctrl.signal.aborted) update((s) => applyFacts(s, city.id, null));
       });

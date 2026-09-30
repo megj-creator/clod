@@ -1,11 +1,11 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { addDaysIso } from "@/lib/dates";
 import { CitySearchError, searchCity } from "@/lib/cities";
 import type { City, TripSetup } from "@/lib/types";
-import { IconArrow, IconBack, IconCheck, IconSearch } from "./icons";
+import { IconArrow, IconBack, IconCheck, IconSearch, IconX } from "./icons";
 
 const STEPS = ["welcome", "city", "when", "stay", "limits", "crew"] as const;
 
@@ -37,18 +37,23 @@ export function Onboarding({
   initial,
   onPickCity,
   onDone,
+  onCancel,
 }: {
   city: City;
   featured: City;
   initial: TripSetup | null;
   onPickCity: (c: City) => void;
   onDone: (s: TripSetup) => void;
+  onCancel?: () => void; // editing an existing trip: leave without changes
 }) {
   // Editing an existing trip starts at "Where?" so you can change destination too
   const [step, setStep] = useState(initial ? 1 : 0);
   const [dir, setDir] = useState(1);
   const [city, setCity] = useState<City>(current);
-  const [s, setS] = useState<TripSetup>(initial ?? defaults(current));
+  // (a shared link can open a different city than the saved trip: start from that city's neighborhoods)
+  const [s, setS] = useState<TripSetup>(() =>
+    initial ? (initial.cityId === current.id ? initial : { ...initial, cityId: current.id, stayId: current.stays[0].id, hotel: undefined }) : defaults(current),
+  );
   const [finishing, setFinishing] = useState(false);
   const [query, setQuery] = useState("");
   const [searching, setSearching] = useState<string | null>(null);
@@ -58,8 +63,56 @@ export function Onboarding({
   const choose = (c: City) => {
     setCity(c);
     setSearchError(null);
-    if (c.id !== s.cityId) setS((prev) => ({ ...prev, cityId: c.id, stayId: c.stays[0].id }));
+    if (c.id !== s.cityId) setS((prev) => ({ ...prev, cityId: c.id, stayId: c.stays[0].id, hotel: undefined, hotelName: "" }));
   };
+
+  // Their hotel or address, found on the map as they type (times are then measured from there)
+  const [hotelLook, setHotelLook] = useState<"idle" | "looking" | "none">("idle");
+  useEffect(() => {
+    const q = s.hotelName.trim();
+    if (q.length < 3) {
+      setHotelLook("idle");
+      if (s.hotel) set("hotel", undefined);
+      return;
+    }
+    if (s.hotel && s.hotel.name === q) return;
+    setHotelLook("looking");
+    const near = city.generated ? { lat: city.generated.lat, lng: city.generated.lng } : city.stays[0];
+    const t = setTimeout(() => {
+      fetch("/api/locate", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ q, near: { lat: near.lat, lng: near.lng }, radius: city.generated?.radius ?? 40, city: city.name }),
+      })
+        .then((r) => (r.ok ? r.json() : { found: null }))
+        .then((d: { found: { name: string; area: string; lat: number; lng: number } | null }) => {
+          if (d.found) {
+            setS((prev) =>
+              prev.hotelName.trim() === q
+                ? {
+                    ...prev,
+                    hotel: {
+                      id: `hotel-${d.found!.lat.toFixed(5)},${d.found!.lng.toFixed(5)}`,
+                      name: q,
+                      // Show what the map matched, so a wrong match is easy to spot
+                      area: [d.found!.name, d.found!.area].filter((x, i, a) => x && a.indexOf(x) === i && !(i && a[0].includes(x))).join(", "),
+                      lat: d.found!.lat,
+                      lng: d.found!.lng,
+                    },
+                  }
+                : prev,
+            );
+            setHotelLook("idle");
+          } else {
+            setS((prev) => ({ ...prev, hotel: undefined }));
+            setHotelLook("none");
+          }
+        })
+        .catch(() => setHotelLook("none"));
+    }, 900);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [s.hotelName, city.id]);
   const search = async (q: string) => {
     q = q.trim();
     if (!q || searching) return;
@@ -230,7 +283,7 @@ export function Onboarding({
               {name === "stay" && (
                 <>
                   <Q>Where are you staying?</Q>
-                  <p className="onb-hint">Every drive time is measured from here.</p>
+                  <p className="onb-hint">Every travel time is measured from here.</p>
                   <div className="stay-list">
                     {city.stays.map((st) => (
                       <button key={st.id} className={`stay ${s.stayId === st.id ? "on" : ""}`} onClick={() => set("stayId", st.id)}>
@@ -240,9 +293,23 @@ export function Onboarding({
                     ))}
                   </div>
                   <label className="field">
-                    <span>Hotel or rental name (optional)</span>
-                    <input type="text" value={s.hotelName} placeholder={city.generated ? "e.g. the name on your booking" : "e.g. The Vendue"} onChange={(e) => set("hotelName", e.target.value)} />
+                    <span>Hotel, rental, or address (optional)</span>
+                    <input
+                      type="text"
+                      value={s.hotelName}
+                      placeholder={city.generated ? "e.g. the hotel name or street address" : "e.g. The Vendue"}
+                      onChange={(e) => set("hotelName", e.target.value)}
+                    />
                   </label>
+                  {s.hotelName.trim().length >= 3 && (
+                    <p className={`hotel-found ${s.hotel ? "ok" : ""}`}>
+                      {hotelLook === "looking"
+                        ? "Looking it up on the map…"
+                        : s.hotel
+                          ? `📍 Found it: ${s.hotel.area}. I'll measure from here.`
+                          : `Couldn't find that on the map, so I'll measure from ${city.stays.find((st) => st.id === s.stayId)?.name ?? "the neighborhood"}.`}
+                    </p>
+                  )}
                 </>
               )}
 
@@ -250,8 +317,19 @@ export function Onboarding({
                 <>
                   <Q>Your limits</Q>
                   <p className="onb-hint">I'll only show you things inside these, unless you ask.</p>
+                  <div className="travel-choice">
+                    <span>Getting around</span>
+                    <div className="toggle-row">
+                      <button className={`toggle ${s.travel !== "walk" ? "on" : ""}`} onClick={() => set("travel", "drive")}>
+                        🚗 By car
+                      </button>
+                      <button className={`toggle ${s.travel === "walk" ? "on" : ""}`} onClick={() => set("travel", "walk")}>
+                        🚶 On foot & transit
+                      </button>
+                    </div>
+                  </div>
                   <label className="big-field">
-                    <span>Longest drive from your stay</span>
+                    <span>{s.travel === "walk" ? "Longest trip from your stay (walking or transit)" : "Longest drive from your stay"}</span>
                     <div>
                       <input
                         inputMode="numeric"
@@ -322,7 +400,11 @@ export function Onboarding({
 
         {!finishing && (
           <div className="onb-nav">
-            {step > 0 ? (
+            {onCancel && step === 1 ? (
+              <button className="icon-btn" onClick={onCancel} aria-label="Cancel, keep my trip as it was">
+                <IconX size={18} />
+              </button>
+            ) : step > 0 ? (
               <button className="icon-btn" onClick={() => go(-1)} aria-label="Back">
                 <IconBack size={18} />
               </button>

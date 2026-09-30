@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { pickSurprise } from "@/lib/rank";
 import { play } from "@/lib/sfx";
 import { prettyTag } from "@/lib/taste";
+import type { How } from "@/lib/geo";
 import type { AppState, City, Place } from "@/lib/types";
 import type { Weather } from "@/lib/weather";
 import { CardFace } from "./CardFace";
@@ -18,6 +19,7 @@ export function Surprise({
   city,
   state,
   drives,
+  travel,
   dates,
   forecast,
   onDecide,
@@ -28,6 +30,7 @@ export function Surprise({
   city: City;
   state: AppState;
   drives: Record<string, number>;
+  travel: Record<string, How>;
   dates: string[];
   forecast: Record<string, Weather>;
   onDecide: (id: string, d: Decision) => void;
@@ -126,6 +129,7 @@ export function Surprise({
               <CardFace
                 place={pick}
                 drive={drives[pick.id]}
+                how={travel[pick.id]}
                 weather={weatherLine(pick, dates, forecast)}
                 kids={setup.toddler || setup.baby}
                 cityName={city.name}

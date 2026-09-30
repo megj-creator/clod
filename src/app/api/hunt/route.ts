@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { findPlaces } from "@/lib/finder";
-import { geminiKey, rateLimited } from "@/lib/gemini";
+import { geminiKey, guardGemini } from "@/lib/gemini";
 
 // "Dig deeper → Go hunting": Gemini searches the live web (Google Search grounding)
 // for real places beyond what's already shown, favoring local voices over tourist sites.
@@ -8,7 +8,8 @@ export const maxDuration = 60;
 
 export async function POST(req: Request) {
   if (!geminiKey()) return NextResponse.json({ error: "no-key" }, { status: 503 });
-  if (rateLimited(req, 4, 60_000, "hunt")) return NextResponse.json({ error: "slow-down" }, { status: 429 });
+  const blocked = guardGemini(req, "hunt", 4, 80);
+  if (blocked) return NextResponse.json({ error: blocked }, { status: blocked === "forbidden" ? 403 : 429 });
 
   let body: {
     city?: string;
@@ -16,6 +17,7 @@ export async function POST(req: Request) {
     request?: string;
     crew?: string;
     maxDrive?: number;
+    travel?: string;
     maxPrice?: number;
     exclude?: string[];
     liked?: string[];
@@ -38,7 +40,7 @@ export async function POST(req: Request) {
       ask: `4 places. They want: ${String(body.request ?? "something great that most visitors miss").slice(0, 300)}`,
       context: `Staying near: ${String(stay.name).slice(0, 60)}
 Traveling party: ${crew}
-Limits: max ${Number(body.maxDrive) || 45} minutes drive, max $${Number(body.maxPrice) || 50} per person
+Limits: max ${Number(body.maxDrive) || 45} minutes ${body.travel === "walk" ? "on foot or by public transit (they have no car)" : "drive"}, max $${Number(body.maxPrice) || 50} per person
 They've liked: ${(body.liked ?? []).slice(0, 12).join(", ") || "nothing yet"}`,
       exclude: body.exclude,
       count: 5,

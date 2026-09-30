@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { emptyTaste } from "./taste";
 import type { AppState } from "./types";
 
@@ -23,7 +23,6 @@ export const initialState = (): AppState => ({
 export function useAppState() {
   const [state, setState] = useState<AppState>(initialState);
   const [ready, setReady] = useState(false);
-  const loaded = useRef(false);
 
   useEffect(() => {
     try {
@@ -32,18 +31,19 @@ export function useAppState() {
     } catch {
       /* private mode or corrupted: start fresh */
     }
-    loaded.current = true;
     setReady(true);
   }, []);
 
+  // Save only once the saved trip has been read back. (Keying this on `ready` as state, not a ref,
+  // matters: a ref flips before the loaded trip renders, which briefly wrote an empty trip to storage.)
   useEffect(() => {
-    if (!loaded.current) return;
+    if (!ready) return;
     try {
       localStorage.setItem(KEY, JSON.stringify(state));
     } catch {
       /* storage full or blocked */
     }
-  }, [state]);
+  }, [state, ready]);
 
   const update = useCallback((fn: (s: AppState) => AppState) => setState(fn), []);
   return { state, update, replace: setState, ready };

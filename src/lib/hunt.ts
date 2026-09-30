@@ -1,5 +1,6 @@
 "use client";
 
+import { fetchOsmFacts, withFacts } from "./cities";
 import type { AppState, City, Place, Stay } from "./types";
 
 export class HuntError extends Error {}
@@ -22,6 +23,7 @@ export async function huntFor(opts: { city: City; stay: Stay; state: AppState; r
       request,
       crew: [`${setup.adults} adults`, setup.toddler && "a toddler", setup.baby && "a baby"].filter(Boolean).join(", "),
       maxDrive: setup.maxDrive,
+      travel: setup.travel ?? "drive",
       maxPrice: setup.maxPrice,
       exclude: city.places.map((p) => p.name),
       liked: likedTags,
@@ -31,5 +33,13 @@ export async function huntFor(opts: { city: City; stay: Stay; state: AppState; r
   if (!res.ok) throw new HuntError(String(res.status));
   const data = (await res.json()) as { places: Place[]; mode: "search" | "knowledge" };
   if (!data.places?.length) throw new HuntError("none");
+  // OpenStreetMap hours for the finds too, and drop any it says have closed (best effort, ~1s)
+  try {
+    const facts = await fetchOsmFacts(data.places, AbortSignal.timeout(8000));
+    const checked = data.places.map((p) => withFacts(p, facts)).filter((p): p is Place => p !== "closed");
+    if (checked.length) data.places = checked;
+  } catch {
+    /* keep the finds without hours */
+  }
   return data;
 }

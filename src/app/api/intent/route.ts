@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { callGemini, geminiKey, parseJsonLoose, rateLimited } from "@/lib/gemini";
+import { callGemini, geminiKey, parseJsonLoose, guardGemini } from "@/lib/gemini";
 
 // Reads what the traveler typed and picks matching places from the curated list.
 // Set GEMINI_API_KEY in Vercel (Settings → Environment Variables) and in .env.local for local runs.
@@ -43,7 +43,8 @@ const SCHEMA = {
 
 export async function POST(req: Request) {
   if (!geminiKey()) return NextResponse.json({ error: "no-key" }, { status: 503 });
-  if (rateLimited(req)) return NextResponse.json({ error: "slow-down" }, { status: 429 });
+  const blocked = guardGemini(req, "intent", 12, 300);
+  if (blocked) return NextResponse.json({ error: blocked }, { status: blocked === "forbidden" ? 403 : 429 });
 
   let body: { text?: string; places?: PlaceSummary[]; crew?: string };
   try {

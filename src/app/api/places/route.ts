@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { CATEGORIES, findPlaces, milesApart, slug } from "@/lib/finder";
-import { cached, geminiKey, rateLimited } from "@/lib/gemini";
+import { cached, geminiKey, guardGemini } from "@/lib/gemini";
 import type { Category, Stay } from "@/lib/types";
 
 // Fills a searched city with real places, one category per call, so the app can
@@ -20,7 +20,8 @@ const ASK: Record<Category, [number, string]> = {
 
 export async function POST(req: Request) {
   if (!geminiKey()) return NextResponse.json({ error: "no-key" }, { status: 503 });
-  if (rateLimited(req, 15, 60_000, "places")) return NextResponse.json({ error: "slow-down" }, { status: 429 });
+  const blocked = guardGemini(req, "places", 15, 300);
+  if (blocked) return NextResponse.json({ error: blocked }, { status: blocked === "forbidden" ? 403 : 429 });
 
   let body: {
     city?: { id?: string; name?: string; state?: string; lat?: number; lng?: number; radius?: number };

@@ -3,13 +3,13 @@
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 import { fmtDay } from "@/lib/dates";
-import { formatDrive } from "@/lib/geo";
+import { formatDrive, formatTravel, type How } from "@/lib/geo";
 import type { Place, Stay } from "@/lib/types";
 import { MapView } from "./MapView";
 import { weatherEmoji, type Weather } from "@/lib/weather";
 import type { Decision } from "./Discover";
 import {
-  IconAlert, IconArrow, IconBaby, IconCar, IconChat, IconClock, IconExternal, IconFlame, IconHeart, IconPin, IconRain, IconSearch, IconSparkle, IconTicket, IconX,
+  IconAlert, IconArrow, IconBaby, IconCar, IconTravel, IconChat, IconClock, IconExternal, IconFlame, IconHeart, IconPin, IconRain, IconSearch, IconSparkle, IconTicket, IconX,
 } from "./icons";
 import { PlaceImage } from "./PlaceImage";
 import { CATS, DEPTH, HypeMeter, KidDots, VerifyBadge, isFreshFind, lookLinks, photosUrl, priceLong } from "./ui";
@@ -20,6 +20,7 @@ export function DetailSheet({
   place,
   drive,
   driveReal,
+  how = "drive",
   byId,
   dates,
   forecast,
@@ -38,6 +39,7 @@ export function DetailSheet({
   place: Place;
   drive: number;
   driveReal: boolean;
+  how?: How;
   byId: Record<string, Place>;
   dates: string[];
   forecast: Record<string, Weather>;
@@ -50,7 +52,8 @@ export function DetailSheet({
   const cat = CATS[place.category];
   const backup = place.rainPlan.backupId ? byId[place.rainPlan.backupId] : null;
   const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${place.name}, ${place.location.address}`)}`;
-  const directions = `https://www.google.com/maps/dir/?api=1&origin=${stay.lat},${stay.lng}&destination=${encodeURIComponent(`${place.name}, ${place.location.address}`)}`;
+  const mapsMode = how === "walk" ? "walking" : how === "transit" ? "transit" : "driving";
+  const directions = `https://www.google.com/maps/dir/?api=1&origin=${stay.lat},${stay.lng}&destination=${encodeURIComponent(`${place.name}, ${place.location.address}`)}&travelmode=${mapsMode}`;
   const act = (d: Decision) => {
     onDecide(place.id, d);
     onClose();
@@ -110,7 +113,12 @@ export function DetailSheet({
           <p className="detail-tagline">{place.tagline}</p>
 
           <div className="facts">
-            <Fact icon={<IconCar size={16} />} label="From your stay" value={formatDrive(drive)} sub={driveReal ? "real route · no traffic" : "estimate"} />
+            <Fact
+              icon={<IconTravel how={how} size={16} />}
+              label="From your stay"
+              value={formatTravel(drive, how)}
+              sub={driveReal ? "real route · no traffic" : how === "drive" ? "estimate" : "estimate · check local routes"}
+            />
             <Fact icon={<IconTicket size={16} />} label="Price" value={priceLong(place)} sub={place.price.note} />
             <Fact icon={<IconClock size={16} />} label="Plan for" value={formatDrive(place.durationMin)} sub={`best: ${place.bestTime}`} />
           </div>
@@ -281,7 +289,7 @@ export function DetailSheet({
               <IconExternal size={13} />
             </a>
             <a className="btn directions" href={directions} target="_blank" rel="noreferrer">
-              <IconCar size={16} /> Directions
+              <IconTravel how={how} size={16} /> Directions
             </a>
           </div>
         </div>

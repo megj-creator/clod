@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, type ReactNode, type RefObject } from "react";
-import { formatDrive } from "@/lib/geo";
+import { formatTravel, type How } from "@/lib/geo";
 import type { Place } from "@/lib/types";
-import { IconCar, IconChevron } from "./icons";
+import { IconChevron, IconTravel } from "./icons";
 import { PlaceImage } from "./PlaceImage";
 import { CATS, DEPTH, KidDots, isFreshFind, photosUrl, priceShort } from "./ui";
 
@@ -17,11 +17,13 @@ export function CardFace({
   overlay,
   why,
   cityName = "",
+  how,
 }: {
   why?: string;
   cityName?: string;
   place: Place;
   drive: number;
+  how?: How;
   weather: string;
   kids: boolean;
   onOpen: () => void;
@@ -91,7 +93,7 @@ export function CardFace({
       <div className="cf-body" onClick={guard(onOpen)} role="button" tabIndex={-1}>
         <div className="cf-meta">
           <span className="pill">
-            <IconCar size={14} /> {formatDrive(drive)}
+            <IconTravel how={how} size={14} /> {formatTravel(drive, how ?? "drive")}
           </span>
           <span className="pill">{priceShort(place)}</span>
           {kids && (

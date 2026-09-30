@@ -26,6 +26,9 @@ function matchesFlags(place: Place, intent: Intent, drive: number): boolean {
   return true;
 }
 
+// Found by Gemini but not matched on OpenStreetMap (curated places are always "confirmed")
+export const unconfirmed = (p: Place) => !!p.live && !p.location.pin;
+
 export function withinLimits(place: Place, drive: number, setup: TripSetup) {
   return drive <= setup.maxDrive && place.price.perPerson <= setup.maxPrice;
 }
@@ -66,8 +69,9 @@ export function buildQueue(opts: {
   const rank = (p: Place): Ranked => {
     const drive = drives[p.id];
     const boost = intent.boost.filter((b) => p.tags.includes(b)).length;
-    // Nearest first, nudged by what you've taught it.
-    return { place: p, drive, score: drive - affinity(taste, p, drive) * 6 - boost * 5 };
+    // Nearest first, nudged by what you've taught it. Places Gemini suggested that couldn't be
+    // confirmed on a map come after confirmed ones nearby: they're the likeliest to be wrong.
+    return { place: p, drive, score: drive - affinity(taste, p, drive) * 6 - boost * 5 + (unconfirmed(p) ? 15 : 0) };
   };
 
   const ranked = matched.map(rank).sort((a, b) => a.score - b.score);
@@ -93,7 +97,7 @@ export function pickSurprise(opts: {
   const scored = pool
     .map((p) => ({
       p,
-      s: p.depth * 2 + affinity(taste, p, drives[p.id]) + (kids ? p.kidFit.score - 2 : 0) + Math.random() * 1.5,
+      s: p.depth * 2 + affinity(taste, p, drives[p.id]) + (kids ? p.kidFit.score - 2 : 0) + Math.random() * 1.5 - (unconfirmed(p) ? 3 : 0),
     }))
     .sort((a, b) => b.s - a.s);
   return scored[0].p;

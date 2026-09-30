@@ -3,6 +3,7 @@
 import { AnimatePresence, animate, motion, useMotionValue, useTransform } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { fmtRange } from "@/lib/dates";
+import type { How } from "@/lib/geo";
 import { huntFor } from "@/lib/hunt";
 import { CATEGORY_CHIPS, EXAMPLES, MOOD_CHIPS, chipIntent, interpret, parseIntent, type Intent } from "@/lib/intent";
 import { buildQueue, type Ranked } from "@/lib/rank";
@@ -21,6 +22,7 @@ type Props = {
   stay: Stay;
   state: AppState;
   drives: Record<string, number>;
+  travel: Record<string, How>;
   dates: string[];
   forecast: Record<string, Weather>;
   intent: Intent | null;
@@ -76,7 +78,8 @@ function PromptPanel({ city, state, stay, drives, setIntent, onSurprise, onOpenT
     setStatus("Reading that and checking my list…");
     const crew = [`${setup.adults} adults`, setup.toddler && "a toddler", setup.baby && "a baby"].filter(Boolean).join(", ");
     const seen = new Set([...state.saved, ...Object.keys(state.passed)]);
-    let intent = await interpret(q, city.places, drives, `${crew}; max drive ${setup.maxDrive} min; max $${setup.maxPrice}/person`, seen);
+    const getting = setup.travel === "walk" ? "on foot or transit" : "drive";
+    let intent = await interpret(q, city.places, drives, `${crew}; max ${setup.maxDrive} min ${getting}; max $${setup.maxPrice}/person`, seen);
     // Nothing on the list really fits: go find places for exactly this, best finds first
     if (intent.enough === false) {
       setStatus(`Nothing on my list fits that. Hunting ${city.name} for it…`);
@@ -218,7 +221,7 @@ const DIG_LINES: Record<number, string[]> = {
 };
 
 function Deck(props: Props & { intent: Intent }) {
-  const { city, stay, state, drives, dates, forecast, intent, setIntent, depthLevel, setDepthLevel, onDecide, onOpen, onOpenTaste, onFound, onRetryPlaces } = props;
+  const { city, stay, state, drives, travel, dates, forecast, intent, setIntent, depthLevel, setDepthLevel, onDecide, onOpen, onOpenTaste, onFound, onRetryPlaces } = props;
   const stillLoading = !!city.generated?.pending.length;
   const setup = state.setup!;
   const kids = setup.toddler || setup.baby;
@@ -356,6 +359,7 @@ function Deck(props: Props & { intent: Intent }) {
               <DeckCard
                 key={r.place.id}
                 r={r}
+                how={travel[r.place.id]}
                 index={i}
                 kids={kids}
                 weather={weatherLine(r.place, dates, forecast)}
@@ -441,6 +445,7 @@ const exitVariants = {
 
 function DeckCard({
   r,
+  how,
   index,
   kids,
   weather,
@@ -453,6 +458,7 @@ function DeckCard({
   why?: string;
   cityName: string;
   r: Ranked;
+  how?: How;
   index: number;
   kids: boolean;
   weather: string;
@@ -498,6 +504,7 @@ function DeckCard({
         <CardFace
           place={r.place}
           drive={r.drive}
+          how={how}
           weather={weather}
           why={why}
           cityName={cityName}

@@ -42,6 +42,19 @@ export const IconCar = (p: P) => (
     <path d="M5 16V11l2-5h10l2 5v5" /><path d="M3 16h18v2H3z" /><circle cx="7.5" cy="13" r=".6" /><circle cx="16.5" cy="13" r=".6" />
   </svg>
 );
+export const IconWalk = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="13" cy="4.5" r="1.6" /><path d="M10.5 21l2-6 2.5 2v4M9 11l2.5-3.5 3 1.5 1.5 3M12.5 15l-1-4" /><path d="M8.5 14l1.5-3" />
+  </svg>
+);
+export const IconTransit = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="6" y="3.5" width="12" height="13" rx="2.5" /><path d="M6 11h12M9 20l-1.5 1.5M15 20l1.5 1.5" /><circle cx="9" cy="14" r=".6" /><circle cx="15" cy="14" r=".6" />
+  </svg>
+);
+// The right icon for how they'd get there
+export const IconTravel = ({ how, ...p }: P & { how?: "drive" | "walk" | "transit" }) =>
+  how === "walk" ? <IconWalk {...p} /> : how === "transit" ? <IconTransit {...p} /> : <IconCar {...p} />;
 export const IconClock = (p: P) => (
   <svg {...base(p)}><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></svg>
 );

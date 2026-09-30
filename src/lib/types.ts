@@ -88,7 +88,9 @@ export type TripSetup = {
   end: string;
   stayId: string;
   hotelName: string;
-  maxDrive: number; // minutes
+  maxDrive: number; // minutes (by car, or on foot/transit when travel is "walk")
+  travel?: "drive" | "walk"; // how they get around (absent = drive)
+  hotel?: Stay; // their actual hotel or address, found on the map; times are measured from here
   maxPrice: number; // dollars per person
   adults: number;
   toddler: boolean;
@@ -119,4 +121,5 @@ export type AppState = {
   planFor: string[] | null; // the saved ids the current plan was built from
   found: Record<string, Place>; // places Gemini hunted down, kept so saves survive reloads
   city: City | null; // a city searched on the fly; null means the hand-checked featured city
+  hotelDrives?: Record<string, number>; // real road minutes from setup.hotel to each place
 };

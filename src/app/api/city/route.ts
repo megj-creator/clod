@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { commonsPhoto, milesApart, slug } from "@/lib/finder";
-import { cached, callGemini, geminiKey, parseJsonLoose, rateLimited } from "@/lib/gemini";
+import { cached, callGemini, geminiKey, parseJsonLoose, guardGemini } from "@/lib/gemini";
 import type { City, Stay } from "@/lib/types";
 
 // "Where are we going?" → any city, town, or region on Earth.
@@ -125,7 +125,8 @@ Describe it for a visitor: its name, a tagline, the local subreddit, the typical
 
 export async function POST(req: Request) {
   if (!geminiKey()) return NextResponse.json({ error: "no-key" }, { status: 503 });
-  if (rateLimited(req, 6, 60_000, "city")) return NextResponse.json({ error: "slow-down" }, { status: 429 });
+  const blocked = guardGemini(req, "city", 6, 60);
+  if (blocked) return NextResponse.json({ error: blocked }, { status: blocked === "forbidden" ? 403 : 429 });
 
   let body: { query?: string };
   try {

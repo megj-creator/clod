@@ -3,12 +3,12 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useMemo, useState } from "react";
 import { fmtDay, fmtRange, fmtTime } from "@/lib/dates";
-import { formatDrive } from "@/lib/geo";
+import { formatDrive, formatTravel, howFor, type TravelCtx } from "@/lib/geo";
 import { buildPlan, type PlanDay, type PlaceStop } from "@/lib/plan";
 import { LIKED_OPTIONS } from "@/lib/taste";
 import type { AppState, City, Place, Rating, Stay } from "@/lib/types";
 import { weatherEmoji, type Weather } from "@/lib/weather";
-import { IconCalendar, IconCar, IconEdit, IconMoon, IconPin, IconRain, IconShare, IconSparkle, IconTicket, IconX } from "./icons";
+import { IconCalendar, IconCar, IconEdit, IconMoon, IconPin, IconRain, IconShare, IconSparkle, IconTicket, IconTravel, IconX } from "./icons";
 import { MapView } from "./MapView";
 import { PlaceImage } from "./PlaceImage";
 import { CATS } from "./ui";
@@ -21,6 +21,8 @@ type Props = {
   state: AppState;
   byId: Record<string, Place>;
   drives: Record<string, number>;
+  ctx: TravelCtx;
+  sunsets?: Record<string, string>;
   forecast: Record<string, Weather>;
   onBuild: () => void;
   onUnsave: (id: string) => void;
@@ -32,7 +34,8 @@ type Props = {
   onToast: (text: string) => void;
 };
 
-export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onUnsave, onFeedback, onOpen, onEdit, onDiscover, onAddToPlan, onToast }: Props) {
+export function MyTrip({ city, stay, state, byId, drives, ctx, sunsets, forecast, onBuild, onUnsave, onFeedback, onOpen, onEdit, onDiscover, onAddToPlan, onToast }: Props) {
+  const away = (min: number) => formatTravel(min, howFor(min, ctx));
   const setup = state.setup!;
   const kids = setup.toddler || setup.baby;
   const saved = state.saved.map((id) => byId[id]).filter(Boolean);
@@ -43,8 +46,8 @@ export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onU
   const plan = useMemo(() => {
     if (!state.planFor) return null;
     const places = state.planFor.map((id) => byId[id]).filter(Boolean);
-    return buildPlan({ places, setup, stay, city, forecast });
-  }, [state.planFor, byId, setup, stay, city, forecast]);
+    return buildPlan({ places, setup, stay, city, forecast, ctx, sunsets });
+  }, [state.planFor, byId, setup, stay, city, forecast, ctx, sunsets]);
 
   const planStale = !!state.planFor && (state.planFor.length !== state.saved.length || state.planFor.some((id) => !state.saved.includes(id)));
 
@@ -89,12 +92,14 @@ export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onU
 
   const share = async () => {
     const text = planText();
+    // A searched city's link opens that city for whoever taps it (it loads instantly from the shared cache)
+    const url = city.generated ? `${window.location.origin}/?city=${encodeURIComponent(city.generated.query)}` : window.location.origin;
     try {
       if (navigator.share) {
-        await navigator.share({ title: `${city.name} trip`, text, url: window.location.origin });
+        await navigator.share({ title: `${city.name} trip`, text, url });
         return;
       }
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(`${text}\nPlan your own: ${url}`);
       onToast("Trip copied. Paste it anywhere.");
     } catch {
       /* user cancelled share */
@@ -164,7 +169,7 @@ export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onU
             {setup.hotelName || stay.name} · {crew}
           </p>
           <p className="trip-meta dim">
-            Up to {formatDrive(setup.maxDrive)} away · up to ${setup.maxPrice} per person
+            Up to {formatDrive(setup.maxDrive)} {setup.travel === "walk" ? "on foot or transit" : "away"} · up to ${setup.maxPrice} per person
           </p>
           <button className="icon-btn trip-edit" onClick={onEdit} aria-label="Edit trip">
             <IconEdit size={16} />
@@ -194,7 +199,7 @@ export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onU
                 <button className="shelf-open" onClick={() => onOpen(p.id)}>
                   <PlaceImage place={p} />
                   <span className="shelf-name">{p.name}</span>
-                  <span className="shelf-sub">{formatDrive(drives[p.id])}</span>
+                  <span className="shelf-sub">{away(drives[p.id])}</span>
                 </button>
                 <button className="shelf-x" onClick={() => onUnsave(p.id)} aria-label={`Remove ${p.name}`}>
                   <IconX size={12} />
@@ -267,6 +272,7 @@ export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onU
               state={state}
               ideas={ideas[day.date] ?? []}
               drives={drives}
+              ctx={ctx}
               onOpen={onOpen}
               onFeedback={onFeedback}
               onAdd={onAddToPlan}
@@ -287,8 +293,13 @@ export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onU
       </section>
 
       <p className="fine-print">
-        Prototype: drive times are estimates, the forecast is a sample, and facts marked "unverified" haven't
-        been checked against official sites yet.
+        {setup.travel === "walk"
+          ? "Walking and transit times are estimates from distance; check local routes for the long ones. "
+          : "Drive times are real road routes without traffic, where marked; others are estimates. "}
+        The forecast is live about two weeks out and typical weather before that.{" "}
+        {city.generated
+          ? "Places were found by Gemini: anything not confirmed on OpenStreetMap or an official site is worth a quick check before you go."
+          : "Facts marked “unverified” haven't been checked against official sites yet."}
       </p>
     </div>
   );
@@ -304,10 +315,12 @@ function DayCard({
   state,
   ideas,
   drives,
+  ctx,
   onOpen,
   onFeedback,
   onAdd,
 }: {
+  ctx: TravelCtx;
   day: PlanDay;
   index: number;
   kids: boolean;
@@ -412,6 +425,7 @@ function DayCard({
                 backup={s.place.rainPlan.backupId ? byId[s.place.rainPlan.backupId] ?? null : null}
                 stayName={stayName}
                 kids={kids}
+                ctx={ctx}
                 fb={state.feedback[s.place.id]}
                 onOpen={onOpen}
                 onFeedback={onFeedback}
@@ -431,7 +445,7 @@ function DayCard({
                 <span>
                   <b>{p.name}</b>
                   <small>
-                    {formatDrive(drives[p.id])} · {p.price.perPerson === 0 ? "Free" : p.price.label}
+                    {formatTravel(drives[p.id], howFor(drives[p.id], ctx))} · {p.price.perPerson === 0 ? "Free" : p.price.label}
                     {p.indoor ? " · indoor" : ""}
                   </small>
                 </span>
@@ -455,10 +469,12 @@ function PlaceRow({
   rainMode,
   backup,
   stayName,
+  ctx,
   fb,
   onOpen,
   onFeedback,
 }: {
+  ctx: TravelCtx;
   stop: PlaceStop;
   first: boolean;
   rainMode: boolean;
@@ -474,13 +490,16 @@ function PlaceRow({
   const shown = swapped && backup ? backup : p;
   const [asking, setAsking] = useState<null | "rate" | Rating>(null);
   const [liked, setLiked] = useState<string[]>([]);
+  const how = howFor(stop.driveFromPrev, ctx);
+  const mapsMode = how === "walk" ? "walking" : how === "transit" ? "transit" : "driving";
 
   return (
     <li className={`stop ${swapped ? "swapped" : ""}`} style={{ ["--cat" as string]: CATS[shown.category].color }}>
       <span className="stop-time">{fmtTime(stop.time)}</span>
       <div className="stop-body">
         <p className="stop-drive">
-          <IconCar size={12} /> {formatDrive(stop.driveFromPrev)} {first ? `from ${stayName}` : "drive"}
+          <IconTravel how={how} size={12} /> {formatTravel(stop.driveFromPrev, how)}
+          {first ? ` from ${stayName}` : how === "drive" ? " drive" : ""}
         </p>
         {swapped && (
           <p className="stop-was">
@@ -503,7 +522,7 @@ function PlaceRow({
         )}
         <a
           className="stop-dir"
-          href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${shown.name}, ${shown.location.address}`)}`}
+          href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${shown.name}, ${shown.location.address}`)}&travelmode=${mapsMode}`}
           target="_blank"
           rel="noreferrer"
         >

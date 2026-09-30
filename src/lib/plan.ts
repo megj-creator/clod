@@ -1,5 +1,5 @@
 import { tripDates, toMinutes, fmtTime } from "./dates";
-import { driveBetween, driveFromStay, formatDrive, milesBetween } from "./geo";
+import { driveBetween, driveFromStay, formatDrive, formatTravel, milesBetween, type TravelCtx } from "./geo";
 import { WEEKDAY } from "./hours";
 import type { BestTime, City, Place, Stay, TripSetup } from "./types";
 import type { Weather } from "./weather";
@@ -35,8 +35,11 @@ export function buildPlan(opts: {
   stay: Stay;
   city: City;
   forecast: Record<string, Weather>;
+  ctx?: TravelCtx;
+  sunsets?: Record<string, string>; // date → "HH:MM", computed for the destination
 }): PlanDay[] {
-  const { places, setup, stay, city, forecast } = opts;
+  const { places, setup, stay, city, forecast, ctx, sunsets } = opts;
+  const driving = ctx?.mode !== "walk";
   const dates = tripDates(setup.start, setup.end);
   const kids = setup.toddler || setup.baby;
   const tipFor = (i: number) => city.gettingAround[i % Math.max(1, city.gettingAround.length)] ?? "";
@@ -115,7 +118,7 @@ export function buildPlan(opts: {
     const dow = new Date(`${date}T12:00:00`).getDay();
     const napS = toMinutes(setup.napStart);
     const napE = toMinutes(setup.napEnd);
-    const sunset = toMinutes(city.sunset);
+    const sunset = toMinutes(sunsets?.[date] ?? city.sunset);
     const T: Record<Slot, number> = {
       morning: kids ? 540 : 570,
       lateMorning: kids ? 645 : 660,
@@ -134,12 +137,13 @@ export function buildPlan(opts: {
 
     const sorted = [...group].sort((a, b) => RIGIDITY[a.bestTime] - RIGIDITY[b.bestTime]);
     for (const p of sorted) {
-      const fromStay = driveFromStay(city, stay, p).min;
+      const fromStay = driveFromStay(city, stay, p, ctx).min;
       const notes: string[] = [];
       let time: number;
 
       const flexible = !isMeal(p) && ["morning", "afternoon", "anytime"].includes(p.bestTime);
-      if (kids && fromStay > 35 && flexible && !used.has("napDrive")) {
+      // A long drive can double as a car nap (only when there's a car)
+      if (driving && kids && fromStay > 35 && flexible && !used.has("napDrive")) {
         used.add("napDrive");
         napInCar = true;
         time = napS + fromStay;
@@ -170,19 +174,26 @@ export function buildPlan(opts: {
     stops.sort((a, b) => a.time - b.time);
     stops.forEach((s, i) => {
       const prev = i === 0 ? stay : stops[i - 1].place.location;
-      s.driveFromPrev = i === 0 ? driveFromStay(city, stay, s.place).min : driveBetween(city, { id: stops[i - 1].place.id, ...prev }, s.place);
+      s.driveFromPrev =
+        i === 0 ? driveFromStay(city, stay, s.place, ctx).min : driveBetween(city, { id: stops[i - 1].place.id, ...prev }, s.place, ctx);
+      // Never start before the last stop is over and you've had time to get here (to the next quarter hour)
+      if (i > 0) {
+        const p = stops[i - 1];
+        const ready = Math.ceil((p.time + p.place.durationMin + s.driveFromPrev) / 15) * 15;
+        if (s.time < ready) s.time = ready;
+      }
     });
 
     const all: PlanStop[] = [...stops];
     if (kids && !napInCar) {
       const before = stops.filter((s) => s.time < napS).pop();
-      const back = before ? driveFromStay(city, stay, before.place).min : 0;
+      const back = before ? driveFromStay(city, stay, before.place, ctx) : null;
       all.push({
         kind: "nap",
         time: napS,
         end: napE,
-        text: before
-          ? `Head back to ${setup.hotelName || stay.name} (${formatDrive(back)}), or try a stroller or car nap.`
+        text: back
+          ? `Head back to ${setup.hotelName || stay.name} (${formatTravel(back.min, back.how)}), or try a ${driving ? "stroller or car" : "stroller"} nap.`
           : "Protected quiet time back at your stay.",
       });
       all.sort((a, b) => a.time - b.time);
