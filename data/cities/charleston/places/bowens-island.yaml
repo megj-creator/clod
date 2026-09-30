@@ -1,0 +1,63 @@
+id: bowens-island
+name: Bowens Island Restaurant
+category: eat
+tagline: Oysters shoveled onto the table at a marsh-side shack.
+neighborhood: Folly Road
+depth: 3
+tags: [oysters, seafood, shack, sunset, local, drinks, dock]
+moods: [casual, unusual]
+
+location:
+  address: 1870 Bowens Island Rd, Charleston, SC 29412
+  lat: 32.6729
+  lng: -79.9632
+
+price:
+  perPerson: 25
+  label: "$$"
+  note: Oyster buckets and fried platters
+
+bestTime: sunset
+durationMin: 90
+indoor: false
+
+photos: []
+
+whyFound: >-
+  A family-run oyster shack on a marsh island that's been going since the 1940s.
+  Plywood, paper towels, sunset over the water. This is the Lowcountry that locals
+  are proudest of.
+insiderTip: >-
+  Come for sunset and sit out on the dock. Oyster season runs roughly fall to spring.
+  In summer, go for the fried shrimp.
+
+localsSay:
+  text: >-
+    Locals say go for the setting and the tradition, and don't dress up.
+  sourced: false
+
+realityCheck:
+  hours: Typically evenings Tue–Sat, closed Sun–Mon
+  seasonal: Roasted oysters mainly in cooler months
+  warnings:
+    - Hours are limited and change with the seasons, so check before you drive out
+  officialUrl: https://bowensislandrestaurant.com
+  lastChecked: null
+
+rainPlan:
+  text: There's an indoor room, but the dock is the magic. On a stormy night, swap in Swig & Swine.
+  backupId: swig-and-swine
+
+booking:
+  best: No reservations. Arrive early.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 5
+  text: Not polished. Unforgettable.
+
+kidFit:
+  score: 2
+  stroller: false
+  notes: Casual and forgiving, but there's water all around the dock, so hold hands.

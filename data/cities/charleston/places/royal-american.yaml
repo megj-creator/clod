@@ -1,0 +1,62 @@
+id: royal-american
+name: The Royal American
+category: music
+tagline: A neighborhood dive with a stage, a patio, and zero pretense.
+neighborhood: NoMo · Upper Peninsula
+depth: 2
+tags: [live-music, dive-bar, patio, local, drinks, late]
+moods: [music, casual, unusual]
+
+location:
+  address: 970 Morrison Dr, Charleston, SC 29403
+  lat: 32.8026
+  lng: -79.9423
+
+price:
+  perPerson: 15
+  label: "$"
+  note: Cover varies by show, and the food is cheap
+
+bestTime: evening
+durationMin: 120
+indoor: true
+
+photos: []
+
+whyFound: >-
+  Where Charleston's local bands actually play. Scrappy in the best way, with string
+  lights on the patio, cheap food, and a crowd that's there for the music, not the photos.
+insiderTip: >-
+  Check the show calendar the day of. An early-evening patio visit works with kids,
+  but the late shows don't.
+
+localsSay:
+  text: >-
+    Locals describe it as a no-frills hangout with a strong local-music calendar,
+    the opposite of the King Street bar scene.
+  sourced: false
+
+realityCheck:
+  hours: Typically afternoon until late. Show times vary.
+  seasonal: Year-round
+  warnings:
+    - Evenings get loud. Bring ear protection for the baby or go early.
+  officialUrl: https://www.theroyalamerican.com
+  lastChecked: null
+
+rainPlan:
+  text: The stage is indoors, but the patio isn't.
+
+booking:
+  best: Most nights, just show up. Ticketed shows sell through their own site, so skip the resellers.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Not for everyone, and that's the point.
+
+kidFit:
+  score: 1
+  stroller: true
+  notes: Daytime patio only. At night it's a bar.

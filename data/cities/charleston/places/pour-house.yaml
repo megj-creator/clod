@@ -1,0 +1,63 @@
+id: pour-house
+name: The Charleston Pour House
+category: music
+tagline: Free shows on a backyard deck under the oaks.
+neighborhood: James Island
+depth: 2
+tags: [live-music, free, deck, local, drinks, patio]
+moods: [music, casual]
+
+location:
+  address: 1977 Maybank Hwy, Charleston, SC 29412
+  lat: 32.7505
+  lng: -79.9870
+
+price:
+  perPerson: 10
+  label: "$"
+  note: Deck shows are often free. Inside shows are ticketed.
+
+bestTime: evening
+durationMin: 120
+indoor: false
+
+photos: []
+
+whyFound: >-
+  The venue locals mean when they say "let's go see a show." The outdoor deck
+  often has free sets, a relaxed way to hear local bands without committing to a
+  whole night out.
+insiderTip: >-
+  Early deck sets are the most family-compatible. Sit near the back and head out
+  when the crowd thickens.
+
+localsSay:
+  text: >-
+    Locals consistently mention it as the best all-around music venue, with a laid-back
+    crowd and a jam-and-roots lean.
+  sourced: false
+
+realityCheck:
+  hours: Show times vary nightly
+  seasonal: Deck shows are weather-dependent
+  warnings: []
+  officialUrl: https://www.charlestonpourhouse.com
+  lastChecked: null
+
+rainPlan:
+  text: Deck shows move or cancel in storms. Check their calendar that day.
+  backupId: royal-american
+
+booking:
+  best: Deck shows are usually free. For inside shows, buy through the venue's own site to skip reseller fees.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: The real local scene, not a tourist bar with a guitar.
+
+kidFit:
+  score: 1
+  stroller: true
+  notes: Early deck sets only.

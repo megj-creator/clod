@@ -1,0 +1,79 @@
+id: old-sheldon-church
+name: Old Sheldon Church Ruins
+category: history
+tagline: Brick columns swallowed by live oaks, an hour into the Lowcountry.
+neighborhood: Yemassee · Beaufort County
+depth: 3
+tags: [ruins, history, photogenic, quiet, free, nature, day-trip]
+moods: [unusual, outdoors, romantic]
+
+location:
+  address: Old Sheldon Church Rd, Yemassee, SC 29945
+  lat: 32.6096
+  lng: -80.7810
+
+price:
+  perPerson: 0
+  label: Free
+
+bestTime: morning
+durationMin: 45
+indoor: false
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Sheldon_Church_2.jpg/1280px-Sheldon_Church_2.jpg
+    credit: Bill Fitzpatrick
+    license: CC BY-SA 3.0
+    source: https://commons.wikimedia.org/wiki/File:Sheldon_Church_2.jpg
+  - src: https://upload.wikimedia.org/wikipedia/commons/a/ae/Old_Sheldon_Church_Ruins_-_Side_View.jpg
+    credit: John E Adams
+    license: CC BY-SA 4.0
+    source: https://commons.wikimedia.org/wiki/File:Old_Sheldon_Church_Ruins_-_Side_View.jpg
+  - src: https://upload.wikimedia.org/wikipedia/commons/a/a2/External_wall_of_ruins_of_Old_Sheldon_Church.JPG
+    credit: SBCtheMuse
+    license: CC BY-SA 3.0
+    source: https://commons.wikimedia.org/wiki/File:External_wall_of_ruins_of_Old_Sheldon_Church.JPG
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/Old_Sheldon_Church_Ruins.jpg/1280px-Old_Sheldon_Church_Ruins.jpg
+    credit: Eyoo3
+    license: CC BY-SA 4.0
+    source: https://commons.wikimedia.org/wiki/File:Old_Sheldon_Church_Ruins.jpg
+
+whyFound: >-
+  The kind of place you'd never find on a top-10 list. It burned twice, in 1779 and
+  again in 1865, and nature took what was left. Eerie, beautiful, and almost always quiet.
+insiderTip: >-
+  Pair it with lunch in Beaufort, 30 minutes further on, so the drive is worth it.
+  Leave at nap time and the drive becomes the nap.
+
+localsSay:
+  text: >-
+    Photographers and history buffs treat it like a pilgrimage. Locals ask visitors to
+    be respectful: it's still church property, not a photo set.
+  sourced: false
+
+realityCheck:
+  hours: Grounds generally open during daylight
+  seasonal: Year-round. Mosquitoes and gnats in summer.
+  warnings:
+    - No restrooms or water on site
+    - Please don't climb the ruins
+  officialUrl: https://sthelenas1712.org
+  lastChecked: null
+
+rainPlan:
+  text: Nothing is covered out here. If it's wet, save the drive for a dry day.
+  backupId: old-exchange
+
+booking:
+  best: Free. Nothing to book.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 5
+  text: Genuinely magical, and you'll likely have it nearly to yourself.
+
+kidFit:
+  score: 2
+  stroller: false
+  notes: Flat grass to toddle on, but no facilities. Diaper changes happen in the car.

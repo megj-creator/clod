@@ -1,0 +1,65 @@
+id: swig-and-swine
+name: Swig & Swine
+category: eat
+tagline: Whole-hog barbecue, paper towels, and a wall of bourbon.
+neighborhood: West Ashley
+depth: 2
+tags: [bbq, casual, local, drinks, bourbon, loud]
+moods: [casual, family]
+
+location:
+  address: 1217 Savannah Hwy, Charleston, SC 29407
+  lat: 32.7840
+  lng: -79.9985
+
+price:
+  perPerson: 20
+  label: "$"
+  note: Most plates $12–25
+
+bestTime: dinner
+durationMin: 75
+indoor: true
+
+photos:
+  - src: https://upload.wikimedia.org/wikipedia/commons/4/49/Swig_and_Swine_BBQ_Restaurant%2C_Charleston.jpg
+    credit: Mjrmtg
+    license: CC BY 4.0
+    source: https://commons.wikimedia.org/wiki/File:Swig_and_Swine_BBQ_Restaurant,_Charleston.jpg
+
+whyFound: >-
+  The barbecue locals actually drive to. No reservations, no dress code, paper
+  towels on the table. Low stakes with a toddler, and the food is genuinely great.
+insiderTip: >-
+  Order at the counter and load up on sauces. Get the brisket plus pulled pork
+  combo to share. On weekends, go before 6 to beat the line.
+
+localsSay:
+  text: >-
+    Usually named in the same breath as Rodney Scott's and Lewis in the endless
+    "best BBQ" debate. It's praised more for consistency and the easy family vibe than for being a destination.
+  sourced: false
+
+realityCheck:
+  hours: Typically 11 AM–9 PM daily
+  seasonal: Year-round
+  warnings: []
+  officialUrl: https://swigandswine.com
+  lastChecked: null
+
+rainPlan:
+  text: It's indoors, so this one is the rain plan.
+
+booking:
+  best: No reservations, just show up. Order ahead online for pickup if the kids are fading.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Not fancy, not trying to be. Reliably, deeply good.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Loud, casual room, so a fussy toddler won't turn heads.

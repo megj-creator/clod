@@ -1,0 +1,62 @@
+id: fleet-landing
+name: Fleet Landing
+category: eat
+tagline: Shrimp and grits on the harbor, in an old Navy landing.
+neighborhood: Waterfront
+depth: 1
+tags: [seafood, waterfront, lowcountry, view, lunch]
+moods: [casual, special]
+
+location:
+  address: 186 Concord St, Charleston, SC 29401
+  lat: 32.7811
+  lng: -79.9253
+
+price:
+  perPerson: 35
+  label: "$$"
+  note: Mains around $20–40
+
+bestTime: dinner
+durationMin: 90
+indoor: true
+
+photos: []
+
+whyFound: >-
+  Popular with tourists, yes. But the water view is real, the Lowcountry
+  classics are done right, and it's an easy yes when you want "we're in Charleston"
+  food without a dress code.
+insiderTip: >-
+  Ask for the deck at lunch, when it's calmer than dinner and the harbor light is
+  best. Share the fried green tomatoes.
+
+localsSay:
+  text: >-
+    Locals call it a solid pick for visiting family: reliable and scenic, if not the most
+    inventive. Some prefer lunch to skip the dinner crowds.
+  sourced: false
+
+realityCheck:
+  hours: Typically lunch and dinner daily
+  seasonal: Year-round
+  warnings: []
+  officialUrl: https://fleetlanding.net
+  lastChecked: null
+
+rainPlan:
+  text: The inside tables still have the view. Just skip the deck.
+
+booking:
+  best: Book dinner ahead on their site. Walk-ins usually work at lunch.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 3
+  text: Good, not life-changing. You're paying partly for the view, and the view is worth it.
+
+kidFit:
+  score: 2
+  stroller: true
+  notes: Kids' menu and a relaxed lunch crowd. Evenings get busier.

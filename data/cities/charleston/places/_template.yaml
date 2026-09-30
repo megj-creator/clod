@@ -1,0 +1,71 @@
+# ─────────────────────────────────────────────────────────────
+#  TEMPLATE: copy this file to add a new place.
+#  1. Copy it, rename it (e.g. "my-new-place.yaml"). Files starting
+#     with "_" are ignored, so this template never shows up in the app.
+#  2. Fill in the fields. Keep the indentation (2 spaces) exactly.
+#  3. Save. The app picks it up automatically.
+# ─────────────────────────────────────────────────────────────
+
+id: my-new-place            # short, lowercase, dashes only. Must be unique.
+name: My New Place
+category: eat               # eat | music | explore | family | history
+tagline: One line that makes someone want to go.
+neighborhood: Downtown
+
+# How "discoverable" it is: 1 = classic / famous, 2 = local favorite, 3 = deep cut
+depth: 2
+
+tags: [casual, local, patio]           # free-form words. They power "more like this".
+moods: [casual]                        # romantic | music | casual | unusual | special | family | outdoors | rainy
+
+location:
+  address: 123 Example St, Charleston, SC
+  lat: 32.78                           # right-click the spot in Google Maps to copy these
+  lng: -79.93
+
+price:
+  perPerson: 20                        # dollars per person (0 = free)
+  label: "$$"
+  note: Mains around $15–25
+
+bestTime: dinner                       # morning | afternoon | sunset | dinner | evening | anytime
+durationMin: 90
+indoor: true                           # true if it works in the rain
+
+photos: []                             # leave empty for the painted placeholder
+#  - src: https://...
+#    credit: Photographer name
+#    license: CC BY-SA 4.0
+#    source: https://commons.wikimedia.org/wiki/File:...
+
+whyFound: Why this made the cut, in the voice of a friend who did the digging.
+insiderTip: The one thing a local would tell you.
+
+localsSay:
+  text: What locals say, summarized. Only mark sourced true once it comes from real local voices.
+  sourced: false
+
+realityCheck:
+  hours: Typically 11 AM–9 PM daily
+  seasonal: Year-round
+  warnings: []
+  officialUrl: https://example.com
+  lastChecked: null                    # set to a date like "2026-10-01" once checked on the official site
+
+rainPlan:
+  text: What to do instead if it rains.
+  backupId: null                       # optional: the id of another place
+
+booking:
+  best: The cheapest legitimate way to book.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4                             # 1–5, honest
+  text: Is it worth the hype?
+
+kidFit:
+  score: 2                             # 1 = skip with kids, 2 = doable, 3 = great
+  stroller: true
+  notes: Anything a parent should know.

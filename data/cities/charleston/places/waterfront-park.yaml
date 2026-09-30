@@ -1,0 +1,72 @@
+id: waterfront-park
+name: Waterfront Park & Pineapple Fountain
+category: family
+tagline: A splash-in fountain, porch swings, and harbor breeze.
+neighborhood: Waterfront
+depth: 1
+tags: [free, fountain, harbor, stroller-ok, kids, swings, photogenic]
+moods: [family, outdoors, romantic]
+
+location:
+  address: 1 Vendue Range, Charleston, SC 29401
+  lat: 32.7777
+  lng: -79.9253
+
+price:
+  perPerson: 0
+  label: Free
+
+bestTime: afternoon
+durationMin: 45
+indoor: false
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Waterfront_Park_-_panoramio_%281%29.jpg/1280px-Waterfront_Park_-_panoramio_%281%29.jpg
+    credit: Bohao Zhao
+    license: CC BY 3.0
+    source: https://commons.wikimedia.org/wiki/File:Waterfront_Park_-_panoramio_(1).jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/Charleston-SC-pineapple-fountain.jpg/1280px-Charleston-SC-pineapple-fountain.jpg
+    credit: JonathanLamb
+    license: CC BY 3.0
+    source: https://commons.wikimedia.org/wiki/File:Charleston-SC-pineapple-fountain.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/DSC0018s.jpg/1280px-DSC0018s.jpg
+    credit: Indies1
+    license: CC BY-SA 4.0
+    source: https://commons.wikimedia.org/wiki/File:DSC0018s.jpg
+
+whyFound: >-
+  The fountain everyone photographs is also one toddlers are allowed to splash
+  in. Add the big family swings out on the pier and it's the easiest free hour downtown.
+insiderTip: >-
+  Bring a towel and a change of clothes. In the late afternoon, the pier swings
+  catch the breeze and the best light.
+
+localsSay:
+  text: >-
+    Locals rate it more for the swings and the breeze than for the famous fountain.
+  sourced: false
+
+realityCheck:
+  hours: Typically 6 AM–midnight
+  seasonal: Fountain splashing is best in warm months
+  warnings: []
+  officialUrl: https://www.charleston-sc.gov
+  lastChecked: null
+
+rainPlan:
+  text: The Old Exchange is a two-minute walk away, so duck in there.
+  backupId: old-exchange
+
+booking:
+  best: Free.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: A postcard that doubles as a playground.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Paved, shaded, restrooms nearby, and splashing is allowed.

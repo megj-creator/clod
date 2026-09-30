@@ -1,0 +1,64 @@
+id: pitt-street-bridge
+name: Pitt Street Bridge
+category: explore
+tagline: An old causeway turned sunset pier, out over the marsh.
+neighborhood: Old Village · Mount Pleasant
+depth: 2
+tags: [sunset, free, walk, marsh, local, stroller-ok, dolphins]
+moods: [romantic, outdoors, family]
+
+location:
+  address: Pitt St, Mount Pleasant, SC 29464
+  lat: 32.7846
+  lng: -79.8612
+
+price:
+  perPerson: 0
+  label: Free
+
+bestTime: sunset
+durationMin: 45
+indoor: false
+
+photos: []
+
+whyFound: >-
+  The locals' favorite free sunset: a car-free stretch of old bridge that runs out
+  into the marsh. Flat and stroller-friendly, and the Old Village around it is one
+  of the prettiest neighborhoods in the area.
+insiderTip: >-
+  Grab an ice cream in the Old Village, then walk out 20 minutes before sunset.
+  Watch the creek for dolphins.
+
+localsSay:
+  text: >-
+    Mount Pleasant locals name it as the easiest "show a visitor the marsh" spot:
+    park, walk, no fee.
+  sourced: false
+
+realityCheck:
+  hours: Open daily, best at sunset
+  seasonal: Year-round
+  warnings:
+    - Parking fills up at sunset on weekends
+    - Bugs at dusk in warm months
+  officialUrl: https://www.tompsc.com
+  lastChecked: null
+
+rainPlan:
+  text: Wet sunset? Watch it from a harbor-view table at Fleet Landing instead.
+  backupId: fleet-landing
+
+booking:
+  best: Free. Nothing to book.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 5
+  text: Understated, free, and perfect.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Flat and railed, with plenty of benches. Bring bug spray.

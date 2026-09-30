@@ -1,0 +1,86 @@
+id: magnolia-plantation
+name: Magnolia Plantation & Gardens
+category: explore
+tagline: America's oldest public gardens, all moss and mirror-black water.
+neighborhood: Ashley River Road
+depth: 1
+tags: [gardens, nature, history, photogenic, animals, stroller-ok, morning]
+moods: [outdoors, family, romantic]
+
+location:
+  address: 3550 Ashley River Rd, Charleston, SC 29414
+  lat: 32.8757
+  lng: -80.0833
+
+price:
+  perPerson: 30
+  label: "$$"
+  note: General admission. House, train and boat tours cost extra. Young kids are typically free.
+
+bestTime: morning
+durationMin: 180
+indoor: false
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Magnolia_Plantation_and_Gardens_-_Charleston%2C_South_Carolina_%288556541208%29.jpg/1280px-Magnolia_Plantation_and_Gardens_-_Charleston%2C_South_Carolina_%288556541208%29.jpg
+    credit: Doug Kerr
+    license: CC BY-SA 2.0
+    source: https://commons.wikimedia.org/wiki/File:Magnolia_Plantation_and_Gardens_-_Charleston,_South_Carolina_(8556541208).jpg
+  - src: https://upload.wikimedia.org/wikipedia/commons/5/54/South_Carolina_-_Magnolia_Gardens_bridge.jpg
+    credit: The Albertype Co. (vintage postcard)
+    license: Public domain
+    source: https://commons.wikimedia.org/wiki/File:South_Carolina_-_Magnolia_Gardens_bridge.jpg
+    caption: The same bridge, a century ago
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Magnolia_Plantation_and_Gardens_-_Charleston%2C_South_Carolina_%288555512689%29.jpg/1280px-Magnolia_Plantation_and_Gardens_-_Charleston%2C_South_Carolina_%288555512689%29.jpg
+    credit: Doug Kerr
+    license: CC BY-SA 2.0
+    source: https://commons.wikimedia.org/wiki/File:Magnolia_Plantation_and_Gardens_-_Charleston,_South_Carolina_(8555512689).jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/Magnolia_Plantation_and_Gardens_-_Charleston%2C_South_Carolina_%288555360893%29.jpg/1280px-Magnolia_Plantation_and_Gardens_-_Charleston%2C_South_Carolina_%288555360893%29.jpg
+    credit: Doug Kerr
+    license: CC BY-SA 2.0
+    source: https://commons.wikimedia.org/wiki/File:Magnolia_Plantation_and_Gardens_-_Charleston,_South_Carolina_(8555360893).jpg
+
+whyFound: >-
+  Yes, it's famous, and here the fame is earned. It's the most "Charleston"
+  landscape you can walk through: Spanish moss, a white bridge over black water,
+  peacocks strolling past. First thing in the morning is the move with little ones.
+insiderTip: >-
+  Arrive at opening, while it's cooler, the light on the lake is at its best and
+  toddlers are in their best mood. The Nature Train is a surprisingly good way to
+  get a baby to nap in the carrier.
+
+localsSay:
+  text: >-
+    Locals tend to split it like this: Magnolia for wild, overgrown romance and Middleton Place
+    for formal gardens. Many point visitors to the "From Slavery to Freedom" tour for
+    the history the gardens alone don't tell.
+  sourced: false
+
+realityCheck:
+  hours: Typically 9 AM–4:30 PM daily (last entry earlier)
+  seasonal: Azaleas peak mid-March through April. Summer heat is serious by 11 AM.
+  warnings:
+    - Some paths are gravel, so bring a stroller with real wheels
+    - Alligators live in the ponds. Keep toddlers back from the water's edge.
+  officialUrl: https://www.magnoliaplantation.com
+  lastChecked: null
+
+rainPlan:
+  text: The house tour is indoors, but the gardens are the point. Swap in the Old Exchange downtown and come back on a dry morning.
+  backupId: old-exchange
+
+booking:
+  best: Official site. Gate prices are usually the same, but booking online lets you reserve add-on tours before they fill.
+  tips:
+    - Resellers bundle Magnolia with carriage tours. Only worth it if you wanted both.
+    - Doing 3+ paid sights? Price out a Charleston attraction pass first.
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Believe the photos. With a baby, skip the add-ons, because the general-admission gardens are the best part.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Petting zoo and nature center, lots of room to run, and deep shade under the oaks.

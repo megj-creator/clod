@@ -1,0 +1,80 @@
+id: angel-oak
+name: Angel Oak
+category: explore
+tagline: A live oak so old its limbs rest on the ground.
+neighborhood: Johns Island
+depth: 1
+tags: [nature, free, photogenic, trees, quick]
+moods: [outdoors, family]
+
+location:
+  address: 3688 Angel Oak Rd, Johns Island, SC 29455
+  lat: 32.7171
+  lng: -80.0810
+
+price:
+  perPerson: 0
+  label: Free
+
+bestTime: morning
+durationMin: 30
+indoor: false
+
+photos:
+  - src: https://upload.wikimedia.org/wikipedia/commons/c/cd/Angel_Oak_April_2005.jpg
+    credit: Jbrack
+    license: Public domain
+    source: https://commons.wikimedia.org/wiki/File:Angel_Oak_April_2005.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/Angel_Oak_in_Charleston_South_Carolina.jpg/1280px-Angel_Oak_in_Charleston_South_Carolina.jpg
+    credit: Agupta96
+    license: CC BY-SA 4.0
+    source: https://commons.wikimedia.org/wiki/File:Angel_Oak_in_Charleston_South_Carolina.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/Angel_Oak_greenery.jpg/1280px-Angel_Oak_greenery.jpg
+    credit: MadeYourReadThis
+    license: CC BY-SA 4.0
+    source: https://commons.wikimedia.org/wiki/File:Angel_Oak_greenery.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/Angel_Oak_%28Seabrook_Island%29.jpg/1280px-Angel_Oak_%28Seabrook_Island%29.jpg
+    credit: chucka_nc
+    license: CC BY-SA 2.0
+    source: https://commons.wikimedia.org/wiki/File:Angel_Oak_(Seabrook_Island).jpg
+    caption: People for scale
+
+whyFound: >-
+  One of the oldest living things in the eastern US, possibly 400+ years
+  old. It's a quick stop, but standing under it is genuinely moving.
+insiderTip: >-
+  This is a 20-minute visit, not a half-day. Pair it with a Johns Island farm stand
+  or the drive out to Kiawah.
+
+localsSay:
+  text: >-
+    Locals love it but warn that it's short: go, look up, leave. Some grumble about
+    weekend crowds.
+  sourced: false
+
+realityCheck:
+  hours: Typically 9 AM–5 PM Mon–Sat, shorter hours Sunday
+  seasonal: Year-round
+  warnings:
+    - No climbing on the branches
+    - The park can close in bad weather
+  officialUrl: https://www.charleston-sc.gov
+  lastChecked: null
+
+rainPlan:
+  text: Skip it in the rain, because the park may close. Do the Children's Museum instead.
+  backupId: childrens-museum
+
+booking:
+  best: Free, and parking is free too.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: It's one tree, and it's still worth the detour.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Flat, open lawn and an easy stroller push from the car.

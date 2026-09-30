@@ -1,0 +1,81 @@
+id: old-exchange
+name: The Old Exchange & Provost Dungeon
+category: history
+tagline: Revolution upstairs, a brick-vaulted dungeon below.
+neighborhood: French Quarter
+depth: 1
+tags: [history, museum, indoor, downtown, quick]
+moods: [rainy, family]
+
+location:
+  address: 122 E Bay St, Charleston, SC 29401
+  lat: 32.7771
+  lng: -79.9272
+
+price:
+  perPerson: 14
+  label: "$"
+  note: Kids usually discounted, and little ones are free
+
+bestTime: afternoon
+durationMin: 60
+indoor: true
+
+photos:
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Charleston_Old_Exchange_Provost_Dungeon_-_panoramio.jpg/1280px-Charleston_Old_Exchange_Provost_Dungeon_-_panoramio.jpg
+    credit: cwi.aida
+    license: CC BY-SA 3.0
+    source: https://commons.wikimedia.org/wiki/File:Charleston_Old_Exchange_Provost_Dungeon_-_panoramio.jpg
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Charleston_-_Exchange_and_Provost_Building_%28Charleston%29_-_20220619123737.jpg/1280px-Charleston_-_Exchange_and_Provost_Building_%28Charleston%29_-_20220619123737.jpg
+    credit: Riis2602
+    license: CC BY-SA 4.0
+    source: https://commons.wikimedia.org/wiki/File:Charleston_-_Exchange_and_Provost_Building_(Charleston)_-_20220619123737.jpg
+    caption: The dungeon
+  - src: https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Charleston_-_Exchange_and_Provost_Building_%28Charleston%29_-_20220619121648.jpg/1280px-Charleston_-_Exchange_and_Provost_Building_%28Charleston%29_-_20220619121648.jpg
+    credit: Riis2602
+    license: CC BY-SA 4.0
+    source: https://commons.wikimedia.org/wiki/File:Charleston_-_Exchange_and_Provost_Building_(Charleston)_-_20220619121648.jpg
+    caption: The Great Hall
+  - src: https://upload.wikimedia.org/wikipedia/commons/d/df/Charleston_-_The_Old_Exchange_Building.jpg
+    credit: Colourpicture Publishers (vintage postcard)
+    license: Public domain
+    source: https://commons.wikimedia.org/wiki/File:Charleston_-_The_Old_Exchange_Building.jpg
+
+whyFound: >-
+  A 45-minute history hit that works in the rain and doesn't ask little legs to
+  go far. The dungeon, a brick-vaulted cellar under the building, is the part you'll remember.
+insiderTip: >-
+  Do the dungeon first, while the toddler is still curious. The guided talk down
+  there is short and theatrical. Step out if the mannequins are too spooky.
+
+localsSay:
+  text: >-
+    Locals recommend it as the best "one hour, indoors, downtown" history stop,
+    especially for kids who won't last through a historic house tour.
+  sourced: false
+
+realityCheck:
+  hours: Typically 9 AM–5 PM daily
+  seasonal: Closed some holidays
+  warnings:
+    - The dungeon mannequins can spook small kids
+    - Stairs to the upper floor, so ask about the elevator
+  officialUrl: https://www.oldexchange.org
+  lastChecked: null
+
+rainPlan:
+  text: Indoors, and a go-to rainy-day stop.
+
+booking:
+  best: Walk up. Tickets rarely sell out. Only book ahead for special events.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 3
+  text: Small, but the real deal. Don't expect a big museum.
+
+kidFit:
+  score: 2
+  stroller: true
+  notes: Short and indoors, but the dungeon may be too dark and spooky for some toddlers.

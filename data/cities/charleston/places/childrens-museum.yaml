@@ -1,0 +1,61 @@
+id: childrens-museum
+name: Children's Museum of the Lowcountry
+category: family
+tagline: A pirate ship, a water room, and zero judgment.
+neighborhood: Upper King
+depth: 1
+tags: [kids, indoor, play, downtown, toddler]
+moods: [family, rainy]
+
+location:
+  address: 25 Ann St, Charleston, SC 29403
+  lat: 32.7875
+  lng: -79.9353
+
+price:
+  perPerson: 15
+  label: "$"
+  note: Babies are usually free
+
+bestTime: morning
+durationMin: 120
+indoor: true
+
+photos: []
+
+whyFound: >-
+  You're traveling with a toddler. Sometimes the best local discovery is a place
+  built entirely for them, and this one is right downtown.
+insiderTip: >-
+  Go at opening and head straight to the water play before it fills up. Pack a
+  spare outfit, because they will get wet.
+
+localsSay:
+  text: >-
+    Local parents treat it as the default rainy-day escape. It's best for kids under 6.
+  sourced: false
+
+realityCheck:
+  hours: Typically Tue–Sat 9 AM–5 PM, Sunday afternoons. Often closed Mondays.
+  seasonal: Year-round
+  warnings:
+    - Closure days have changed before, so check before you go
+  officialUrl: https://explorecml.org
+  lastChecked: null
+
+rainPlan:
+  text: Indoors, and the definitive rainy-day plan with kids.
+
+booking:
+  best: Buy at the door or online. If your home museum is in a reciprocal program, you may get in cheaper.
+  tips: []
+  lastChecked: null
+
+hypeCheck:
+  score: 4
+  text: Small by big-city standards, but just right for toddlers.
+
+kidFit:
+  score: 3
+  stroller: true
+  notes: Built for under-6s. Easy stroller parking, and there's somewhere to sit while they play.
