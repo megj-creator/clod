@@ -258,8 +258,11 @@ const PHOTO_WORDS = new Set(
 // Rejects files that mention the place but are about something else there:
 // "Robert's geranium red leaf, Jardim Botânico" or "Regata sul Canal Grande – Guardi – Gulbenkian Museum".
 function aboutThePlace(fileTitle: string, name: string, city: string): boolean {
+  const words = nameWords(fileTitle);
+  // Signs, maps, and closure notices say the wrong thing about a place ("…announce closure of … park")
+  if (words.some((w) => ["sign", "signs", "signboard", "closure", "closed", "map", "plaque", "logo", "menu", "notice"].includes(w))) return false;
   const known = new Set([...nameWords(name), ...nameWords(city)]);
-  const extra = nameWords(fileTitle).filter((w) => !known.has(w) && !PHOTO_WORDS.has(w) && !/\d/.test(w));
+  const extra = words.filter((w) => !known.has(w) && !PHOTO_WORDS.has(w) && !/\d/.test(w));
   return extra.length <= 3;
 }
 
