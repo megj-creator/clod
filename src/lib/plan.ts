@@ -1,5 +1,6 @@
 import { tripDates, toMinutes, fmtTime } from "./dates";
 import { driveBetween, driveFromStay, formatDrive, milesBetween } from "./geo";
+import { WEEKDAY } from "./hours";
 import type { BestTime, City, Place, Stay, TripSetup } from "./types";
 import type { Weather } from "./weather";
 
@@ -77,31 +78,41 @@ export function buildPlan(opts: {
     clusters[choice.i].push(p);
   }
 
-  // 3. Spread busy days across the trip; the rainy day gets the most indoor cluster.
-  const idx = k === 1 ? [0] : Array.from({ length: k }, (_, i) => Math.round((i * (dates.length - 1)) / (k - 1)));
-  const byNearness = [...clusters].sort((a, b) => avgMiles(a, stay) - avgMiles(b, stay));
-  const rainyIdx = idx.find((i) => forecast[dates[i]]?.kind === "rain");
-  if (rainyIdx !== undefined) {
-    const indoorMost = [...byNearness].sort((a, b) => indoorShare(b) - indoorShare(a))[0];
-    byNearness.splice(byNearness.indexOf(indoorMost), 1);
-    const rest = idx.filter((i) => i !== rainyIdx);
-    days[rainyIdx].stops = scheduleDay(indoorMost);
-    days[rainyIdx].area = areaName(indoorMost);
-    rest.forEach((i, n) => {
-      days[i].stops = scheduleDay(byNearness[n]);
-      days[i].area = areaName(byNearness[n]);
-    });
-  } else {
-    idx.forEach((i, n) => {
-      days[i].stops = scheduleDay(byNearness[n]);
-      days[i].area = areaName(byNearness[n]);
-    });
-  }
+  // 3. Decide which group goes on which day. Search the options and pick the one with
+  //    no place on a day it's closed (verified hours), outdoor plans off rainy days,
+  //    and busy days spread out with little ones.
+  const ideal = k === 1 ? [0] : Array.from({ length: k }, (_, i) => Math.round((i * (dates.length - 1)) / (k - 1)));
+  const groups = [...clusters].sort((a, b) => avgMiles(a, stay) - avgMiles(b, stay));
+  const weekday = (d: string) => new Date(`${d}T12:00:00`).getDay();
+  const cost = (g: Place[], dayIdx: number, order: number) => {
+    const d = dates[dayIdx];
+    const closed = g.filter((p) => p.openDays && !p.openDays.includes(weekday(d))).length;
+    const wet = forecast[d]?.kind === "rain" ? g.filter((p) => !p.indoor).length : 0;
+    return closed * 100 + wet * 3 + (ideal.includes(dayIdx) ? 0 : 1) + order * 0.01 * dayIdx;
+  };
+  const candidates = dates.length <= 8 ? dates.map((_, i) => i) : ideal;
+  let best: number[] = ideal;
+  let bestCost = Infinity;
+  const pick = (gi: number, used: number[], total: number) => {
+    if (total >= bestCost) return;
+    if (gi === groups.length) {
+      bestCost = total;
+      best = [...used];
+      return;
+    }
+    for (const di of candidates) if (!used.includes(di)) pick(gi + 1, [...used, di], total + cost(groups[gi], di, gi));
+  };
+  pick(0, [], 0);
+  groups.forEach((g, n) => {
+    days[best[n]].stops = scheduleDay(g, dates[best[n]]);
+    days[best[n]].area = areaName(g);
+  });
 
   return days;
 
   // ── helpers ──
-  function scheduleDay(group: Place[]): PlanStop[] {
+  function scheduleDay(group: Place[], date: string): PlanStop[] {
+    const dow = new Date(`${date}T12:00:00`).getDay();
     const napS = toMinutes(setup.napStart);
     const napE = toMinutes(setup.napEnd);
     const sunset = toMinutes(city.sunset);
@@ -149,6 +160,7 @@ export function buildPlan(opts: {
         used.add(slot);
         time = T[slot];
       }
+      if (p.openDays && !p.openDays.includes(dow)) notes.push(`⚠️ Closed ${WEEKDAY[dow]}s, per the official site. Move this to another day.`);
       if (kids && p.kidFit.score === 1) notes.push("Best for grown-ups. Go early, or take turns.");
       if (kids && time >= 1170) notes.push("Late for little ones.");
       stops.push({ kind: "place", place: p, time, driveFromPrev: 0, notes });
@@ -180,9 +192,6 @@ export function buildPlan(opts: {
 
 function avgMiles(group: Place[], stay: Stay) {
   return group.reduce((s, p) => s + milesBetween(p.location, stay), 0) / Math.max(1, group.length);
-}
-function indoorShare(group: Place[]) {
-  return group.filter((p) => p.indoor).length / Math.max(1, group.length);
 }
 function areaName(group: Place[]) {
   const counts: Record<string, number> = {};

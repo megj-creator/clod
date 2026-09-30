@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import yaml from "js-yaml";
+import { parseOpenDays } from "./hours";
 import type { City, Place } from "./types";
 
 type Check = {
@@ -74,6 +75,7 @@ export function loadCity(id: string): City {
         checkedUrl: c.url,
         evidence: c.evidence?.slice(0, 200),
       };
+      p.openDays = parseOpenDays(c.hours);
       if (c.priceNote) p.price = { ...p.price, note: `${c.priceNote} (per the official site)` };
       if (c.adultPrice > 0 && p.category !== "eat" && p.category !== "music") p.price = { ...p.price, perPerson: Math.round(c.adultPrice) };
       if (c.booking) p.booking = { ...p.booking, tips: [...(p.booking.tips ?? []), `Official site says: ${c.booking}`], lastChecked: c.checked };

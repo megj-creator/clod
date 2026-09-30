@@ -65,5 +65,467 @@
   "booking": "",
   "evidence": "Callie's Hot Little Biscuit - City Market \n 188 Market St Charleston, SC 29401 \n Hours: \n Daily, 8:00am - 4:00pm",
   "confidence": "high"
+ },
+ "charles-towne-landing": {
+  "checked": "2026-09-30",
+  "url": "https://southcarolinaparks.com/charles-towne-landing",
+  "status": "ok",
+  "found": true,
+  "hours": "Visitor Center/Gift Shop: 9 a.m. - 4 p.m. daily. Animal Forest: 10 a.m. - 4 p.m. daily. Adventure: 10 a.m. - 4 p.m., daily. Park Grounds: 9 a.m. - 5 p.m., daily.",
+  "seasonal": "The Adventure will be away from the park for annual maintenance from January 1 through April 1 each year.",
+  "closures": [
+   "Christmas Day",
+   "Tuesdays for the Adventure"
+  ],
+  "adultPrice": 12,
+  "priceNote": "$12/adult; $7.50/S.C. Senior; $7/youth age 6-15; Free for children 5 and younger.",
+  "booking": "",
+  "evidence": "Visitor Center/Gift Shop: 9 a.m. - 4 p.m. daily. Closed Christmas Day.",
+  "confidence": "high"
+ },
+ "charleston-museum": {
+  "checked": "2026-09-30",
+  "url": "https://charlestonmuseum.org",
+  "status": "unreachable"
+ },
+ "charleston-music-hall": {
+  "checked": "2026-09-30",
+  "url": "https://charlestonmusichall.com/",
+  "status": "no-hours",
+  "rejected": "Site lists box-office hours; check the show calendar"
+ },
+ "childrens-museum": {
+  "checked": "2026-09-30",
+  "url": "https://explorecml.org/",
+  "status": "ok",
+  "found": true,
+  "hours": "Monday–Saturday 10 AM–5 PM (open for museum members 9 AM–10 AM), Sunday 12 noon–5 PM",
+  "seasonal": "",
+  "closures": [
+   "After September 23rd, the outdoor exhibits will be CLOSED until further notice due to the event at the museum on 9/25."
+  ],
+  "adultPrice": 15,
+  "priceNote": "Museum Admission: $15 ($13 advance purchase, $3 for SNAP, WIC, Foster Family ID, free for under 1 and members)",
+  "booking": "Purchase advance admission online",
+  "evidence": "Monday - Saturday 10 am - 5 pm Sunday 12 noon - 5 pm",
+  "confidence": "high"
+ },
+ "city-market": {
+  "checked": "2026-09-30",
+  "url": "https://www.thecharlestoncitymarket.com/",
+  "status": "ok",
+  "found": true,
+  "hours": "Sunday–Thursday 9:30 AM–5:00 PM, Friday–Saturday 9:30 AM–6:00 PM; Night Market Fri–Sat 6:30 PM–10:30 PM",
+  "seasonal": "Night Market operates from March 14, 2026, and concludes in December 2026.",
+  "closures": [
+   "CLOSED JULY 4th (Night Market only)"
+  ],
+  "adultPrice": 0,
+  "priceNote": "Free admission",
+  "booking": "",
+  "evidence": "Great Hall Sunday - Thursday Open 9:30 to 5:00 pm., Friday and Saturday open until 6pm",
+  "confidence": "high"
+ },
+ "drayton-hall": {
+  "checked": "2026-09-30",
+  "url": "https://draytonhall.org/",
+  "status": "ok",
+  "found": true,
+  "hours": "Wednesday - Monday from 9:00 am - 4:30 pm, front gate closes at 3:00 pm. Closed on Tuesday.",
+  "seasonal": "",
+  "closures": [
+   "Tuesday",
+   "Thanksgiving Day",
+   "Christmas Eve",
+   "Christmas Day",
+   "New Year's Eve",
+   "New Year's Day"
+  ],
+  "adultPrice": 30,
+  "priceNote": "$30 per person online / $35 per person on-site for all-inclusive tickets",
+  "booking": "Register online in advance or buy tickets at the gate. The gate will accept no cash transactions.",
+  "evidence": "Wednesday - Monday from 9:00 am - 4:30pm, (front gate closes at 3:00 pm). Closed on Tuesday.",
+  "confidence": "high"
+ },
+ "fig": {
+  "checked": "2026-09-30",
+  "url": "https://eatatfig.com/",
+  "status": "ok",
+  "found": true,
+  "hours": "Tuesday through Saturday 5PM — 10:30PM, closed Sundays and Mondays",
+  "seasonal": "",
+  "closures": [
+   "Sundays and Mondays",
+   "Thanksgiving Day",
+   "Christmas Eve",
+   "Christmas Day"
+  ],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "Book a table",
+  "evidence": "Tuesday through Saturday 5PM — 10:30PM Closed Sundays and Mondays",
+  "confidence": "high"
+ },
+ "fleet-landing": {
+  "checked": "2026-09-30",
+  "url": "https://fleetlanding.net/",
+  "status": "ok",
+  "found": true,
+  "hours": "Lunch: Seven Days a Week 11am-3:30pm, Dinner: Seven Days a Week 5pm-10pm",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "Reservations are strongly recommended and can be made by clicking the reservations link on the website.",
+  "evidence": "Lunch: Seven Days a Week 11am-3:30pm Dinner: Seven Days a Week 5pm-10pm",
+  "confidence": "high"
+ },
+ "folly-beach-pier": {
+  "checked": "2026-09-30",
+  "url": "https://www.ccprc.com/",
+  "status": "no-hours",
+  "found": false,
+  "hours": "",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "",
+  "evidence": "",
+  "confidence": "high"
+ },
+ "fort-sumter": {
+  "checked": "2026-09-30",
+  "url": "https://www.nps.gov/fosu/index.htm",
+  "status": "no-hours",
+  "found": false,
+  "hours": "",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "Fort Sumter does not charge an entrance fee; however tickets for the authorized concession-operated ferry are required and may be purchased in advance.",
+  "booking": "Tickets for the authorized concession-operated ferry are required and may be purchased in advance.",
+  "evidence": "",
+  "confidence": "high"
+ },
+ "home-team-bbq": {
+  "checked": "2026-09-30",
+  "url": "https://hometeambbq.com/",
+  "status": "ok",
+  "found": true,
+  "hours": "Daily 11 AM–Midnight",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "First Come, First Served.",
+  "evidence": "11am to Midnight Daily",
+  "confidence": "high"
+ },
+ "husk": {
+  "checked": "2026-09-30",
+  "url": "https://huskrestaurant.com/",
+  "status": "no-hours",
+  "found": false,
+  "hours": "",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "",
+  "evidence": "",
+  "confidence": "high"
+ },
+ "hymans-seafood": {
+  "checked": "2026-09-30",
+  "url": "https://www.hymanseafood.com/",
+  "status": "ok",
+  "found": true,
+  "hours": "Daily: 11am–9pm",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "NO RESERVATIONS — WALK-IN ONLY!",
+  "evidence": "Daily: 11am–9pm*",
+  "confidence": "high"
+ },
+ "iaam": {
+  "checked": "2026-09-30",
+  "url": "https://iaamuseum.org",
+  "status": "unreachable"
+ },
+ "james-island-county-park": {
+  "checked": "2026-09-30",
+  "url": "https://www.ccprc.com/",
+  "status": "no-hours",
+  "found": false,
+  "hours": "",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "",
+  "evidence": "",
+  "confidence": "high"
+ },
+ "jestines-kitchen": {
+  "checked": "2026-09-30",
+  "url": "https://jestineskitchen.com/",
+  "status": "no-hours",
+  "found": false,
+  "hours": "",
+  "seasonal": "",
+  "closures": [
+   "Permanent closure announced"
+  ],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "Please note, we do not accept reservations. Guests are seated first come, first served.",
+  "evidence": "",
+  "confidence": "high"
+ },
+ "kaminskys": {
+  "checked": "2026-09-30",
+  "url": "https://www.kaminskys.com/",
+  "status": "ok",
+  "found": true,
+  "hours": "Monday – Thursday 4 PM – 11 PM, Friday & Saturday 11 AM – 1 AM, Sunday 11 AM – 11 PM",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "Slices of cake range from $9 to $10, pies $8, cheesecakes $10 to $12",
+  "booking": "",
+  "evidence": "Monday – Thursday 4 PM – 11 PM Friday & Saturday 11 AM – 1 AM Sunday 11 AM – 11 PM",
+  "confidence": "high"
+ },
+ "kiawah-beachwalker-park": {
+  "checked": "2026-09-30",
+  "url": "https://www.ccprc.com/",
+  "status": "no-hours",
+  "found": false,
+  "hours": "",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "",
+  "evidence": "",
+  "confidence": "high"
+ },
+ "leons-oyster-shop": {
+  "checked": "2026-09-30",
+  "url": "https://leonsoystershop.com/",
+  "status": "ok",
+  "found": true,
+  "hours": "Sun–Thu 11 AM–9 PM, Fri–Sat 11 AM–10 PM",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "Book your Leon's Oyster Shop reservation on Resy or by calling the restaurant",
+  "evidence": "sun-thurs 11am-9pm fri-sat 11am-10pm",
+  "confidence": "high"
+ },
+ "lewis-barbecue": {
+  "checked": "2026-09-30",
+  "url": "https://www.lewisbarbecue.com/",
+  "status": "ok",
+  "found": true,
+  "hours": "Sunday - Monday: 11 am - 9 pm, Tuesday - Saturday: 11 am - 10 pm",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "Priced by the pound or item; individual items range from around $4 sides to $35 per pound for brisket.",
+  "booking": "No Reservations.",
+  "evidence": "Sunday - Monday: 11 am - 9 pm \nTuesday - Saturday: 11 am - 10 pm",
+  "confidence": "high"
+ },
+ "magnolia-plantation": {
+  "checked": "2026-09-30",
+  "url": "https://www.magnoliaplantation.com/",
+  "status": "ok",
+  "found": true,
+  "hours": "9am to 4pm",
+  "seasonal": "",
+  "closures": [
+   "Thanksgiving",
+   "Christmas",
+   "New Year's Days"
+  ],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "",
+  "evidence": "Hours of Operation : 9am to 4pm",
+  "confidence": "high"
+ },
+ "mcleod-plantation": {
+  "checked": "2026-09-30",
+  "url": "https://www.ccprc.com/",
+  "status": "no-hours",
+  "found": false,
+  "hours": "",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "",
+  "evidence": "",
+  "confidence": "high"
+ },
+ "middleton-place": {
+  "checked": "2026-09-30",
+  "url": "https://middletonplace.org",
+  "status": "unreachable"
+ },
+ "music-farm": {
+  "checked": "2026-09-30",
+  "url": "https://musicfarm.com/",
+  "status": "no-hours",
+  "rejected": "Site lists box-office hours; check the show calendar"
+ },
+ "old-exchange": {
+  "checked": "2026-09-30",
+  "url": "https://www.oldexchange.org/",
+  "status": "ok",
+  "found": true,
+  "hours": "Monday - Saturday 9 AM - 5 PM, Sunday 11 AM - 5 PM",
+  "seasonal": "Tour times may vary due to seasonal attendance, private events, and educational programs.",
+  "closures": [
+   "New Year's Day",
+   "Thanksgiving Day",
+   "Christmas Day"
+  ],
+  "adultPrice": 16,
+  "priceNote": "Adults: $16.00, Children (7-12): $12.00, Children (0-6): Free",
+  "booking": "Admission may be purchased on site.",
+  "evidence": "Monday - Saturday: 9:00 AM - 5:00 PM \nSunday: 11:00 AM - 5:00 PM",
+  "confidence": "high"
+ },
+ "old-sheldon-church": {
+  "checked": "2026-09-30",
+  "url": "https://sthelenas1712.org/",
+  "status": "no-hours",
+  "rejected": "Site lists the parish office hours, not the ruins"
+ },
+ "pages-okra-grill": {
+  "checked": "2026-09-30",
+  "url": "https://www.pagesokragrill.com/",
+  "status": "ok",
+  "found": true,
+  "hours": "Mt. Pleasant & Summerville: Mon–Thu 7 AM–9 PM, Fri 7 AM–10 PM, Sat 8 AM–10 PM, Sun 8 AM–9 PM; Moncks Corner Food Truck: Tue–Sat 11 AM–8 PM",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "Walk-ins only; currently not taking reservations. Inquiries accepted for private dining rooms, patios, and catering.",
+  "evidence": "Monday - Thursday Breakfast | 7am - 11ish Lunch | 11am - 3pm Supper | 3pm - 9pm Friday Breakfast | 7am - 11ish Lunch | 11am - 3pm Supper | 3pm - 10pm Saturday Brunch | 8am - 3ish Supper | 3pm - 10pm Sunday Brunch | 8am - 3ish Supper | 3pm - 9pm",
+  "confidence": "high"
+ },
+ "patriots-point": {
+  "checked": "2026-09-30",
+  "url": "https://patriotspoint.org/",
+  "status": "ok",
+  "found": true,
+  "hours": "Daily 10 a.m. - 5 p.m.",
+  "seasonal": "",
+  "closures": [
+   "Thanksgiving Day",
+   "Christmas Eve",
+   "Christmas Day"
+  ],
+  "adultPrice": 28,
+  "priceNote": "Online/Advanced Ticket Pricing: Adults (ages 13-61): $28, Children (ages 6–12): $23, Seniors (ages 65+): $25, Children 5 & under and active-duty military are free at the ticket window.",
+  "booking": "Buy your ticket online to save time and money.",
+  "evidence": "Open Daily, 10 a.m. - 5 p.m.",
+  "confidence": "high"
+ },
+ "pitt-street-bridge": {
+  "checked": "2026-09-30",
+  "url": "https://www.tompsc.com/",
+  "status": "no-hours",
+  "found": false,
+  "hours": "",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "",
+  "evidence": "",
+  "confidence": "high"
+ },
+ "pour-house": {
+  "checked": "2026-09-30",
+  "url": "https://charlestonpourhouse.com/",
+  "status": "no-hours",
+  "found": false,
+  "hours": "",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "",
+  "evidence": "",
+  "confidence": "high"
+ },
+ "rodney-scotts-bbq": {
+  "checked": "2026-09-30",
+  "url": "https://rodneyscottsbbq.com/",
+  "status": "no-text"
+ },
+ "royal-american": {
+  "checked": "2026-09-30",
+  "url": "https://www.theroyalamerican.com/",
+  "status": "ok",
+  "found": true,
+  "hours": "Open Daily 11 am - 2 am",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "",
+  "evidence": "Open Daily 11 am - 2 am",
+  "confidence": "high"
+ },
+ "rutledge-cab-co": {
+  "checked": "2026-09-30",
+  "url": "https://rutledgecabco.com",
+  "status": "unreachable"
+ },
+ "sc-aquarium": {
+  "checked": "2026-09-30",
+  "url": "https://scaquarium.org/",
+  "status": "ok",
+  "found": true,
+  "hours": "Daily 9 AM–5 PM",
+  "seasonal": "On Aquarium Aglow dates, the Aquarium is open from 9 a.m.–4 p.m., with the last entry time at 2:30 p.m.",
+  "closures": [
+   "Thanksgiving Day",
+   "December 25"
+  ],
+  "adultPrice": 0,
+  "priceNote": "The South Carolina Aquarium utilizes a dynamic ticket calendar to determine daily admission prices.",
+  "booking": "Buy Tickets online via the official website",
+  "evidence": "The Aquarium is open daily from 9 a.m.—5 p.m., with the last entry at 3:30 p.m.",
+  "confidence": "high"
+ },
+ "swig-and-swine": {
+  "checked": "2026-09-30",
+  "url": "https://swigandswine.com/",
+  "status": "no-text"
+ },
+ "waterfront-park": {
+  "checked": "2026-09-30",
+  "url": "https://www.charleston-sc.gov/",
+  "status": "no-hours",
+  "found": false,
+  "hours": "",
+  "seasonal": "",
+  "closures": [],
+  "adultPrice": 0,
+  "priceNote": "",
+  "booking": "",
+  "evidence": "",
+  "confidence": "low"
  }
 }

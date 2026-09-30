@@ -65,6 +65,7 @@ export function MyTrip({ city, stay, state, byId, drives, forecast, onBuild, onU
       const rainy = day.weather?.kind === "rain";
       const picks = pool
         .filter((p) => !used.has(p.id) && (!rainy || p.indoor) && (!hasMeal || p.category !== "eat"))
+        .filter((p) => !p.openDays || p.openDays.includes(new Date(`${day.date}T12:00:00`).getDay()))
         .slice(0, 2);
       picks.forEach((p) => used.add(p.id));
       if (picks.length) out[day.date] = picks;

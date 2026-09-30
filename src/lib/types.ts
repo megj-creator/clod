@@ -46,6 +46,8 @@ export type Place = {
   live?: { foundAt: string; mode: "search" | "knowledge"; sources: { title: string; url: string }[] };
   // Real road minutes from a stay, looked up when a live find arrives
   driveFrom?: Record<string, number>;
+  // Days open (0 = Sunday), from hours verified on the official site
+  openDays?: number[];
 };
 
 export type Stay = { id: string; name: string; area: string; lat: number; lng: number };

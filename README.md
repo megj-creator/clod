@@ -88,7 +88,7 @@ The key stays on the server and never reaches visitors' phones. There's a small 
 |---|---|
 | Photos | ✅ Real, licensed (Wikimedia Commons, with credits). 6 places still use painted placeholders. |
 | Drive times | ✅ **Real road routes** (OpenStreetMap) from every stay, without traffic, plus 2 minutes to park. Live finds get real times too. |
-| Hours, prices, booking | ✅ Checked against official websites where the site lists them, with a date and a quote. The rest say **Not yet verified** or "call ahead." |
+| Hours, prices, booking | ✅ Checked against official websites where the site lists them, with a date and a quote. The rest say **Not yet verified** or "call ahead." The trip builder uses the verified days: it never schedules a place on a day it's closed, and warns you if it can't avoid it. |
 | "What locals are saying" | ⚠️ Summaries for now, plus a "What locals say" button that opens the real r/Charleston threads. Real paraphrased local voices turn on once Reddit approves access. |
 | Places | 54 curated places across eat, music, explore, family, and history, plus unlimited live finds from Go hunting. |
 | Forecast | ✅ Live from Open-Meteo (free, no key) for the next ~2 weeks. Dates further out show typical weather, labeled as such. |
