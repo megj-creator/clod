@@ -170,7 +170,11 @@ export function DetailSheet({
                 {place.realityCheck.osm.hours ? ". Still worth a quick check before you go." : ". Hours aren't listed there, so check before you go."}
               </p>
             ) : (
-              place.live?.origin === "city" && <p className="check-note">📍 Map pin is Gemini's estimate. It couldn't be matched on OpenStreetMap.</p>
+              place.live && (
+                <p className="check-note">
+                  📍 Couldn't find this on OpenStreetMap, so the map pin is Gemini's estimate. Worth confirming the place exists and is open.
+                </p>
+              )
             )}
             {(place.realityCheck.checkedUrl || place.realityCheck.officialUrl) && (
               <a className="source-link" href={place.realityCheck.checkedUrl || place.realityCheck.officialUrl} target="_blank" rel="noreferrer">

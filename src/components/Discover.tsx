@@ -3,7 +3,8 @@
 import { AnimatePresence, animate, motion, useMotionValue, useTransform } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { fmtRange } from "@/lib/dates";
-import { CATEGORY_CHIPS, EXAMPLES, MOOD_CHIPS, chipIntent, interpret, type Intent } from "@/lib/intent";
+import { huntFor } from "@/lib/hunt";
+import { CATEGORY_CHIPS, EXAMPLES, MOOD_CHIPS, chipIntent, interpret, parseIntent, type Intent } from "@/lib/intent";
 import { buildQueue, type Ranked } from "@/lib/rank";
 import { play } from "@/lib/sfx";
 import type { AppState, City, Place, Stay } from "@/lib/types";
@@ -63,17 +64,36 @@ export function Discover(props: Props) {
 
 /* ───────────────────────── Prompt ───────────────────────── */
 
-function PromptPanel({ city, state, stay, drives, setIntent, onSurprise, onOpenTaste, onRetryPlaces }: Props) {
+function PromptPanel({ city, state, stay, drives, setIntent, onSurprise, onOpenTaste, onRetryPlaces, onFound }: Props) {
   const setup = state.setup!;
   const [text, setText] = useState("");
   const [thinking, setThinking] = useState(false);
+  const [status, setStatus] = useState("Reading that and checking my list…");
   const ask = async () => {
     const q = text.trim();
     if (!q || thinking) return;
     setThinking(true);
+    setStatus("Reading that and checking my list…");
     const crew = [`${setup.adults} adults`, setup.toddler && "a toddler", setup.baby && "a baby"].filter(Boolean).join(", ");
     const seen = new Set([...state.saved, ...Object.keys(state.passed)]);
-    const intent = await interpret(q, city.places, drives, `${crew}; max drive ${setup.maxDrive} min; max $${setup.maxPrice}/person`, seen);
+    let intent = await interpret(q, city.places, drives, `${crew}; max drive ${setup.maxDrive} min; max $${setup.maxPrice}/person`, seen);
+    // Nothing on the list really fits: go find places for exactly this, best finds first
+    if (intent.enough === false) {
+      setStatus(`Nothing on my list fits that. Hunting ${city.name} for it…`);
+      try {
+        const found = await huntFor({ city, stay, state, request: q });
+        onFound(found.places);
+        intent = {
+          ...intent,
+          picks: { ...Object.fromEntries(found.places.map((p) => [p.id, p.whyFound])), ...intent.picks },
+          heard: [...intent.heard, "hunted for this"],
+        };
+        play("chime");
+      } catch {
+        // No luck hunting: the closest matches from the list (or keywords) are still better than nothing
+        if (!Object.keys(intent.picks ?? {}).length) intent = parseIntent(q);
+      }
+    }
     setThinking(false);
     setIntent(intent);
   };
@@ -179,7 +199,7 @@ function PromptPanel({ city, state, stay, drives, setIntent, onSurprise, onOpenT
         <button type="submit" aria-label="Find it" disabled={!text.trim() || thinking}>
           {thinking ? <span className="spinner" /> : <IconSend size={18} />}
         </button>
-        {thinking && <p className="ask-status">Reading that and checking my list…</p>}
+        {thinking && <p className="ask-status">{status}</p>}
       </form>
 
       <button className="text-link" onClick={() => setIntent(chipIntent("all"))}>
@@ -240,24 +260,12 @@ function Deck(props: Props & { intent: Intent }) {
     play("whoosh");
     const spin = setInterval(() => setDigLine((i) => Math.min(i + 1, DIG_LINES[4].length - 1)), 2600);
     try {
-      const likedTags = Object.entries(state.taste.tags).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]).map(([t]) => t);
-      const res = await fetch("/api/hunt", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          city: `${city.name}, ${city.state}`,
-          stay: { id: stay.id, name: setup.hotelName || stay.name, lat: stay.lat, lng: stay.lng },
-          request: intent.heard[0] === "everything" ? "the best things most visitors miss" : `${intent.label} (${intent.heard.join(", ")})`,
-          crew: [`${setup.adults} adults`, setup.toddler && "a toddler", setup.baby && "a baby"].filter(Boolean).join(", "),
-          maxDrive: setup.maxDrive,
-          maxPrice: setup.maxPrice,
-          exclude: city.places.map((p) => p.name),
-          liked: likedTags,
-        }),
+      const data = await huntFor({
+        city,
+        stay,
+        state,
+        request: intent.heard[0] === "everything" ? "the best things most visitors miss" : `${intent.label} (${intent.heard.join(", ")})`,
       });
-      if (!res.ok) throw new Error(String(res.status));
-      const data = (await res.json()) as { places: Place[]; mode: "search" | "knowledge" };
-      if (!data.places?.length) throw new Error("none");
       onFound(data.places);
       setIntent({
         ...intent,

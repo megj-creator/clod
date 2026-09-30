@@ -22,6 +22,10 @@ const SCHEMA = {
   type: "OBJECT",
   properties: {
     heard: { type: "ARRAY", items: { type: "STRING" }, description: "2–4 very short phrases summarizing what the traveler asked for, e.g. 'dinner', 'toddler-friendly', 'not fancy'" },
+    enough: {
+      type: "BOOLEAN",
+      description: "true only if at least 2 picks genuinely satisfy the specific request; false if the list lacks what they asked for (e.g. they want rooftop bars and there are none)",
+    },
     picks: {
       type: "ARRAY",
       items: {
@@ -34,7 +38,7 @@ const SCHEMA = {
       },
     },
   },
-  required: ["heard", "picks"],
+  required: ["heard", "picks", "enough"],
 };
 
 export async function POST(req: Request) {
@@ -56,7 +60,7 @@ export async function POST(req: Request) {
     "Given what a traveler typed and a list of places (with drive minutes from their stay, price per person, kid fit 1-3, depth 1=famous 3=deep cut),",
     "pick the places that genuinely fit, best first. Pick 1–6. Only use ids from the list. Never invent places or facts.",
     "Respect constraints strictly: kids → kidFit ≥ 2; 'not fancy' → no special-occasion spots; 'close'/'tired' → short drives; 'rain' → indoor only; 'less touristy' → depth ≥ 2.",
-    "Never pick two dinner restaurants for the same evening unless asked. If nothing fits well, return the closest 1–2 and say honestly why in 'why'.",
+    "Never pick two dinner restaurants for the same evening unless asked. If nothing fits well, return the closest 1–2, say honestly why in 'why', and set enough to false.",
   ].join(" ");
 
   try {
@@ -65,10 +69,11 @@ export async function POST(req: Request) {
       prompt: `Traveling party: ${body.crew || "unknown"}\nThey typed: "${text}"\n\nPlaces:\n${JSON.stringify(places)}`,
       schema: SCHEMA,
     });
-    const parsed = parseJsonLoose<{ heard: string[]; picks: { id: string; why: string }[] }>(out.text);
+    const parsed = parseJsonLoose<{ heard: string[]; picks: { id: string; why: string }[]; enough?: boolean }>(out.text);
     const valid = new Set(places.map((p) => p.id));
     const picks = (parsed.picks ?? []).filter((p) => valid.has(p.id)).slice(0, 6);
-    return NextResponse.json({ heard: (parsed.heard ?? []).slice(0, 4), picks });
+    // "enough: false" lets the app go find places for this exact request instead of settling
+    return NextResponse.json({ heard: (parsed.heard ?? []).slice(0, 4), picks, enough: parsed.enough !== false && picks.length >= 2 });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "failed";
     return NextResponse.json({ error: msg }, { status: 502 });

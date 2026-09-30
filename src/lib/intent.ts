@@ -21,6 +21,8 @@ export type Intent = {
   // Set when Gemini chose the places: id → why it fits, in best-first order.
   picks?: Record<string, string>;
   source?: "ai" | "keywords";
+  // false when Gemini found nothing on the list that really fits: time to hunt for it
+  enough?: boolean;
 };
 
 const blank = (label: string): Intent => ({ label, categories: [], moods: [], tags: [], boost: [], flags: {}, heard: [] });
@@ -165,12 +167,14 @@ export async function interpret(
       }),
     });
     if (!res.ok) throw new Error(String(res.status));
-    const data = (await res.json()) as { heard: string[]; picks: { id: string; why: string }[] };
-    if (!data.picks?.length) throw new Error("no picks");
+    const data = (await res.json()) as { heard: string[]; picks: { id: string; why: string }[]; enough?: boolean };
+    // No picks is still a useful answer when Gemini says the list lacks it: the app hunts instead
+    if (!data.picks?.length && data.enough !== false) throw new Error("no picks");
     const i = blank(text.trim());
     i.heard = data.heard?.length ? data.heard : ["your request"];
-    i.picks = Object.fromEntries(data.picks.map((p) => [p.id, p.why]));
+    i.picks = Object.fromEntries((data.picks ?? []).map((p) => [p.id, p.why]));
     i.source = "ai";
+    i.enough = data.enough !== false;
     return i;
   } catch {
     return parseIntent(text);
