@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { milesBetween } from "./geo";
+import { osmHoursText, osmOpenDays } from "./hours";
 import type { AppState, Category, City, Place } from "./types";
 
 export class CitySearchError extends Error {}
@@ -73,6 +74,66 @@ function merge(s: AppState, cityId: string, cats: Category[], places: Place[] | 
       },
     },
   };
+}
+
+type OsmFacts = { hours?: string; website?: string; checked?: string; closed: boolean };
+
+// Folds OpenStreetMap's hours/website/closed flags into the searched city's places.
+function applyFacts(s: AppState, cityId: string, facts: Record<string, OsmFacts> | null): AppState {
+  const city = s.city;
+  if (!city?.generated || city.id !== cityId) return s;
+  if (!facts) return { ...s, city: { ...city, generated: { ...city.generated, facts: "failed" } } };
+  const places: Place[] = [];
+  for (const p of city.places) {
+    const url = p.realityCheck.osm?.url;
+    const f = url ? facts[url.replace(/^.*openstreetmap\.org\//, "")] : undefined;
+    if (!f) {
+      places.push(p);
+      continue;
+    }
+    const rc = { ...p.realityCheck, osm: { ...p.realityCheck.osm!, checked: f.checked } };
+    const next: Place = { ...p, realityCheck: rc };
+    if (f.closed) {
+      // Marked closed by local mappers: drop it, unless it's already saved (then say so)
+      if (!s.saved.includes(p.id)) continue;
+      rc.warnings = [...(rc.warnings ?? []), "OpenStreetMap lists this as closed. Check before you go."];
+    } else if (f.hours) {
+      rc.osm.hours = f.hours;
+      rc.hours = osmHoursText(f.hours);
+      next.openDays = osmOpenDays(f.hours);
+    }
+    if (f.website && /^https?:\/\//.test(f.website)) rc.officialUrl = f.website;
+    places.push(next);
+  }
+  return { ...s, city: { ...city, places, generated: { ...city.generated, facts: "done" } } };
+}
+
+// Once every category is in: one OpenStreetMap request for the whole city's hours
+export function useOsmFacts(state: AppState, update: (fn: (s: AppState) => AppState) => void) {
+  const city = state.city;
+  const g = city?.generated;
+  const ready = !!g && !g.pending.length && !g.facts;
+  useEffect(() => {
+    if (!ready || !city) return;
+    const refs = city.places.map((p) => p.realityCheck.osm?.url?.replace(/^.*openstreetmap\.org\//, "")).filter(Boolean);
+    const ctrl = new AbortController();
+    fetch("/api/osm-facts", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ refs }),
+      signal: ctrl.signal,
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error(String(res.status));
+        const data = (await res.json()) as { facts: Record<string, OsmFacts> };
+        update((s) => applyFacts(s, city.id, data.facts ?? {}));
+      })
+      .catch(() => {
+        if (!ctrl.signal.aborted) update((s) => applyFacts(s, city.id, null));
+      });
+    return () => ctrl.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [city?.id, ready]);
 }
 
 // While a searched city still has categories pending, fetch them all in parallel.

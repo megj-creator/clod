@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { usePlaceLoader } from "@/lib/cities";
+import { useOsmFacts, usePlaceLoader } from "@/lib/cities";
 import { tripDates } from "@/lib/dates";
 import { driveFromStay } from "@/lib/geo";
 import { chipIntent, type Intent } from "@/lib/intent";
@@ -29,9 +29,12 @@ export default function UncoverApp({ featured }: { featured: City }) {
   const city = state.city ?? featured;
   const [retry, setRetry] = useState(0);
   usePlaceLoader(state, update, retry);
+  useOsmFacts(state, update);
   const retryPlaces = () => {
     update((s) =>
-      s.city?.generated ? { ...s, city: { ...s.city, generated: { ...s.city.generated, pending: s.city.generated.failed, failed: [] } } } : s,
+      s.city?.generated
+        ? { ...s, city: { ...s.city, generated: { ...s.city.generated, pending: s.city.generated.failed, failed: [], facts: undefined } } }
+        : s,
     );
     setRetry((n) => n + 1);
   };

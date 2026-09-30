@@ -131,16 +131,54 @@ async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>
 type LatLng = { lat: number; lng: number };
 
 // Checks Gemini's pin against OpenStreetMap (Photon search): the same-named place near the destination wins.
-async function osmPin(name: string, city: string, near: LatLng, center: LatLng, radius: number): Promise<LatLng | null> {
+const OSM_TYPES: Record<string, string> = { N: "node", W: "way", R: "relation" };
+
+async function osmPin(name: string, city: string, near: LatLng, center: LatLng, radius: number): Promise<(LatLng & { ref?: string }) | null> {
   const q = encodeURIComponent(`${name} ${city.split(",")[0]}`);
   const data = await getJson(`https://photon.komoot.io/api/?q=${q}&lat=${near.lat}&lon=${near.lng}&limit=4&lang=en`);
   for (const f of data?.features ?? []) {
     const [lng, lat] = f.geometry?.coordinates ?? [];
     const p = f.properties ?? {};
     if (!Number.isFinite(lat) || !Number.isFinite(lng) || ["place", "boundary", "highway"].includes(p.osm_key)) continue;
-    if (nameMatch(name, String(p.name ?? "")) >= 0.5 && milesApart(center, { lat, lng }) < radius) return { lat, lng };
+    if (nameMatch(name, String(p.name ?? "")) >= 0.5 && milesApart(center, { lat, lng }) < radius) {
+      const type = OSM_TYPES[p.osm_type];
+      return { lat, lng, ref: type && p.osm_id ? `${type}/${p.osm_id}` : undefined };
+    }
   }
   return null;
+}
+
+export type OsmFacts = { hours?: string; website?: string; checked?: string; closed: boolean };
+
+// One Overpass request for a whole city (the free public server turns away parallel bursts, so this
+// runs once after all categories arrive, via /api/osm-facts): opening hours, website, last survey
+// date, and whether OpenStreetMap mappers have marked the place closed ("disused:", "was:", …).
+export async function osmFacts(refs: string[]): Promise<Record<string, OsmFacts>> {
+  const out: Record<string, OsmFacts> = {};
+  if (!refs.length) return out;
+  const ids = (type: string) => refs.filter((r) => r.startsWith(`${type}/`)).map((r) => r.split("/")[1]);
+  const parts = ["node", "way", "relation"].filter((t) => ids(t).length).map((t) => `${t}(id:${ids(t).join(",")});`);
+  const query = `[out:json][timeout:10];(${parts.join("")});out tags;`;
+  let data = null;
+  for (let attempt = 0; attempt < 2 && !data?.elements; attempt++) {
+    if (attempt) await new Promise((r) => setTimeout(r, 3000)); // busy: one polite retry
+    data = await getJson(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`, 12_000);
+  }
+  if (!data?.elements) throw new Error("overpass-unavailable");
+  for (const el of data.elements as { type: string; id: number; tags?: Record<string, string> }[]) {
+    const t = el.tags ?? {};
+    const keys = Object.keys(t);
+    out[`${el.type}/${el.id}`] = {
+      hours: t.opening_hours,
+      website: t.website || t["contact:website"] || t.url,
+      checked: t["check_date:opening_hours"] || t.check_date || t.survey_date || t["survey:date"],
+      closed:
+        /^(closed|off)$/i.test(t.opening_hours ?? "") ||
+        keys.some((k) => /^(disused|abandoned|was|closed|demolished|removed):/.test(k)) ||
+        t.disused === "yes",
+    };
+  }
+  return out;
 }
 
 type CommonsInfo = {
@@ -237,7 +275,10 @@ async function wikipediaPhotos(places: Place[], city: string): Promise<Map<Place
 async function verifyPlaces(places: Place[], city: string, center: LatLng, radius: number) {
   await pool(places, 4, async (p) => {
     const osm = await osmPin(p.name, city, p.location, center, radius);
-    if (osm) p.location = { ...p.location, ...osm, pin: "osm" };
+    if (!osm) return;
+    p.location = { ...p.location, lat: osm.lat, lng: osm.lng, pin: "osm" };
+    // Hours and website are filled in later, for the whole city at once (see osmFacts)
+    if (osm.ref) p.realityCheck.osm = { url: `https://www.openstreetmap.org/${osm.ref}` };
   });
   const wiki = await wikipediaPhotos(places, city);
   for (const [p, photo] of wiki) p.photos = [photo];
@@ -467,8 +508,11 @@ ${FIELDS}.`;
   }
 
   // Checked pins and licensed photos first, then real road times from every stay (one routing call)
-  // (capped at 10s: anything not checked by then keeps Gemini's pin and the painted placeholder)
-  await Promise.race([verifyPlaces(places, o.city, o.center, radius), new Promise((r) => setTimeout(r, 10_000))]);
+  // Capped by whatever time Gemini left (at least 10s), keeping 6s for road times inside the 60s limit.
+  // Anything not checked by then keeps Gemini's pin and the painted placeholder.
+  // (deadline is start + 40s, so this ends by start + 52s)
+  const budget = Math.max(10_000, deadline + 12_000 - Date.now());
+  await Promise.race([verifyPlaces(places, o.city, o.center, radius), new Promise((r) => setTimeout(r, budget))]);
   const times = await roadMinutes(o.stays, places.map((p) => p.location));
   places.forEach((p, i) => {
     const from: Record<string, number> = {};

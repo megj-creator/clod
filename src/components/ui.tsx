@@ -20,11 +20,18 @@ export const DEPTH: Record<number, { label: string; hint: string }> = {
 export const priceShort = (p: Place) => (p.price.perPerson === 0 ? "Free" : p.price.label);
 export const priceLong = (p: Place) => (p.price.perPerson === 0 ? "Free" : `~$${p.price.perPerson} / person`);
 
-export function VerifyBadge({ date, compact }: { date: string | null; compact?: boolean }) {
+export function VerifyBadge({ date, compact, osm }: { date: string | null; compact?: boolean; osm?: Place["realityCheck"]["osm"] }) {
   if (date)
     return (
       <span className="verify ok">
         <IconCheck size={12} /> {compact ? "Checked" : `Checked on official site · ${date}`}
+      </span>
+    );
+  // Searched cities: hours listed on OpenStreetMap (kept up by local mappers), not the official site
+  if (osm?.hours)
+    return (
+      <span className="verify ok">
+        <IconCheck size={12} /> {compact ? "Hours listed" : `Hours from OpenStreetMap${osm.checked ? ` · checked ${osm.checked}` : ""}`}
       </span>
     );
   return (

@@ -38,6 +38,8 @@ export type Place = {
     checkedUrl?: string;
     evidence?: string;
     checkNote?: string;
+    // Searched cities: what OpenStreetMap confirmed (its page for the place, and its hours if listed)
+    osm?: { url: string; hours?: string; checked?: string };
   };
   rainPlan: { text: string; backupId?: string | null };
   booking: { best: string; tips?: string[]; lastChecked: string | null };
@@ -76,6 +78,7 @@ export type City = {
     createdAt: string;
     pending: Category[];
     failed: Category[];
+    facts?: "done" | "failed"; // OpenStreetMap hours, asked once all categories are in
   };
 };
 

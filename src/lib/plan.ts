@@ -160,7 +160,8 @@ export function buildPlan(opts: {
         used.add(slot);
         time = T[slot];
       }
-      if (p.openDays && !p.openDays.includes(dow)) notes.push(`⚠️ Closed ${WEEKDAY[dow]}s, per the official site. Move this to another day.`);
+      if (p.openDays && !p.openDays.includes(dow))
+        notes.push(`⚠️ Closed ${WEEKDAY[dow]}s, per ${p.realityCheck.lastChecked ? "the official site" : "OpenStreetMap"}. Move this to another day.`);
       if (kids && p.kidFit.score === 1) notes.push("Best for grown-ups. Go early, or take turns.");
       if (kids && time >= 1170) notes.push("Late for little ones.");
       stops.push({ kind: "place", place: p, time, driveFromPrev: 0, notes });

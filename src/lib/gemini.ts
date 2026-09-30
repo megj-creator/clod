@@ -128,7 +128,7 @@ export function rateLimited(req: Request, max = 12, windowMs = 60_000, bucket = 
 // survives restarts), so the second person to search "Lisbon" gets it instantly and spends no quota.
 // Errors aren't cached: a failed lookup is retried next time.
 // Bump CACHE_VERSION whenever the shape or quality of cached cities/places changes.
-const CACHE_VERSION = "uncover-v3";
+const CACHE_VERSION = "uncover-v5";
 export async function cached<T>(key: string, ttlMs: number, make: () => Promise<T>): Promise<T> {
   return unstable_cache(make, [CACHE_VERSION, key], { revalidate: Math.round(ttlMs / 1000) })();
 }

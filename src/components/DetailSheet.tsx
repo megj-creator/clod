@@ -136,7 +136,7 @@ export function DetailSheet({
             <p>{place.insiderTip}</p>
           </Section>
 
-          <Section icon={<IconAlert size={16} />} title="Reality check" badge={<VerifyBadge date={place.realityCheck.lastChecked} />}>
+          <Section icon={<IconAlert size={16} />} title="Reality check" badge={<VerifyBadge date={place.realityCheck.lastChecked} osm={place.realityCheck.osm} />}>
             <dl className="reality">
               <dt>Hours</dt>
               <dd>{place.realityCheck.hours}</dd>
@@ -161,6 +161,17 @@ export function DetailSheet({
               </blockquote>
             )}
             {place.realityCheck.checkNote && <p className="check-note">{place.realityCheck.checkNote}</p>}
+            {place.realityCheck.osm ? (
+              <p className="check-note">
+                📍 Location{place.realityCheck.osm.hours ? " and hours" : ""} confirmed on{" "}
+                <a href={place.realityCheck.osm.url} target="_blank" rel="noreferrer">
+                  OpenStreetMap <IconExternal size={11} />
+                </a>
+                {place.realityCheck.osm.hours ? ". Still worth a quick check before you go." : ". Hours aren't listed there, so check before you go."}
+              </p>
+            ) : (
+              place.live?.origin === "city" && <p className="check-note">📍 Map pin is Gemini's estimate. It couldn't be matched on OpenStreetMap.</p>
+            )}
             {(place.realityCheck.checkedUrl || place.realityCheck.officialUrl) && (
               <a className="source-link" href={place.realityCheck.checkedUrl || place.realityCheck.officialUrl} target="_blank" rel="noreferrer">
                 {place.realityCheck.lastChecked ? "See it on the official site" : "Official site"} <IconExternal size={13} />
