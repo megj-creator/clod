@@ -48,7 +48,8 @@ const SCHEMA = {
 };
 
 export async function POST(req: Request) {
-  const key = process.env.GEMINI_API_KEY;
+  // Strip invisible characters (e.g. a byte-order mark from a Windows paste) so the header stays valid.
+  const key = process.env.GEMINI_API_KEY?.replace(/[^\x21-\x7e]/g, "");
   if (!key) return NextResponse.json({ error: "no-key" }, { status: 503 });
 
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
