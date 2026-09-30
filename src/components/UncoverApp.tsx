@@ -303,6 +303,8 @@ export default function UncoverApp({ city }: { city: City }) {
               forecast={forecast}
               isSaved={state.saved.includes(detail.id)}
               stay={stay}
+              cityName={city.name}
+              subreddit={city.subreddit}
               onClose={() => setDetailId(null)}
               onDecide={decide}
               onUnsave={unsave}

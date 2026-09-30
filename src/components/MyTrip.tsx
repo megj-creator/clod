@@ -508,6 +508,11 @@ function PlaceRow({
         >
           Directions ↗
         </a>
+        {shown.realityCheck.officialUrl && (
+          <a className="stop-dir" href={shown.realityCheck.officialUrl} target="_blank" rel="noreferrer">
+            Website ↗
+          </a>
+        )}
 
         {fb ? (
           <p className="fb-done">

@@ -325,6 +325,7 @@ function Deck(props: Props & { intent: Intent }) {
                 kids={kids}
                 weather={weatherLine(r.place, dates, forecast)}
                 why={intent.picks?.[r.place.id]}
+                cityName={city.name}
                 onDecide={decide}
                 onOpen={() => onOpen(r.place.id)}
                 outside={showHidden && (r.drive > setup.maxDrive || r.place.price.perPerson > setup.maxPrice)}
@@ -412,8 +413,10 @@ function DeckCard({
   onOpen,
   outside,
   why,
+  cityName,
 }: {
   why?: string;
+  cityName: string;
   r: Ranked;
   index: number;
   kids: boolean;
@@ -462,6 +465,7 @@ function DeckCard({
           drive={r.drive}
           weather={weather}
           why={why}
+          cityName={cityName}
           kids={kids}
           onOpen={onOpen}
           blockTap={dragged}

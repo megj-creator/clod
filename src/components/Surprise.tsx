@@ -128,6 +128,7 @@ export function Surprise({
                 drive={drives[pick.id]}
                 weather={weatherLine(pick, dates, forecast)}
                 kids={setup.toddler || setup.baby}
+                cityName={city.name}
                 onOpen={() => onOpen(pick.id)}
               />
             </motion.div>

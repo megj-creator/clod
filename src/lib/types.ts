@@ -50,6 +50,7 @@ export type City = {
   state: string;
   tagline: string;
   sunset: string;
+  subreddit?: string;
   hero: Photo;
   stays: Stay[];
   gettingAround: string[];

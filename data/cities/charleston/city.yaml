@@ -11,6 +11,9 @@ tagline: Moss, marsh, and more than Rainbow Row.
 # Typical sunset time for the trip season (used to time sunset plans).
 sunset: "18:50"
 
+# The local subreddit, used for "What locals say" links.
+subreddit: Charleston
+
 hero:
   src: https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Rainbow_Row_Charleston_July_2024_1.jpg/1920px-Rainbow_Row_Charleston_July_2024_1.jpg
   credit: Thomson200

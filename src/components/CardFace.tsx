@@ -5,7 +5,7 @@ import { formatDrive } from "@/lib/geo";
 import type { Place } from "@/lib/types";
 import { IconCar, IconChevron } from "./icons";
 import { PlaceImage } from "./PlaceImage";
-import { CATS, DEPTH, KidDots, priceShort } from "./ui";
+import { CATS, DEPTH, KidDots, photosUrl, priceShort } from "./ui";
 
 export function CardFace({
   place,
@@ -16,8 +16,10 @@ export function CardFace({
   blockTap,
   overlay,
   why,
+  cityName = "",
 }: {
   why?: string;
+  cityName?: string;
   place: Place;
   drive: number;
   weather: string;
@@ -63,10 +65,25 @@ export function CardFace({
           <h2>{place.name}</h2>
           <p className="cf-tagline">{place.tagline}</p>
         </div>
-        {photo && (
+        {photo ? (
           <span className="cf-credit">
             {photo.caption ? `${photo.caption} · ` : ""}📷 {photo.credit} · {photo.license}
           </span>
+        ) : (
+          // No licensed photo yet: link out to real ones instead of copying them
+          <a
+            className="cf-realphotos"
+            href={photosUrl(place, cityName)}
+            target="_blank"
+            rel="noreferrer"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (blockTap?.current) e.preventDefault();
+            }}
+          >
+            📷 See real photos ↗
+          </a>
         )}
         {overlay}
       </div>

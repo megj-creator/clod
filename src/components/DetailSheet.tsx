@@ -12,7 +12,9 @@ import {
   IconAlert, IconArrow, IconBaby, IconCar, IconChat, IconClock, IconExternal, IconFlame, IconHeart, IconPin, IconRain, IconSearch, IconSparkle, IconTicket, IconX,
 } from "./icons";
 import { PlaceImage } from "./PlaceImage";
-import { CATS, DEPTH, HypeMeter, KidDots, VerifyBadge, priceLong } from "./ui";
+import { CATS, DEPTH, HypeMeter, KidDots, VerifyBadge, lookLinks, photosUrl, priceLong } from "./ui";
+
+const LOOK_ICONS: Record<string, string> = { site: "🌐", photos: "📷", maps: "📍", locals: "💬" };
 
 export function DetailSheet({
   place,
@@ -22,12 +24,16 @@ export function DetailSheet({
   forecast,
   isSaved,
   stay,
+  cityName,
+  subreddit,
   onClose,
   onDecide,
   onUnsave,
   onOpen,
 }: {
   stay: Stay;
+  cityName: string;
+  subreddit?: string;
   place: Place;
   drive: number;
   byId: Record<string, Place>;
@@ -78,7 +84,12 @@ export function DetailSheet({
                     </a>
                   </>
                 ) : (
-                  "Painted placeholder. Licensed photos are next on the list."
+                  <>
+                    Illustration.{" "}
+                    <a href={photosUrl(place, cityName)} target="_blank" rel="noreferrer">
+                      See real photos ↗
+                    </a>
+                  </>
                 )}
               </figcaption>
             </figure>
@@ -100,6 +111,19 @@ export function DetailSheet({
             <Fact icon={<IconCar size={16} />} label="From your stay" value={formatDrive(drive)} sub="estimate" />
             <Fact icon={<IconTicket size={16} />} label="Price" value={priceLong(place)} sub={place.price.note} />
             <Fact icon={<IconClock size={16} />} label="Plan for" value={formatDrive(place.durationMin)} sub={`best: ${place.bestTime}`} />
+          </div>
+
+          <div className="look">
+            <p className="look-label">See it for yourself</p>
+            <div className="look-links">
+              {lookLinks(place, cityName, subreddit).map((l) => (
+                <a key={l.id} className={`look-link look-${l.id}`} href={l.url} target="_blank" rel="noreferrer">
+                  <span className="look-icon">{LOOK_ICONS[l.id]}</span>
+                  {l.label}
+                  <IconExternal size={11} />
+                </a>
+              ))}
+            </div>
           </div>
 
           <Section icon={<IconSparkle size={16} />} title="Why I found it for you">
