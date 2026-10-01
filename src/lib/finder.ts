@@ -100,7 +100,7 @@ const nameWords = (s: string) =>
     .filter((w) => w.length > 1 && !["the", "and", "of", "at", "de", "la", "le", "el"].includes(w));
 
 // Share of the place's words that appear in the other name ("Western N.C. Nature Center" ≈ 0.6)
-function nameMatch(place: string, other: string): number {
+export function nameMatch(place: string, other: string): number {
   const a = nameWords(place);
   const b = new Set(nameWords(other));
   if (!a.length) return 0;
@@ -298,7 +298,7 @@ const PHOTO_WORDS = new Set(
 
 // Rejects files that mention the place but are about something else there:
 // "Robert's geranium red leaf, Jardim Botânico" or "Regata sul Canal Grande – Guardi – Gulbenkian Museum".
-function aboutThePlace(fileTitle: string, name: string, city: string): boolean {
+export function aboutThePlace(fileTitle: string, name: string, city: string): boolean {
   const words = nameWords(fileTitle);
   // Signs, maps, and closure notices say the wrong thing about a place ("…announce closure of … park")
   if (words.some((w) => ["sign", "signs", "signboard", "closure", "closed", "map", "plaque", "logo", "menu", "notice"].includes(w))) return false;

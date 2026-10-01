@@ -35,7 +35,7 @@ const words = (s: string) =>
 // in history, pinned ~550 m apart on a big shrine complex). Close by (within ~800 m) plus a strong name
 // match (one name contains the other, or 2+ words and most of them shared) means it's already there.
 // One shared word never counts: "Gion Corner" and "Gion Tanto" are different places on the same street.
-function sameSpot(a: Place, b: Place): boolean {
+export function sameSpot(a: Place, b: Place): boolean {
   if (norm(a.name) === norm(b.name)) return true;
   if (milesBetween(a.location, b.location) > 0.5) return false;
   const wa = words(a.name);

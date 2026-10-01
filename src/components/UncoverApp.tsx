@@ -3,6 +3,8 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { searchCity, useOsmFacts, usePlaceLoader } from "@/lib/cities";
+import { decodeTrip, tripCodeInUrl, type SharedTrip } from "@/lib/share";
+import { fmtRange } from "@/lib/dates";
 import { tripDates } from "@/lib/dates";
 import { driveFromStay, type How, type TravelCtx } from "@/lib/geo";
 import { useSunsets } from "@/lib/sun";
@@ -49,7 +51,11 @@ export default function UncoverApp({ featured }: { featured: City }) {
   const [burst, setBurst] = useState<{ id: number; kind: "save" | "sparkle"; x: string; y: string } | null>(null);
 
   // The curated list plus anything Gemini hunted down live
-  const allPlaces = useMemo(() => [...city.places, ...Object.values(state.found ?? {})], [city.places, state.found]);
+  // (a shared trip's places can also be in the city's own list: the city's copy wins)
+  const allPlaces = useMemo(() => {
+    const ids = new Set(city.places.map((p) => p.id));
+    return [...city.places, ...Object.values(state.found ?? {}).filter((p) => !ids.has(p.id))];
+  }, [city.places, state.found]);
   const cityView = useMemo(() => ({ ...city, places: allPlaces }), [city, allPlaces]);
   const byId = useMemo(() => Object.fromEntries(allPlaces.map((p) => [p.id, p])) as Record<string, Place>, [allPlaces]);
   // Their actual hotel when they typed one we could find on the map, else the neighborhood they picked
@@ -123,6 +129,72 @@ export default function UncoverApp({ featured }: { featured: City }) {
 
   // A shared trip link (/?city=Lisbon) opens that destination in setup, preselected. It never
   // replaces an existing trip on its own: they confirm with Next, or close to keep their trip.
+  // A shared whole trip (/#trip=…): opens right away for someone with no trip yet; anyone already
+  // planning a trip is asked first, so a tapped link never silently replaces their plans.
+  const [incoming, setIncoming] = useState<SharedTrip | null>(null);
+  const [opening, setOpening] = useState(false);
+  useEffect(() => {
+    if (!ready) return;
+    const code = tripCodeInUrl();
+    if (!code) return;
+    window.history.replaceState(null, "", window.location.pathname + window.location.search); // not again on reload
+    decodeTrip(code).then((t) => {
+      if (!t) return setToast({ id: Date.now(), kind: "info", text: "That trip link looks broken. Ask for a fresh one." });
+      if (state.setup) setIncoming(t);
+      else openTrip(t);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready]);
+
+  const openTrip = async (t: SharedTrip) => {
+    setOpening(true);
+    let target: City;
+    if (t.city === featured.id) target = featured;
+    else {
+      try {
+        target = await searchCity(t.city);
+      } catch {
+        // Can't reach the city lookup right now: the trip's own places still make a usable trip
+        const first = t.places[0]?.location ?? { lat: 0, lng: 0 };
+        const stay = t.setup.hotel ?? { id: "center", name: t.name, area: t.name, lat: first.lat, lng: first.lng };
+        target = {
+          id: `shared-${t.city.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+          name: t.name,
+          state: "",
+          tagline: "",
+          sunset: "18:30",
+          hero: null,
+          stays: [stay],
+          gettingAround: [],
+          places: [],
+          generated: { query: t.city, country: "", lat: stay.lat, lng: stay.lng, radius: 40, createdAt: new Date().toISOString().slice(0, 10), pending: ["eat", "explore", "history", "family", "music"], failed: [] },
+        };
+      }
+    }
+    const inCity = new Set(target.places.map((p) => p.id));
+    const stayOk = target.stays.some((st) => st.id === t.setup.stayId);
+    update((s) => ({
+      ...s,
+      city: target.id === featured.id ? null : target,
+      setup: { ...t.setup, cityId: target.id, stayId: stayOk ? t.setup.stayId : target.stays[0].id },
+      saved: t.saved,
+      passed: {},
+      moreLike: [],
+      feedback: {},
+      planFor: t.planned ? t.saved : null,
+      found: Object.fromEntries(t.places.filter((p) => !inCity.has(p.id)).map((p) => [p.id, p])),
+      hotelDrives: undefined,
+    }));
+    setIncoming(null);
+    setShared(null);
+    setEditing(false);
+    setIntent(null);
+    setDepthLevel(1);
+    setTab("trip");
+    setOpening(false);
+    setToast({ id: Date.now(), kind: "info", text: `Opened the shared ${t.name} trip (${t.saved.length} ${t.saved.length === 1 ? "place" : "places"})` });
+  };
+
   const [shared, setShared] = useState<City | null>(null);
   useEffect(() => {
     if (!ready) return;
@@ -227,9 +299,61 @@ export default function UncoverApp({ featured }: { featured: City }) {
     );
   }
 
+  if (opening) {
+    return (
+      <Shell city={city}>
+        <div className="splash">
+          <p className="wordmark">Uncover</p>
+          <p className="splash-note">Opening the shared trip…</p>
+        </div>
+      </Shell>
+    );
+  }
+
+  // Someone already planning a trip tapped a shared one: ask before replacing anything
+  if (incoming) {
+    const current = state.city ?? featured;
+    return (
+      <Shell city={city}>
+        <div className="import-prompt">
+          <p className="eyebrow">A trip was shared with you</p>
+          <h1 className="display">
+            {incoming.name}
+            <em>{fmtRange(incoming.setup.start, incoming.setup.end)}</em>
+          </h1>
+          <p className="onb-lede">
+            {incoming.saved.length} saved {incoming.saved.length === 1 ? "place" : "places"}
+            {incoming.planned ? ", with a day-by-day plan" : ""}. Opening it replaces your current {current.name} trip
+            {state.saved.length ? ` (${state.saved.length} saved)` : ""}. What you've taught me about your taste stays.
+          </p>
+          <div className="import-actions">
+            <button className="btn primary wide" onClick={() => openTrip(incoming)}>
+              Open the shared trip
+            </button>
+            <button className="btn wide" onClick={() => setIncoming(null)}>
+              Keep my {current.name} trip
+            </button>
+          </div>
+        </div>
+      </Shell>
+    );
+  }
+
+  // A plain notice for screens outside the main app (e.g. "that trip link looks broken" on first visit)
+  const notice = toast?.kind === "info" && (
+    <AnimatePresence>
+      <motion.div key={toast.id} className="toast info" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+        <div className="toast-row">
+          <span>{toast.text}</span>
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
+
   if (!state.setup || editing) {
     return (
       <Shell city={shared ?? city}>
+        {notice}
         <Onboarding
           key={shared?.id ?? "trip"}
           city={shared ?? city}

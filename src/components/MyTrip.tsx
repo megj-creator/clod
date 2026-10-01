@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { fmtDay, fmtRange, fmtTime } from "@/lib/dates";
 import { formatDrive, formatTravel, howFor, type TravelCtx } from "@/lib/geo";
 import { buildPlan, type PlanDay, type PlaceStop } from "@/lib/plan";
+import { tripFromState, tripLink } from "@/lib/share";
 import { LIKED_OPTIONS } from "@/lib/taste";
 import type { AppState, City, Place, Rating, Stay } from "@/lib/types";
 import { weatherEmoji, type Weather } from "@/lib/weather";
@@ -77,7 +78,8 @@ export function MyTrip({ city, stay, state, byId, drives, ctx, sunsets, forecast
   }, [plan, city.places, state.saved, state.passed, drives, setup.maxDrive, setup.maxPrice, kids]);
 
   const planText = () => {
-    if (!plan) return "";
+    // No plan built yet: just the saved places
+    if (!plan) return [`${city.name} · ${fmtRange(setup.start, setup.end)} (saved with Uncover)`, "", ...saved.map((p) => `  ${p.name}`), ""].join("\n");
     const lines = [`${city.name} · ${fmtRange(setup.start, setup.end)} (planned with Uncover)`, ""];
     for (const d of plan) {
       const f = fmtDay(d.date);
@@ -92,15 +94,22 @@ export function MyTrip({ city, stay, state, byId, drives, ctx, sunsets, forecast
 
   const share = async () => {
     const text = planText();
-    // A searched city's link opens that city for whoever taps it (it loads instantly from the shared cache)
-    const url = city.generated ? `${window.location.origin}/?city=${encodeURIComponent(city.generated.query)}` : window.location.origin;
+    // The link opens this exact trip (places, dates, plan) for whoever taps it
+    const trip = tripFromState(state, city, byId);
+    let url = window.location.origin;
+    try {
+      if (trip) url = await tripLink(trip);
+    } catch {
+      // Very old browser without built-in compression: share the destination instead
+      if (city.generated) url = `${window.location.origin}/?city=${encodeURIComponent(city.generated.query)}`;
+    }
     try {
       if (navigator.share) {
         await navigator.share({ title: `${city.name} trip`, text, url });
         return;
       }
-      await navigator.clipboard.writeText(`${text}\nPlan your own: ${url}`);
-      onToast("Trip copied. Paste it anywhere.");
+      await navigator.clipboard.writeText(`${text}\nOpen this trip in Uncover: ${url}`);
+      onToast("Trip and link copied. Paste it anywhere.");
     } catch {
       /* user cancelled share */
     }
@@ -174,14 +183,16 @@ export function MyTrip({ city, stay, state, byId, drives, ctx, sunsets, forecast
           <button className="icon-btn trip-edit" onClick={onEdit} aria-label="Edit trip">
             <IconEdit size={16} />
           </button>
-          {plan && (
+          {saved.length > 0 && (
             <div className="trip-actions">
               <button className="btn small" onClick={share}>
                 <IconShare size={14} /> Share
               </button>
-              <button className="btn small" onClick={toCalendar}>
-                <IconCalendar size={14} /> Add to calendar
-              </button>
+              {plan && (
+                <button className="btn small" onClick={toCalendar}>
+                  <IconCalendar size={14} /> Add to calendar
+                </button>
+              )}
             </div>
           )}
         </div>

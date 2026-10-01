@@ -3346,3 +3346,32 @@ h3 {
 .hotel-found.ok {
   color: var(--amber-2);
 }
+
+/* ───────── Shared trips ───────── */
+.splash:has(.splash-note) {
+  align-content: center;
+}
+.splash-note {
+  margin-top: 10px;
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--lilac);
+}
+.import-prompt {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  height: 100%;
+  padding: 28px 24px;
+}
+.import-prompt .display em {
+  display: block;
+  font-size: 0.6em;
+}
+.import-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}

@@ -13,7 +13,7 @@ An AI trip planner that works like an obsessive traveler who interviewed a local
 |---|---|
 | **Setup** | Where (search anywhere), when, where you're staying (pick a neighborhood, or type your hotel or address and it's found on the map), how you'll get around (by car, or on foot & transit), your max travel time and price per person, who's coming (toddler/baby → nap window). |
 | **Getting around** | By car: real road times (from your actual hotel when it was found). On foot & transit: walking time for short hops, a transit estimate for longer ones, with directions opening in the matching mode. Long drives double as car naps only when there's a car. |
-| **Share a trip** | The Share button's link opens that destination for whoever taps it (`/?city=Lisbon`), preselected in setup. It never replaces someone's existing trip unless they confirm. |
+| **Share a trip** | The Share button's link carries the whole trip: destination, dates, hotel, how you get around, every saved place, and whether a plan was built. Whoever taps it gets your exact trip. It opens right away for someone with no trip; anyone already planning one is asked first, and their taste profile is kept either way. The trip lives after the `#` in the link, so it never reaches the server. Personal things (taste, ratings, passes) aren't included. About 5 KB for 6 places. Fine for messaging apps and email; SMS may cut very long links. (`/?city=Lisbon` still works for sharing just a destination.) |
 | **Search any destination** | OpenStreetMap finds where it is. Gemini writes up the neighborhoods people stay in and getting-around tips, then finds ~29 real places across eat, explore, history, family, and music. It works on one category at a time, in parallel, while you finish setup. Each place gets real road times from every neighborhood and a licensed Wikimedia photo when one exists. Switching destination starts a fresh trip, but your taste profile comes along. |
 | **Discover** | Tap a mood, or just type what you want (*"tired, want somewhere cute for dinner, toddler in tow"*). Then swipe through Discoveries, nearest first and inside your limits. **→ Save · ↑ More like this · ← Not for me** (then it asks *why*). |
 | **Typed requests beyond the list** | If Gemini says nothing on the city's list really fits what you typed (say, "board game cafe for a rainy afternoon"), the app hunts for places matching exactly that and puts them first. |
@@ -70,6 +70,14 @@ npm run dev
 ```
 
 Open http://localhost:3000. On a phone on the same Wi-Fi, use your computer's IP address instead of `localhost`.
+
+### Tests
+
+```
+npm test
+```
+
+Runs in about a second, with no network or API key needed. It covers the logic that's easy to break quietly: reading OpenStreetMap hours, sunset times, walking/transit/drive times, spotting the same place under two names, the day planner (no overlapping stops, closed days, car naps), shared-trip links, repairing Gemini's malformed JSON, and ranking. Tests live in `tests/`. Run them before pushing a change.
 
 ## Hosting (free)
 
