@@ -126,7 +126,7 @@ export function DetailSheet({
           <div className="look">
             <p className="look-label">See it for yourself</p>
             <div className="look-links">
-              {lookLinks(place, cityName, subreddit).map((l) => (
+              {lookLinks(place, cityName).map((l) => (
                 <a key={l.id} className={`look-link look-${l.id}`} href={l.url} target="_blank" rel="noreferrer">
                   <span className="look-icon">{LOOK_ICONS[l.id]}</span>
                   {l.label}
@@ -226,6 +226,7 @@ export function DetailSheet({
             )}
           </Section>
 
+          {place.localsSay.text && (
           <Section icon={<IconChat size={16} />} title="What locals are saying" tone="locals">
             <blockquote>{place.localsSay.text}</blockquote>
             {place.localsSay.sourced && place.localsSay.sources?.length ? (
@@ -245,9 +246,15 @@ export function DetailSheet({
                 </ul>
               </>
             ) : (
-              !place.localsSay.sourced && <p className="micro">Summary for now. Tap "What locals say" above to read the real local threads.</p>
+              // Honest about where it came from, without sending people off to an empty search
+              <p className="micro">
+                {place.live
+                  ? "The gist of local opinion, as summarized by Gemini. Not direct quotes."
+                  : "Our summary of local opinion. Not direct quotes."}
+              </p>
             )}
           </Section>
+          )}
 
           <Section icon={<IconFlame size={16} />} title="Hype check" badge={<HypeMeter score={place.hypeCheck.score} />}>
             <p>{place.hypeCheck.text}</p>

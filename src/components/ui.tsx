@@ -61,9 +61,10 @@ export function HypeMeter({ score }: { score: number }) {
   );
 }
 
-// "See it for yourself": links out to real photos, the official site, and local chatter.
+// "See it for yourself": links out to real photos, the official site, and the map.
 // We link instead of copying photos, so we never use pictures we don't have rights to.
-export function lookLinks(place: Place, cityName: string, subreddit?: string) {
+// (No Reddit search link: for most places it landed on an empty or unrelated search.)
+export function lookLinks(place: Place, cityName: string) {
   const q = `${place.name} ${cityName}`;
   const links: { id: string; label: string; url: string }[] = [];
   if (place.realityCheck.officialUrl) links.push({ id: "site", label: "Official website", url: place.realityCheck.officialUrl });
@@ -72,13 +73,6 @@ export function lookLinks(place: Place, cityName: string, subreddit?: string) {
     id: "maps",
     label: "Google Maps",
     url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${place.name}, ${place.location.address}`)}`,
-  });
-  links.push({
-    id: "locals",
-    label: "What locals say",
-    url: subreddit
-      ? `https://www.reddit.com/r/${subreddit}/search/?q=${encodeURIComponent(place.name)}&restrict_sr=1`
-      : `https://www.reddit.com/search/?q=${encodeURIComponent(q)}`,
   });
   return links;
 }
@@ -92,7 +86,8 @@ export const photosUrl = (place: Place, cityName: string) =>
 // A one-line forecast take for a card: good days, rainy days, or rain-proof.
 export function weatherLine(place: Place, dates: string[], forecast: Record<string, Weather>): string {
   if (place.indoor) return "☔ Rain or shine, this one's covered";
-  const good = dates.find((d) => forecast[d]?.kind !== "rain");
+  // (only days we actually have weather for: right after a trip loads, the forecast can lag a moment)
+  const good = dates.find((d) => forecast[d] && forecast[d].kind !== "rain");
   const wet = dates.find((d) => forecast[d]?.kind === "rain");
   const parts: string[] = [];
   if (good) parts.push(`${weatherEmoji(forecast[good].kind)} Good ${fmtDay(good).weekday}`);

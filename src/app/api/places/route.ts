@@ -10,12 +10,13 @@ export const maxDuration = 60;
 const MIX =
   "For each category: list famous classics locals still vouch for first (depth 1), then local favorites (depth 2), then deep cuts most visitors miss (depth 3), roughly a third each. Spread across neighborhoods and price levels.";
 
+// ~46 places per city (was 29, which left some buttons with only a handful of cards)
 const ASK: Record<Category, [number, string]> = {
-  eat: [7, "places to eat and drink: restaurants, cafes, bakeries, food markets, bars. Include breakfast, lunch, and dinner options and at least one cheap local staple"],
-  explore: [7, "places to explore: parks, viewpoints, walkable neighborhoods, beaches or waterfronts, gardens, markets, nature within reach"],
-  history: [5, "places for history and culture: museums, historic sites, architecture, landmarks, cemeteries, cultural centers"],
-  family: [5, "places genuinely great with kids and families (kidFit 3): playgrounds, aquariums, zoos, hands-on museums, farms, easy nature"],
-  music: [5, "places for live music, nightlife, or performance: venues, jazz or folk bars, music halls, theaters. If there's little live music, the best evening spots instead"],
+  eat: [12, "places to eat and drink: restaurants, cafes, bakeries, food markets, bars. Include breakfast, lunch, and dinner options, a range of cuisines, and at least two cheap local staples"],
+  explore: [10, "places to explore: parks, viewpoints, walkable neighborhoods, beaches or waterfronts, gardens, markets, nature within reach"],
+  history: [8, "places for history and culture: museums, historic sites, architecture, landmarks, cemeteries, cultural centers"],
+  family: [8, "places genuinely great with kids and families (kidFit 3): playgrounds, aquariums, zoos, hands-on museums, farms, easy nature, kid-friendly cafes"],
+  music: [8, "places for live music, nightlife, or performance: venues, jazz or folk bars, music halls, theaters. If there's little live music, the best evening spots instead"],
 };
 
 export async function POST(req: Request) {
@@ -60,6 +61,7 @@ export async function POST(req: Request) {
         origin: "city",
         categories: cats,
       }),
+      (r) => !!r.mapsDown,
     );
     return NextResponse.json(result);
   } catch (e) {

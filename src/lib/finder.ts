@@ -133,9 +133,35 @@ type LatLng = { lat: number; lng: number };
 // Checks Gemini's pin against OpenStreetMap (Photon search): the same-named place near the destination wins.
 const OSM_TYPES: Record<string, string> = { N: "node", W: "way", R: "relation" };
 
+// Photon (OpenStreetMap search) is free and shared. If it's slow or refusing us, stop asking for two
+// minutes instead of making every place wait out a timeout: those places just keep Gemini's pin
+// (labeled as such). A plain "too busy" (429/503) gets one staggered retry.
+let photonDownUntil = 0;
+async function photon(query: string): Promise<{ features?: any[] } | null> {
+  if (Date.now() < photonDownUntil) return null;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 4000);
+    try {
+      const res = await fetch(`https://photon.komoot.io/api/?${query}`, { headers: UA, signal: ctrl.signal });
+      if (res.ok) return await res.json();
+      if (res.status !== 429 && res.status !== 503) return null;
+    } catch {
+      // Timed out or unreachable: give it a rest
+      photonDownUntil = Date.now() + 120_000;
+      console.warn("Photon unresponsive; skipping map checks for 2 minutes");
+      return null;
+    } finally {
+      clearTimeout(timer);
+    }
+    await new Promise((r) => setTimeout(r, 600 + Math.random() * 1400));
+  }
+  photonDownUntil = Date.now() + 60_000;
+  return null;
+}
+
 async function osmPin(name: string, city: string, near: LatLng, center: LatLng, radius: number): Promise<(LatLng & { ref?: string }) | null> {
-  const q = encodeURIComponent(`${name} ${city.split(",")[0]}`);
-  const data = await getJson(`https://photon.komoot.io/api/?q=${q}&lat=${near.lat}&lon=${near.lng}&limit=4&lang=en`);
+  const data = await photon(`q=${encodeURIComponent(`${name} ${city.split(",")[0]}`)}&lat=${near.lat}&lon=${near.lng}&limit=4&lang=en`);
   for (const f of data?.features ?? []) {
     const [lng, lat] = f.geometry?.coordinates ?? [];
     const p = f.properties ?? {};
@@ -273,7 +299,8 @@ async function wikipediaPhotos(places: Place[], city: string): Promise<Map<Place
 // Makes each place trustworthy before it's shown: pin checked against OpenStreetMap,
 // then the best licensed photo we can verify (its Wikipedia article's, else a matching Commons file).
 async function verifyPlaces(places: Place[], city: string, center: LatLng, radius: number) {
-  await pool(places, 4, async (p) => {
+  // 3 at a time per category (~15 across a city loading in parallel) keeps us a polite user of a free service
+  await pool(places, 3, async (p) => {
     const osm = await osmPin(p.name, city, p.location, center, radius);
     if (!osm) return;
     p.location = { ...p.location, lat: osm.lat, lng: osm.lng, pin: "osm" };
@@ -374,7 +401,7 @@ let searchOffUntil = 0;
 
 // Asks Gemini for real places (live Google Search when the key allows it, else its own knowledge),
 // cleans them into Place objects, then adds licensed photos and real road times.
-export async function findPlaces(o: FindOptions): Promise<{ places: Place[]; mode: "search" | "knowledge"; model: string }> {
+export async function findPlaces(o: FindOptions): Promise<{ places: Place[]; mode: "search" | "knowledge"; model: string; mapsDown?: boolean }> {
   const system = [
     "You are Uncover: an obsessive traveler who interviewed locals. Find REAL, currently operating places.",
     "Prefer what locals recommend (local subreddits, local newspapers and city magazines, neighborhood blogs, event calendars) over tourist listicles and review aggregators.",
@@ -523,5 +550,6 @@ ${FIELDS}.`;
     if (Object.keys(from).length) p.driveFrom = from;
   });
 
-  return { places, mode, model: out.model };
+  // mapsDown: pins couldn't be checked this time, so the caller shouldn't keep this result for long
+  return { places, mode, model: out.model, ...(Date.now() < photonDownUntil ? { mapsDown: true } : {}) };
 }

@@ -105,7 +105,7 @@ export function CardFace({
 
         <div className="cf-why">
           <span className="eyebrow">{why ? "✨ Why it fits what you asked" : "Why I found it for you"}</span>
-          <p>{why ?? place.whyFound}</p>
+          <p>{why || place.whyFound}</p>
         </div>
 
         <div className="cf-tip">

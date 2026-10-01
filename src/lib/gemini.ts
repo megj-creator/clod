@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 
 // Server-only helper for calling Gemini. Retries when Google is busy and
 // falls back to a lighter model, so a demand spike doesn't break the app.
@@ -149,7 +149,12 @@ export function guardGemini(req: Request, bucket: string, perMinute: number, per
 // survives restarts), so the second person to search "Lisbon" gets it instantly and spends no quota.
 // Errors aren't cached: a failed lookup is retried next time.
 // Bump CACHE_VERSION whenever the shape or quality of cached cities/places changes.
-const CACHE_VERSION = "uncover-v5";
-export async function cached<T>(key: string, ttlMs: number, make: () => Promise<T>): Promise<T> {
-  return unstable_cache(make, [CACHE_VERSION, key], { revalidate: Math.round(ttlMs / 1000) })();
+const CACHE_VERSION = "uncover-v8";
+// `retryIf`: a result that came out degraded (e.g. the map service was down) is served this once but
+// dropped from the cache, so the next search builds it properly instead of keeping it for a day.
+export async function cached<T>(key: string, ttlMs: number, make: () => Promise<T>, retryIf?: (v: T) => boolean): Promise<T> {
+  const tag = `${CACHE_VERSION}:${key}`.slice(0, 256);
+  const value = await unstable_cache(make, [CACHE_VERSION, key], { revalidate: Math.round(ttlMs / 1000), tags: [tag] })();
+  if (retryIf?.(value)) revalidateTag(tag);
+  return value;
 }

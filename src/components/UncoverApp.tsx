@@ -98,7 +98,13 @@ export default function UncoverApp({ featured }: { featured: City }) {
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.setup?.hotel?.id, allPlaces.length, travelMode]);
-  const [forecast, setForecast] = useState<Record<string, Weather>>(() => sampleForecast(dates));
+  const [liveForecast, setForecast] = useState<Record<string, Weather>>(() => sampleForecast(dates));
+  // Every trip day always has weather: right after a trip loads (or changes), the fetched forecast can
+  // lag a render behind the new dates, and screens assumed each day had one (it crashed a deep link)
+  const forecast = useMemo(
+    () => (dates.every((d) => liveForecast[d]) ? liveForecast : { ...sampleForecast(dates), ...liveForecast }),
+    [dates, liveForecast],
+  );
   useEffect(() => {
     setForecast(sampleForecast(dates));
     if (!dates.length) return;

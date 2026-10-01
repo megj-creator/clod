@@ -256,6 +256,23 @@ function Deck(props: Props & { intent: Intent }) {
     return () => window.removeEventListener("keydown", onKey);
   });
 
+  const huntRequest = intent.heard[0] === "everything" ? "the best things most visitors miss" : `${intent.label} (${intent.heard.join(", ")})`;
+
+  // New finds join the deck: never replace the cards not yet swiped. `first` puts them on top
+  // (you asked for them); otherwise they line up after what's left.
+  const addFinds = (found: Place[], first: boolean, heardNote?: string) => {
+    // (including ones just past their limits, so "show them" still works afterwards)
+    const restIds = [...new Set([...queue, ...hidden].map((r) => r.place.id))];
+    const rest = restIds.map((id): [string, string] => [id, intent.picks?.[id] ?? ""]);
+    const fresh = found.map((p): [string, string] => [p.id, p.whyFound]);
+    setIntent({
+      ...intent,
+      picks: Object.fromEntries(first ? [...fresh, ...rest] : [...rest, ...fresh]),
+      heard: heardNote ? [...intent.heard.filter((h) => h !== heardNote), heardNote] : intent.heard,
+      source: intent.source ?? "ai",
+    });
+  };
+
   // Past the curated deep cuts, Gemini goes hunting for new places
   const hunt = async () => {
     setDigging(4);
@@ -263,19 +280,9 @@ function Deck(props: Props & { intent: Intent }) {
     play("whoosh");
     const spin = setInterval(() => setDigLine((i) => Math.min(i + 1, DIG_LINES[4].length - 1)), 2600);
     try {
-      const data = await huntFor({
-        city,
-        stay,
-        state,
-        request: intent.heard[0] === "everything" ? "the best things most visitors miss" : `${intent.label} (${intent.heard.join(", ")})`,
-      });
+      const data = await huntFor({ city, stay, state, request: huntRequest });
       onFound(data.places);
-      setIntent({
-        ...intent,
-        picks: Object.fromEntries(data.places.map((p) => [p.id, p.whyFound])),
-        heard: [...intent.heard.filter((h) => h !== "hunted beyond my list"), "hunted beyond my list"],
-        source: "ai",
-      });
+      addFinds(data.places, true, "hunted beyond my list");
       play("chime");
       setDugMsg(data.mode === "search" ? `Found ${data.places.length} live. Fresh from the web.` : `Found ${data.places.length} beyond my list.`);
     } catch (e) {
@@ -285,6 +292,29 @@ function Deck(props: Props & { intent: Intent }) {
       setDigging(null);
     }
   };
+
+  // Running low: quietly find more of the same in the background, so the deck doesn't just end.
+  // At most twice per mood or request (each one spends a little of the free Gemini quota).
+  const [refilling, setRefilling] = useState(false);
+  const refills = useRef<Record<string, number>>({});
+  const intentKey = `${intent.label}|${intent.heard.join(",")}`;
+  useEffect(() => {
+    if (queue.length > 2 || refilling || digging !== null || stillLoading) return;
+    const n = refills.current[intentKey] ?? 0;
+    if (n >= 2) return;
+    refills.current[intentKey] = n + 1;
+    setRefilling(true);
+    huntFor({ city, stay, state, request: huntRequest })
+      .then((data) => {
+        onFound(data.places);
+        addFinds(data.places, false);
+      })
+      .catch(() => {
+        refills.current[intentKey] = 2; // quota or network trouble: don't keep trying for this one
+      })
+      .finally(() => setRefilling(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queue.length, refilling, digging, stillLoading, intentKey]);
 
   const digDeeper = () => {
     if (depthLevel >= 3) {
@@ -351,6 +381,11 @@ function Deck(props: Props & { intent: Intent }) {
       </div>
       {relaxed && <p className="relaxed">Nothing matched exactly, so here's the closest I have.</p>}
       <LoadingLine city={city} onRetry={onRetryPlaces} />
+      {refilling && (
+        <p className="places-loading">
+          <span className="spinner" /> Finding more like this…
+        </p>
+      )}
 
       <div className="deck">
         <AnimatePresence custom={exitDir}>
@@ -375,9 +410,20 @@ function Deck(props: Props & { intent: Intent }) {
 
         {!queue.length && (
           <motion.div className="deck-empty" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}>
-            <p className="display-sm">{stillLoading ? "Still digging. More places are on the way." : "That's everything I've found for this vibe."}</p>
+            <p className="display-sm">
+              {stillLoading || refilling
+                ? "Still digging. More places are on the way."
+                : hidden.length
+                  ? `That's everything inside your limits. ${hidden.length} more ${hidden.length === 1 ? "is" : "are"} just past them.`
+                  : "That's everything I've found for this vibe."}
+            </p>
             <div className="deck-empty-actions">
-              <button className="btn primary" onClick={digDeeper}>
+              {hidden.length > 0 && !showHidden && (
+                <button className="btn primary" onClick={() => setShowHidden(true)}>
+                  Show {hidden.length} just past my limits
+                </button>
+              )}
+              <button className={`btn ${hidden.length && !showHidden ? "" : "primary"}`} onClick={digDeeper}>
                 <IconSearch size={16} /> {depthLevel >= 3 ? "Go hunting beyond my list" : "Dig deeper"}
               </button>
               <button className="btn" onClick={() => { setIntent(null); setDepthLevel(1); }}>
